@@ -1,0 +1,253 @@
+{
+  "n_pairs": 30,
+  "n_valid": 30,
+  "surface_mean_layer": 8.359244600931804,
+  "insight_mean_layer": 8.102462339401246,
+  "mean_delta": 0.2567822615305583,
+  "pct_surface_deeper": 83.33333333333334,
+  "t_statistic": 4.499750963405858,
+  "p_value": 5.080239464114112e-05,
+  "verdict": "REPLICATION CONFIRMED \u2014 surface > insight (p=0.000051)",
+  "pairs": [
+    {
+      "topic": "earthquakes",
+      "surface_mean_layer": 8.533506393432617,
+      "insight_mean_layer": 7.917513847351074,
+      "delta": 0.615992546081543,
+      "surface_n": 17310,
+      "insight_n": 22137
+    },
+    {
+      "topic": "metabolism",
+      "surface_mean_layer": 8.223298072814941,
+      "insight_mean_layer": 8.343378067016602,
+      "delta": -0.12007999420166016,
+      "surface_n": 15804,
+      "insight_n": 21836
+    },
+    {
+      "topic": "ocean_currents",
+      "surface_mean_layer": 8.268295288085938,
+      "insight_mean_layer": 8.010372161865234,
+      "delta": 0.2579231262207031,
+      "surface_n": 16411,
+      "insight_n": 20150
+    },
+    {
+      "topic": "immune_response",
+      "surface_mean_layer": 7.751382827758789,
+      "insight_mean_layer": 7.906858444213867,
+      "delta": -0.15547561645507812,
+      "surface_n": 15727,
+      "insight_n": 21419
+    },
+    {
+      "topic": "dreams",
+      "surface_mean_layer": 8.581695556640625,
+      "insight_mean_layer": 8.130256652832031,
+      "delta": 0.45143890380859375,
+      "surface_n": 12008,
+      "insight_n": 21427
+    },
+    {
+      "topic": "volcanoes",
+      "surface_mean_layer": 8.11652660369873,
+      "insight_mean_layer": 8.096528053283691,
+      "delta": 0.019998550415039062,
+      "surface_n": 19635,
+      "insight_n": 22781
+    },
+    {
+      "topic": "blood_pressure",
+      "surface_mean_layer": 8.521724700927734,
+      "insight_mean_layer": 7.8855509757995605,
+      "delta": 0.6361737251281738,
+      "surface_n": 17906,
+      "insight_n": 18908
+    },
+    {
+      "topic": "fermentation",
+      "surface_mean_layer": 7.786904811859131,
+      "insight_mean_layer": 7.912458896636963,
+      "delta": -0.12555408477783203,
+      "surface_n": 15120,
+      "insight_n": 21053
+    },
+    {
+      "topic": "hurricanes",
+      "surface_mean_layer": 8.437037467956543,
+      "insight_mean_layer": 8.099806785583496,
+      "delta": 0.3372306823730469,
+      "surface_n": 16502,
+      "insight_n": 21752
+    },
+    {
+      "topic": "drug_resistance",
+      "surface_mean_layer": 8.357215881347656,
+      "insight_mean_layer": 8.316906929016113,
+      "delta": 0.04030895233154297,
+      "surface_n": 15688,
+      "insight_n": 20536
+    },
+    {
+      "topic": "coral_reefs",
+      "surface_mean_layer": 9.034849166870117,
+      "insight_mean_layer": 8.506397247314453,
+      "delta": 0.5284519195556641,
+      "surface_n": 15438,
+      "insight_n": 21337
+    },
+    {
+      "topic": "black_holes",
+      "surface_mean_layer": 8.574502944946289,
+      "insight_mean_layer": 7.922268390655518,
+      "delta": 0.6522345542907715,
+      "surface_n": 17469,
+      "insight_n": 24456
+    },
+    {
+      "topic": "taxation",
+      "surface_mean_layer": 8.292675971984863,
+      "insight_mean_layer": 8.277359008789062,
+      "delta": 0.015316963195800781,
+      "surface_n": 13749,
+      "insight_n": 24690
+    },
+    {
+      "topic": "empathy",
+      "surface_mean_layer": 8.3867769241333,
+      "insight_mean_layer": 8.039015769958496,
+      "delta": 0.3477611541748047,
+      "surface_n": 17258,
+      "insight_n": 22119
+    },
+    {
+      "topic": "plate_tectonics",
+      "surface_mean_layer": 7.751677989959717,
+      "insight_mean_layer": 7.7242560386657715,
+      "delta": 0.027421951293945312,
+      "surface_n": 18323,
+      "insight_n": 24559
+    },
+    {
+      "topic": "obesity",
+      "surface_mean_layer": 8.356943130493164,
+      "insight_mean_layer": 7.978631973266602,
+      "delta": 0.3783111572265625,
+      "surface_n": 17902,
+      "insight_n": 19281
+    },
+    {
+      "topic": "leadership",
+      "surface_mean_layer": 8.331294059753418,
+      "insight_mean_layer": 8.291259765625,
+      "delta": 0.04003429412841797,
+      "surface_n": 11935,
+      "insight_n": 15457
+    },
+    {
+      "topic": "bacteria_growth",
+      "surface_mean_layer": 8.134347915649414,
+      "insight_mean_layer": 8.274615287780762,
+      "delta": -0.14026737213134766,
+      "surface_n": 14254,
+      "insight_n": 19063
+    },
+    {
+      "topic": "cryptocurrency",
+      "surface_mean_layer": 8.683300971984863,
+      "insight_mean_layer": 7.871026515960693,
+      "delta": 0.8122744560241699,
+      "surface_n": 17013,
+      "insight_n": 19283
+    },
+    {
+      "topic": "social_norms",
+      "surface_mean_layer": 8.643027305603027,
+      "insight_mean_layer": 8.213173866271973,
+      "delta": 0.4298534393310547,
+      "surface_n": 17598,
+      "insight_n": 23319
+    },
+    {
+      "topic": "nuclear_energy",
+      "surface_mean_layer": 8.155433654785156,
+      "insight_mean_layer": 8.606949806213379,
+      "delta": -0.45151615142822266,
+      "surface_n": 17197,
+      "insight_n": 25035
+    },
+    {
+      "topic": "monopoly",
+      "surface_mean_layer": 8.037325859069824,
+      "insight_mean_layer": 7.412875175476074,
+      "delta": 0.62445068359375,
+      "surface_n": 19343,
+      "insight_n": 28769
+    },
+    {
+      "topic": "trauma",
+      "surface_mean_layer": 8.619284629821777,
+      "insight_mean_layer": 7.7690534591674805,
+      "delta": 0.8502311706542969,
+      "surface_n": 14851,
+      "insight_n": 23854
+    },
+    {
+      "topic": "bird_migration",
+      "surface_mean_layer": 8.531561851501465,
+      "insight_mean_layer": 8.326661109924316,
+      "delta": 0.20490074157714844,
+      "surface_n": 15129,
+      "insight_n": 24879
+    },
+    {
+      "topic": "stock_bubbles",
+      "surface_mean_layer": 8.611215591430664,
+      "insight_mean_layer": 8.395874977111816,
+      "delta": 0.21534061431884766,
+      "surface_n": 15978,
+      "insight_n": 23904
+    },
+    {
+      "topic": "enzyme",
+      "surface_mean_layer": 8.657322883605957,
+      "insight_mean_layer": 8.239744186401367,
+      "delta": 0.41757869720458984,
+      "surface_n": 16161,
+      "insight_n": 18161
+    },
+    {
+      "topic": "language_acquisition",
+      "surface_mean_layer": 8.484456062316895,
+      "insight_mean_layer": 8.198018074035645,
+      "delta": 0.28643798828125,
+      "surface_n": 18078,
+      "insight_n": 21594
+    },
+    {
+      "topic": "opioid_dependence",
+      "surface_mean_layer": 8.241681098937988,
+      "insight_mean_layer": 8.074203491210938,
+      "delta": 0.16747760772705078,
+      "surface_n": 22058,
+      "insight_n": 27667
+    },
+    {
+      "topic": "ocean_acidification",
+      "surface_mean_layer": 8.377859115600586,
+      "insight_mean_layer": 8.253412246704102,
+      "delta": 0.12444686889648438,
+      "surface_n": 17840,
+      "insight_n": 27911
+    },
+    {
+      "topic": "supply_chains",
+      "surface_mean_layer": 8.29421329498291,
+      "insight_mean_layer": 8.079442977905273,
+      "delta": 0.21477031707763672,
+      "surface_n": 16556,
+      "insight_n": 26346
+    }
+  ]
+}
