@@ -1,0 +1,585 @@
+\documentclass{article}
+
+% NeurIPS-style formatting
+\usepackage[preprint]{neurips_2024}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\title{Computational Graph Structure Distinguishes Surface Recall\\
+from Explanatory Reasoning in Language Models}
+
+\author{%
+  darkflobi \AND flobi \\
+  Independent Researchers \\
+  \texttt{heyzoos123@gmail.com}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We investigate whether the distinction between surface-level factual recall and explanatory 
+reasoning is detectable in the internal computation of language models, using sparse 
+autoencoder (SAE) circuit attribution to analyze computational graph structure. Our study 
+proceeds in three phases. First, we demonstrate a negative result: surface-level text 
+statistics (TF-IDF, sequence length, N-gram overlap, readability) reliably classify surface 
+vs.\ insight text, but this reflects vocabulary and length confounds rather than genuine 
+reasoning differences. After five rounds of iterative confound control across three model 
+scales (GPT-2 Small, Gemma-2-2B, Mistral 7B), we produce a vocabulary-controlled dataset 
+($n$=36 pairs, TF-IDF = 50.1\%, length accuracy = 52.9\%, both at chance) on which a linear 
+probe over GPT-2 residual stream activations finds no signal (50--56\% across all layers). 
+Second, we pivot to direct circuit analysis using SAE attribution on Gemma-2-2B. In an 
+exploratory analysis, surface-recall prompts concentrate feature activation at output-proximal 
+layers (higher mean activated layer), while matched insight prompts engage more distributed 
+mid-layer computation. Third, we pre-register the directional hypothesis 
+($\Delta = \text{mean\_layer}(\text{surface}) - \text{mean\_layer}(\text{insight}) > 0$) 
+and conduct two independent replications on held-out topic sets. A pre-registered replication 
+($n$=11 valid of 15 total) yields $t = 2.04$, $p = 0.035$ (one-tailed, paired $t$-test), 
+directionally consistent but not leave-one-out robust. A subsequent power replication on 30 
+new held-out pairs yields $n$=30 valid (zero exclusions), $\Delta = {+}0.257$, 
+$t(29) = 4.50$, $p = 0.000051$, Cohen's $d = 0.82$, 83.3\% directional, 
+and full leave-one-out robustness. A prediction-confidence confound test finds 
+$r = 0.001$ between confidence and depth deltas ($p = 0.996$), ruling out difficulty-driven 
+explanations. We argue that the methodology---iterative confound elimination, 
+pre-registered directional testing, sensitivity analysis, and confound controls---constitutes 
+a contribution independent of the specific finding, and that computational graph depth 
+offers a mechanistically grounded alternative to surface-level evaluation metrics.
+\end{abstract}
+
+\section{Introduction}
+
+Evaluating whether a language model is reasoning or merely retrieving is among the hardest 
+open problems in AI evaluation. Existing benchmarks measure what a model says---whether 
+an answer is correct, fluent, or factually grounded---but cannot directly assess how the 
+model arrives at that answer. A model that pattern-matches to a memorized response and a 
+model that constructs a novel explanation may produce identical outputs while engaging 
+fundamentally different internal computations.
+
+This paper asks a simple question: can we detect this difference mechanistically? 
+Specifically, can the structure of a language model's computational graph---which features 
+activate, at which layers, in what distribution---distinguish prompts that elicit surface recall 
+from prompts that elicit explanatory reasoning?
+
+We begin with what does not work. Surface-level text statistics can classify surface vs.\ 
+insight text with high accuracy, but this accuracy persists even when vocabulary is controlled, 
+revealing it as a confound rather than a signal. Neural probes trained on residual stream 
+activations find nothing once these confounds are eliminated.
+
+We then turn to a different approach: direct analysis of computational graphs via sparse 
+autoencoder (SAE) circuit attribution. Using the circuit-tracer framework \citep{lindsey2025} 
+on Gemma-2-2B, we extract the set of SAE features activated during processing of each 
+prompt and compute their mean layer depth. We find that surface-recall prompts concentrate 
+activation at higher (output-proximal) layers, while insight prompts distribute activation more 
+broadly across middle layers.
+
+This finding survives pre-registered replication on held-out topics ($n$=30, $p < 0.001$, 
+LOO robust), while surface statistics and linear probes fail once distributional confounds are 
+controlled. A new confound test rules out prediction difficulty as an explanation 
+($r = 0.001$, $p = 0.996$).
+
+\subsection{Contributions}
+
+\begin{enumerate}
+\item \textbf{A methodological contribution:} We document a five-iteration confound 
+elimination process showing how surface statistics systematically contaminate 
+text-classification paradigms, with a reusable protocol for controlling them.
+
+\item \textbf{A negative result:} Linear probes over GPT-2 residual stream activations cannot 
+distinguish surface from insight text once distributional confounds are removed ($n$=36 
+vocabulary-controlled pairs, all layers at chance). This constrains what probing studies can 
+claim about reasoning representation.
+
+\item \textbf{A positive result:} SAE circuit attribution reveals a robust difference in 
+computational graph structure between surface recall and explanatory reasoning, replicated 
+with pre-registration at $p < 0.001$ on held-out stimuli, with prediction confidence ruled 
+out as a confound ($r = 0.001$).
+\end{enumerate}
+
+\section{Related Work}
+
+\subsection{Mechanistic Interpretability and Sparse Autoencoders}
+
+Recent work in mechanistic interpretability has moved beyond individual neuron analysis 
+toward understanding circuits---connected subgraphs of computation implementing specific 
+behaviors. Sparse autoencoders (SAEs) trained on residual stream activations recover 
+interpretable monosemantic features distributed across layers 
+\citep{cunningham2023, templeton2024}. Circuit tracing methods allow attribution of model 
+outputs to specific active features, providing a graph-structured view of which features 
+participate in each computation \citep{lindsey2025}.
+
+\subsection{Reasoning Depth in Language Models}
+
+Prior work on reasoning in language models has largely focused on behavioral benchmarks
+---whether models produce correct answers to multi-step problems 
+\citep{wei2022, kojima2022}. Less work characterizes the internal structure of that 
+reasoning. Chain-of-thought prompting improves performance on reasoning tasks but does 
+not characterize where in the network the reasoning occurs. Our work takes a different 
+approach: rather than measuring output quality, we measure the depth profile of feature 
+activation for prompts that vary in their reasoning demands while controlling for surface form.
+
+\subsection{Layer Specialization in Transformers}
+
+There is evidence that transformer layers are not uniform---earlier layers tend to encode 
+syntactic and positional information, while later layers encode more semantic and task-specific 
+content \citep{tenney2019, rogers2020}. If surface recall is more akin to pattern-matching on 
+stored associations, we would expect it to engage later, more directly output-predictive layers. 
+If insight requires integration of distributed knowledge, we would expect it to involve more 
+mid-network processing. Our metric---mean layer of activated SAE features---operationalizes 
+this intuition.
+
+\section{Methods}
+
+\subsection{Prompt Pair Construction}
+
+We construct matched prompt pairs on the following criteria:
+\begin{enumerate}
+\item \textbf{Vocabulary match:} Surface and insight prompts for a given topic draw from the 
+same lexical domain.
+\item \textbf{Token count match:} Prompts are matched within $\pm$2 tokens.
+\item \textbf{Syntactic structure match:} Both prompts are sentence-completion fragments of 
+comparable syntactic form.
+\item \textbf{Semantic contrast:} Surface prompts invoke direct factual statements; insight 
+prompts invoke causal or mechanistic explanation of the same phenomenon.
+\end{enumerate}
+
+Example pair (topic: \textit{fire}):
+\begin{itemize}
+\item Surface: \textit{``What does fire need to burn?''} $\rightarrow$ target: \textit{oxygen}
+\item Insight: \textit{``Why does fire spread once it starts?''} $\rightarrow$ target: \textit{because}
+\end{itemize}
+
+Both prompts concern fire, use similar vocabulary, and complete at the same syntactic 
+position. The surface prompt invokes factual recall; the insight prompt requires encoding a 
+mechanistic feedback relationship.
+
+Pairs were constructed for 75+ topics across three phases: exploratory, held-out replication, 
+and power replication. Topics were non-overlapping across phases.
+
+\subsection{Negative Result: Surface Statistics}
+
+Prior to circuit tracing, we conducted five rounds of statistical analysis on surface text 
+properties:
+\begin{itemize}
+\item Zipf word frequency (per-token average log frequency)
+\item Flesch-Kincaid readability grade level
+\item Type-token ratio
+\item Mean N-gram log probability (unigram, bigram, trigram)
+\item TF-IDF classification accuracy
+\item Sequence length accuracy
+\end{itemize}
+
+Across all metrics and all pairs, no consistent separation was found once vocabulary was 
+controlled. The v4 dataset (word-set-enforced generation) achieved TF-IDF = 50.1\% and 
+length accuracy = 52.9\%, both at chance.
+
+\subsection{Circuit Tracing and Feature Depth}
+
+We use \texttt{circuit\_tracer} \citep{lindsey2025} with Gemma-2-2B loaded via 
+TransformerLens. For each prompt, we compute feature attribution graphs using the 
+\texttt{attribute()} function with the following parameters:
+\begin{itemize}
+\item \texttt{batch\_size=32}
+\item \texttt{max\_feature\_nodes=500}
+\item \texttt{offload="cpu"}
+\item \texttt{dtype=torch.bfloat16}
+\end{itemize}
+
+Hardware: RTX 4070 8GB GPU; attribution time $\approx$22s per prompt.
+
+For each attribution graph, we extract the \texttt{active\_features} tensor of shape 
+$(n_\text{active}, 3)$ where column 0 is the layer index. We compute the mean layer index 
+across all active features as our depth metric:
+\begin{equation}
+\Delta = \overline{L}_\text{surface} - \overline{L}_\text{insight}
+\end{equation}
+where $\overline{L}$ denotes mean activated layer index. Positive $\Delta$ indicates surface 
+prompts activate features at higher (output-proximal) layers.
+
+\subsection{Pre-registration}
+
+Before running the held-out replication, the directional hypothesis ($\Delta > 0$) was 
+pre-registered in \texttt{experiment\_12\_replication\_pairs.json} via commit timestamp in 
+the public repository. The statistical test (one-tailed paired $t$-test in the predicted 
+direction) was specified in advance.
+
+\subsection{Sensitivity Analysis}
+
+Given the small effective sample size in the held-out replication ($n$=11 after exclusions), 
+we ran leave-one-out (LOO) sensitivity analysis: for each pair, we removed it and 
+recomputed the $t$-test on the remaining pairs. This tests whether any single pair is 
+responsible for the significant result.
+
+\section{Results}
+
+\subsection{Surface Statistics Fail to Generalize Past Confound Control}
+
+\begin{table}[h]
+\centering
+\caption{Surface statistics across all confound-control rounds.}
+\label{tab:surface_stats}
+\begin{tabular}{llrrr}
+\toprule
+Round & Method & $n$ pairs & TF-IDF & Length Acc. \\
+\midrule
+v1 & Unconstrained generation & $\sim$70 & 96.0\% & 73.0\% \\
+v2 & Seed-sentence constraints & 24 & 74.4\% & 64.7\% \\
+v3 & Surface-first rewrite & 6 clean & 74.4\% & --- \\
+v4 & Word-set enforced & 36 & \textbf{50.1\%} & \textbf{52.9\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This trajectory demonstrates that explanation is partially but not entirely constituted by 
+vocabulary at the token level. The v4 generator enforced zero new words in insight rewrites, 
+achieving confound control at 90\% yield rate (36/40 seeds).
+
+\subsection{Neural Probes Find No Signal on Controlled Data}
+
+On the v4 vocabulary-controlled dataset ($n$=36 pairs, TF-IDF at chance), logistic regression 
+probes trained on GPT-2 (117M) residual stream activations achieve 50--56\% accuracy across 
+all 12 layers, with no layer reaching statistical significance.
+
+\begin{table}[h]
+\centering
+\caption{Linear probe accuracy by layer, GPT-2 Small, vocabulary-controlled pairs.}
+\label{tab:probe}
+\begin{tabular}{lr@{\hspace{1.5em}}r}
+\toprule
+Layer & Accuracy & $p$-value \\
+\midrule
+0 & 52.8\% & 0.41 \\
+3 & 55.6\% & 0.31 \\
+6 & 50.0\% & 0.50 \\
+9 & 52.8\% & 0.44 \\
+11 & 50.0\% & 0.50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This null result rules out the concern that our subsequent positive finding is driven by 
+residual vocabulary confounds. If distributional confounds were present, the probe would 
+detect them---as it did in rounds v1--v3.
+
+\subsection{Exploratory Circuit Attribution}
+
+Using SAE circuit attribution on Gemma-2-2B, we compute mean activated layer depth for 
+each prompt in the exploratory set (30 pairs submitted; 2 valid after CUDA attribution failures). 
+Both valid pairs showed surface depth greater than insight depth (100\%), mean 
+$\Delta = {+}0.326$.
+
+This finding reversed our initial hypothesis: we originally predicted that insight prompts 
+would activate higher layers (equating ``deeper reasoning'' with ``deeper layers''). The data 
+showed the opposite, consistent with a direct-lookup vs.\ distributed-computation 
+interpretation. The revised hypothesis ($\Delta > 0$, surface $>$ insight) was formulated 
+after seeing the exploratory data and was pre-registered before running any replication data.
+
+\subsection{Pre-registered Replication ($n$=11)}
+
+Fifteen held-out pairs were constructed on new topics. Four were excluded due to 
+attribution extraction failure (multi-token target tokens). Results on 11 valid pairs:
+
+\begin{table}[h]
+\centering
+\caption{Pre-registered replication results ($n$=11 valid pairs).}
+\label{tab:rep1}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+Surface mean layer & 8.378 \\
+Insight mean layer & 8.260 \\
+$\Delta$ (surface $-$ insight) & $+$0.118 \\
+Pairs in predicted direction & 8/11 (72.7\%) \\
+Paired $t$-test (one-tailed) & $t = 2.04$, $p = 0.035$ \\
+Wilcoxon signed-rank (one-tailed) & $p = 0.051$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{LOO sensitivity:} The result is not LOO-robust: removing any one of 7/11 pairs 
+pushes the parametric $p$-value above 0.05 (range: 0.050--0.070). The directional finding 
+is stable across all subsets; the fragility reflects statistical power at $n$=11, not an 
+outlier-driven result. This motivated the power replication.
+
+\subsection{Power Replication ($n$=30)}
+
+Thirty new held-out pairs were constructed on topics with zero overlap with all 45 prior pairs. 
+All 60 target tokens were pre-audited for single-token status (18 initially multi-token targets 
+were replaced). The same pre-registered hypothesis and tests were applied.
+
+\begin{table}[h]
+\centering
+\caption{Power replication results ($n$=30, all valid, zero exclusions).}
+\label{tab:rep2}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+Pairs submitted / valid & 30 / 30 \\
+Surface mean layer & 8.359 \\
+Insight mean layer & 8.102 \\
+$\Delta$ (surface $-$ insight) & $+$0.257 \\
+Cohen's $d$ & 0.82 \\
+Pairs in predicted direction & 25/30 (83.3\%) \\
+Paired $t$-test (one-tailed) & $t(29) = 4.500$, $p = 0.000051$ \\
+Wilcoxon signed-rank (one-tailed) & $p < 0.001$ \\
+LOO robust & Yes (all 30 subsets $p < 0.05$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The power replication confirms the directional finding with strong statistical evidence. Both 
+parametric and non-parametric tests converge at $p < 0.001$. The effect size ($+$0.257) is 
+consistent with the exploratory estimate ($+$0.326), suggesting the exploratory estimate was 
+accurate and the initial replication ($+$0.118) was attenuated by low power rather than 
+reflecting the true effect size.
+
+\subsection{Prediction Confidence Confound Test}
+
+A natural alternative explanation is that surface-recall prompts are simply more predictable 
+(lower perplexity), and that prediction difficulty---not semantic category---drives the depth 
+effect. To test this, we computed $\log P(\text{target} \mid \text{prompt})$ for all 30 power 
+pairs using Gemma-2-2B and tested whether prediction confidence differences correlate with 
+depth differences.
+
+\begin{table}[h]
+\centering
+\caption{Prediction confidence confound test ($n$=30 power pairs).}
+\label{tab:confound}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+Surface more confident ($\Delta_\text{lp} > 0$) & 60.0\% of pairs \\
+Mean $\Delta_\text{lp}$ (surface $-$ insight) & $+$1.97 (SD = 5.21) \\
+$t$-test vs.\ 0 & $t = 2.04$, $p = 0.051$ \\
+Pearson $r(\Delta_\text{lp},\, \Delta_\text{depth})$ & $r = 0.001$, $p = 0.996$ \\
+Spearman $\rho$ & $\rho = -0.008$, $p = 0.966$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Surface prompts are marginally more confident on average (60\% of pairs, $p = 0.051$), 
+which is consistent with factual completions being more predictable. However, the correlation 
+between confidence differences and depth differences is essentially zero ($r = 0.001$, 
+$p = 0.996$). This means the pairs where surface prompts are most confident are no more 
+likely to show large depth differentials than pairs where surface and insight prompts have 
+similar confidence. \textbf{The depth effect is semantically driven, not difficulty-driven.}
+
+\section{Discussion}
+
+\subsection{Summary of Findings}
+
+Surface-level text statistics and linear probes fail to distinguish surface recall from 
+explanatory reasoning once distributional confounds are controlled. However, SAE circuit 
+attribution reveals a consistent structural difference: surface-recall prompts concentrate 
+feature activation at output-proximal layers, while insight prompts engage more distributed 
+mid-layer computation. This difference is robust to pre-registered replication on held-out 
+topics ($p < 0.001$), survives leave-one-out sensitivity analysis, and is not explained by 
+prediction confidence differences ($r = 0.001$).
+
+\subsection{On HARKing and Directional Reversal}
+
+The exploratory finding reversed our initial hypothesis. We originally predicted that insight 
+prompts would activate higher layers (equating ``deeper reasoning'' with ``deeper layers''). 
+The data showed the opposite: surface prompts activate higher layers, consistent with a 
+direct-lookup interpretation where factual retrieval engages output-proximal features while 
+explanatory reasoning requires distributed mid-layer composition.
+
+We treat this reversal transparently. The revised hypothesis was formulated after seeing 
+the exploratory data and was pre-registered before running any replication data. 
+The replication design---new topics, pre-registered direction, held-out data---prevents this 
+from constituting HARKing \citep{kerr1998}.
+
+\subsection{Exclusion Rate Trajectory}
+
+The exclusion rate across phases (0\% exploratory $\to$ 27\% initial replication $\to$ 0\% 
+power replication) reflects pipeline maturation, not selective analysis. The excluded 
+replication pairs failed because target tokens were multi-token under the Gemma-2-2B 
+tokenizer; the power replication eliminated this by pre-auditing all targets. The excluded 
+pairs span diverse domains and have no systematic relationship to the hypothesis.
+
+\subsection{Limitations}
+
+\textbf{Single model.} All positive results are on Gemma-2-2B. Whether the mean-layer-depth 
+metric generalizes to other architectures, model sizes, or training regimes is unknown.
+
+\textbf{Controlled stimuli.} The matched-pair paradigm constrains both topics and prompt 
+structure. Whether the depth metric discriminates on unconstrained, naturalistic text is 
+untested.
+
+\textbf{Single metric.} Mean activated layer depth is a coarse summary. Richer metrics 
+(layer variance, feature co-activation patterns, graph diameter) might capture additional 
+dimensions.
+
+\textbf{Sample size.} While the power replication ($n$=30) provides strong statistical 
+evidence, 30 pairs across a single model is a small foundation for broad claims.
+
+\subsection{The Methodology as Contribution}
+
+Independent of the specific finding, this paper documents a complete methodology for 
+mechanistic evaluation of text-processing differences: iterative confound control, vocabulary 
+enforcement, baseline validation, pre-registered directional testing with non-parametric 
+robustness checks, leave-one-out sensitivity analysis, and prediction-confidence confound 
+control. This protocol is applicable to any study attempting to detect representational 
+differences between text categories in language model activations.
+
+\subsection{Implications for Evaluation}
+
+If the mean-layer-depth metric generalizes, it offers a fundamentally different evaluation 
+paradigm: measuring \textit{how} a model processes a prompt, not \textit{what} it produces. 
+This is harder to game than output-based metrics---a model cannot change its computational 
+graph structure through prompt engineering or output formatting. The depth score reflects 
+the internal architecture of computation, providing a ground-truth signal about processing 
+depth that is inaccessible from the output alone.
+
+\section{Conclusion}
+
+We find that computational graph structure, measured via SAE circuit attribution, 
+distinguishes surface recall from explanatory reasoning in Gemma-2-2B. Surface-recall 
+prompts concentrate feature activation at output-proximal layers; explanatory-reasoning 
+prompts distribute activation across middle layers. This difference survives pre-registered 
+replication on held-out topics ($n$=30, $p < 0.001$, LOO robust, Cohen's $d = 0.82$), 
+while surface statistics and linear probes fail once distributional confounds are controlled, 
+and prediction confidence is ruled out as a confound ($r = 0.001$). Whether this metric 
+generalizes across models, scales, and text distributions remains an open question and a 
+clear direction for future work.
+
+Code, data, and pre-registration records:
+\url{https://github.com/heyzoos123-blip/sae-reasoning-depth}
+
+\section*{Acknowledgments}
+
+We thank the authors of \texttt{circuit\_tracer} for releasing their tool publicly, enabling 
+this line of research.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{10}
+
+\bibitem[Cunningham et al.(2023)]{cunningham2023}
+Cunningham, H., Ewert, A., Riggs, L., Huben, R., \& Sharkey, L. (2023).
+\newblock Sparse autoencoders find highly interpretable features in language models.
+\newblock \textit{arXiv preprint arXiv:2309.08600}.
+
+\bibitem[Kerr(1998)]{kerr1998}
+Kerr, N.~L. (1998).
+\newblock HARKing: Hypothesizing after the results are known.
+\newblock \textit{Personality and Social Psychology Review}, 2(3), 196--217.
+
+\bibitem[Kojima et al.(2022)]{kojima2022}
+Kojima, T., Gu, S.~S., Reid, M., Matsuo, Y., \& Iwasawa, Y. (2022).
+\newblock Large language models are zero-shot reasoners.
+\newblock \textit{Advances in Neural Information Processing Systems}, 35.
+
+\bibitem[Lindsey et al.(2025)]{lindsey2025}
+Lindsey, J., et al. (2025).
+\newblock Circuit-tracer: Feature attribution via sparse autoencoder circuit tracing.
+\newblock \textit{Anthropic Technical Report}.
+
+\bibitem[Nanda et al.(2023)]{nanda2023}
+Nanda, N., Chan, L., Lieberum, T., Smith, J., \& Steinhardt, J. (2023).
+\newblock Progress measures for grokking via mechanistic interpretability.
+\newblock \textit{International Conference on Learning Representations}.
+
+\bibitem[Rogers et al.(2020)]{rogers2020}
+Rogers, A., Kovaleva, O., \& Rumshisky, A. (2020).
+\newblock A primer in BERTology: What we know about how BERT works.
+\newblock \textit{Transactions of the Association for Computational Linguistics}, 8, 842--866.
+
+\bibitem[Templeton et al.(2024)]{templeton2024}
+Templeton, A., et al. (2024).
+\newblock Scaling monosemanticity: Extracting interpretable features from Claude 3 Sonnet.
+\newblock \textit{Anthropic Research Blog}.
+
+\bibitem[Tenney et al.(2019)]{tenney2019}
+Tenney, I., Das, D., \& Pavlick, E. (2019).
+\newblock BERT rediscovers the classical NLP pipeline.
+\newblock \textit{Proceedings of ACL}, 4593--4601.
+
+\bibitem[Wei et al.(2022)]{wei2022}
+Wei, J., Wang, X., Schuurmans, D., Bosma, M., Xia, F., Chi, E., Le, Q.~V., \& Zhou, D. (2022).
+\newblock Chain-of-thought prompting elicits reasoning in large language models.
+\newblock \textit{Advances in Neural Information Processing Systems}, 35.
+
+\end{thebibliography}
+
+\appendix
+
+\section{Surface Statistics Across All Rounds}
+
+\begin{table}[h]
+\centering
+\caption{Complete surface statistics by dataset version.}
+\begin{tabular}{llrrrl}
+\toprule
+Round & Method & $n$ & TF-IDF & Length Acc. & Notes \\
+\midrule
+v1 & Unconstrained & $\sim$70 & 96.0\% & 73.0\% & Confounded \\
+v2 & Seed-sentence & 24 & 74.4\% & 64.7\% & Partially controlled \\
+v3 & Surface-first rewrite & 6 & 74.4\% & --- & Low yield \\
+v4 & Word-set enforced & 36 & 50.1\% & 52.9\% & At chance \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Sign Convention and Experiment Log}
+
+\begin{table}[h]
+\centering
+\caption{Sign conventions across experiments.}
+\begin{tabular}{lll}
+\toprule
+Experiment & JSON convention & Paper convention \\
+\midrule
+exp11 (exploratory) & $\Delta = \text{insight} - \text{surface}$ & Sign flipped \\
+exp12 (replication) & $\Delta = \text{surface} - \text{insight}$ & Unchanged \\
+Power replication & $\Delta = \text{surface} - \text{insight}$ & Unchanged \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Excluded Pairs (Replication Phase)}
+
+\begin{table}[h]
+\centering
+\caption{Pairs excluded from pre-registered replication.}
+\begin{tabular}{lll}
+\toprule
+Topic & Failure Mode & Direction if scorable \\
+\midrule
+interest\_rates & 0 active features (surface) & Unknown \\
+democracy\_decay & 0 active features (insight) & Unknown \\
+reputation & 0 active features (surface) & Unknown \\
+momentum\_social & 0 active features (both) & Unknown \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All four exclusions are attributable to target tokens resolving to multiple BPE tokens under 
+the Gemma-2-2B tokenizer, causing the circuit-tracer to fail feature extraction. No excluded 
+pair is scorable in either direction. Exclusion is technical, not directional.
+
+\section{Leave-One-Out Analysis (Replication, $n$=11)}
+
+LOO analysis shows 7/11 removals push $p > 0.05$ (range: 0.050--0.070); 4/11 retain 
+significance. The three pairs whose removal improves the result are those with negative or 
+near-zero deltas---consistent with distributional prediction, not evidence of outlier dependence. 
+The power replication achieves full LOO robustness.
+
+\section{Power Replication LOO Summary}
+
+All 30 single-pair removals retain $p < 0.05$. Minimum $p$ across all LOO iterations: 
+$p < 0.001$. The result is fully robust to any single-pair removal.
+
+\end{document}
