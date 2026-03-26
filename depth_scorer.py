@@ -790,6 +790,384 @@ class DepthScorer:
             compute_eff_norm,
         ], dtype=np.float64)
 
+    # ── Phase 2: Adversarial Depth Gradient (§2) ─────────────────────
+
+    def depth_gradient(
+        self,
+        prompt: str,
+        n_candidates: int = 20,
+        target: Optional[str] = None,
+    ) -> List[Tuple[str, str, str, float]]:
+        """Find minimal token edits that maximally increase reasoning depth.
+
+        For each token in the prompt, finds semantically similar alternatives
+        using cosine similarity in embedding space, scores each variant, and
+        returns the top edits ranked by depth improvement.
+
+        Args:
+            prompt: The text to optimize.
+            n_candidates: Max replacement candidates per token position.
+            target: Optional single-token target.
+
+        Returns:
+            List of (original_token, replacement_token, modified_prompt, depth_delta)
+            tuples, sorted by depth_delta (most improvement first). Negative delta
+            means the edit pushed toward deeper reasoning.
+        """
+        inner = self._get_inner_model()
+        if inner is None:
+            raise ValueError("Cannot compute depth gradient: inner model not accessible.")
+
+        # Baseline score
+        baseline = self.score(prompt, target)
+        baseline_depth = baseline.depth_score
+
+        # Tokenize the prompt
+        token_ids = inner.tokenizer.encode(prompt, add_special_tokens=False)
+        tokens_str = [inner.tokenizer.decode([tid]) for tid in token_ids]
+
+        # Get embedding matrix
+        embed_matrix = None
+        for attr in ["embed", "W_E", "embed_tokens"]:
+            candidate = getattr(inner, attr, None)
+            if candidate is not None:
+                if hasattr(candidate, "W_E"):
+                    embed_matrix = candidate.W_E.data
+                elif isinstance(candidate, torch.nn.Embedding):
+                    embed_matrix = candidate.weight.data
+                elif isinstance(candidate, torch.Tensor):
+                    embed_matrix = candidate
+                break
+
+        if embed_matrix is None:
+            try:
+                embed_matrix = inner.W_E
+            except AttributeError:
+                raise ValueError("Cannot access embedding matrix for gradient computation.")
+
+        edits = []
+
+        for pos, (tid, tok_str) in enumerate(zip(token_ids, tokens_str)):
+            # Skip very short tokens (punctuation, spaces)
+            if len(tok_str.strip()) <= 1:
+                continue
+
+            # Find nearest neighbors in embedding space
+            with torch.no_grad():
+                tok_embed = embed_matrix[tid]
+                # Cosine similarity against full vocabulary
+                norms = embed_matrix.norm(dim=-1, keepdim=True).clamp(min=1e-8)
+                tok_norm = tok_embed.norm().clamp(min=1e-8)
+                similarities = (embed_matrix @ tok_embed) / (norms.squeeze() * tok_norm)
+                # Get top candidates (exclude self)
+                topk = torch.topk(similarities, k=min(n_candidates + 1, len(similarities)))
+
+            for sim_score, cand_id in zip(topk.values, topk.indices):
+                cand_id = cand_id.item()
+                if cand_id == tid:
+                    continue
+
+                cand_token = inner.tokenizer.decode([cand_id])
+                # Skip if replacement is empty or just whitespace
+                if not cand_token.strip():
+                    continue
+
+                # Build modified prompt
+                modified_ids = list(token_ids)
+                modified_ids[pos] = cand_id
+                modified_prompt = inner.tokenizer.decode(modified_ids)
+
+                # Score modified prompt
+                try:
+                    mod_result = self.score(modified_prompt, target)
+                    depth_delta = mod_result.depth_score - baseline_depth
+                    edits.append((tok_str, cand_token, modified_prompt, depth_delta))
+                except Exception:
+                    continue
+
+                torch.cuda.empty_cache()
+                gc.collect()
+
+            # Early termination: only check first 10 token positions
+            if pos >= 10:
+                break
+
+        # Sort by depth delta (most negative = most improvement toward depth)
+        edits.sort(key=lambda e: e[3])
+        return edits[:5]
+
+    def deepen_prompt(
+        self,
+        prompt: str,
+        target: Optional[str] = None,
+    ) -> Tuple[str, float]:
+        """Apply the highest-scoring depth edit and return the modified prompt.
+
+        Args:
+            prompt: The text to deepen.
+            target: Optional single-token target.
+
+        Returns:
+            Tuple of (modified_prompt, depth_delta). Negative delta = deeper.
+        """
+        edits = self.depth_gradient(prompt, target=target)
+        if not edits:
+            return prompt, 0.0
+
+        best = edits[0]
+        original_tok, replacement_tok, modified_prompt, delta = best
+        print(
+            f"[DepthScorer] Deepened: '{original_tok}' → '{replacement_tok}' "
+            f"(depth delta: {delta:+.4f})"
+        )
+        return modified_prompt, delta
+
+    # ── Phase 2: Reasoning Phase Detector (§3) ────────────────────
+
+    def detect_phase_transitions(
+        self,
+        trajectory: List[Tuple[str, float, float]],
+        window_size: int = 3,
+        threshold: float = 0.15,
+    ) -> List[Tuple[int, str, str]]:
+        """Detect cognitive mode shifts in a depth trajectory.
+
+        Applies change-point detection to identify where the model transitions
+        between surface recall and deep reasoning during generation.
+
+        Uses the ruptures library if available for optimal change-point detection,
+        otherwise falls back to a sliding-window variance method.
+
+        Args:
+            trajectory: Output from score_trajectory() — list of (token, depth, entropy).
+            window_size: Sliding window size for variance-based detection.
+            threshold: Minimum depth change to qualify as a transition.
+
+        Returns:
+            List of (token_idx, token, transition_type) where transition_type is
+            one of: "recall→reasoning", "reasoning→recall", "stabilize".
+        """
+        if len(trajectory) < window_size + 1:
+            return []
+
+        depths = np.array([t[1] for t in trajectory], dtype=np.float64)
+        # Replace NaN with interpolation
+        valid_mask = ~np.isnan(depths)
+        if valid_mask.sum() < 3:
+            return []
+        if not valid_mask.all():
+            valid_indices = np.where(valid_mask)[0]
+            depths = np.interp(np.arange(len(depths)), valid_indices, depths[valid_mask])
+
+        transitions = []
+
+        # Try ruptures first
+        try:
+            import ruptures as rpt
+            algo = rpt.Pelt(model="rbf", min_size=2).fit(depths.reshape(-1, 1))
+            change_points = algo.predict(pen=1.0)
+            # Remove the last element (always == len)
+            change_points = [cp for cp in change_points if cp < len(depths)]
+
+            for cp in change_points:
+                if cp == 0:
+                    continue
+                before = np.mean(depths[max(0, cp - window_size):cp])
+                after = np.mean(depths[cp:min(len(depths), cp + window_size)])
+                delta = after - before
+
+                if abs(delta) < threshold:
+                    transition_type = "stabilize"
+                elif delta < 0:
+                    transition_type = "recall→reasoning"
+                else:
+                    transition_type = "reasoning→recall"
+
+                transitions.append((cp, trajectory[cp][0], transition_type))
+
+            return transitions
+
+        except ImportError:
+            pass
+
+        # Fallback: sliding window variance detection
+        for i in range(window_size, len(depths) - 1):
+            before = depths[max(0, i - window_size):i]
+            after = depths[i:min(len(depths), i + window_size)]
+
+            mean_before = np.mean(before)
+            mean_after = np.mean(after)
+            delta = mean_after - mean_before
+
+            if abs(delta) >= threshold:
+                if delta < 0:
+                    transition_type = "recall→reasoning"
+                else:
+                    transition_type = "reasoning→recall"
+                transitions.append((i, trajectory[i][0], transition_type))
+
+        # Deduplicate: keep only the strongest transition in each cluster
+        if len(transitions) > 1:
+            filtered = [transitions[0]]
+            for t in transitions[1:]:
+                if t[0] - filtered[-1][0] >= window_size:
+                    filtered.append(t)
+            transitions = filtered
+
+        return transitions
+
+    def reasoning_onset(
+        self,
+        prompt: str,
+        max_tokens: int = 20,
+        depth_threshold: Optional[float] = None,
+    ) -> Optional[int]:
+        """Find the first token where the model commits to deep processing.
+
+        The earlier this happens, the more the model 'understood' the question
+        from the start. Late onset suggests the model only realized it needed
+        to reason after several tokens of shallow generation.
+
+        Args:
+            prompt: The initial prompt.
+            max_tokens: Maximum tokens to generate.
+            depth_threshold: Depth score below which processing counts as 'deep'.
+                Defaults to the calibrated insight mean minus one std.
+
+        Returns:
+            Token index of reasoning onset, or None if the model never goes deep.
+        """
+        if depth_threshold is None:
+            registry = MODEL_REGISTRY.get(self.model_name, {})
+            cal = registry.get("calibration")
+            if cal:
+                depth_threshold = cal["insight_mean"] - 0.1
+            else:
+                depth_threshold = 8.0
+
+        trajectory = self.score_trajectory(prompt, max_tokens=max_tokens)
+
+        for i, (token, depth, entropy) in enumerate(trajectory):
+            if not math.isnan(depth) and depth < depth_threshold:
+                return i
+
+        return None
+
+    # ── Phase 2: Depth-Guided Generation Hook (§6) ────────────────
+
+    def generate_deep(
+        self,
+        prompt: str,
+        target_depth: float = 7.5,
+        max_tokens: int = 50,
+        beam_width: int = 5,
+        check_interval: int = 3,
+    ) -> Tuple[str, List[Tuple[str, float, float]]]:
+        """Generate tokens steered toward deeper reasoning.
+
+        EXPERIMENTAL. Generates tokens one at a time, periodically checking depth.
+        When depth rises above the target (shallower), re-ranks the top-k candidate
+        tokens by their depth impact, selecting the one that steers deepest.
+
+        Args:
+            prompt: The initial prompt.
+            target_depth: Target depth_score to maintain (lower = deeper).
+            max_tokens: Maximum tokens to generate.
+            beam_width: Number of candidate tokens to evaluate at steering points.
+            check_interval: Check depth every N tokens (attribution is expensive).
+
+        Returns:
+            Tuple of (generated_text, trajectory) where trajectory is a list
+            of (token, depth_score, entropy) tuples for each generated token.
+        """
+        inner = self._get_inner_model()
+        if inner is None:
+            raise ValueError("Cannot generate: inner model not accessible.")
+
+        generated_tokens = []
+        trajectory = []
+        current_prompt = prompt
+        last_depth = target_depth
+
+        for step in range(max_tokens):
+            tokens = inner.to_tokens(current_prompt)
+
+            with torch.no_grad():
+                logits = inner(tokens)
+
+            # Check for depth steering at intervals
+            should_steer = (step % check_interval == 0) and step > 0 and last_depth > target_depth
+
+            if should_steer:
+                # Get top-k candidates
+                top_logits, top_ids = torch.topk(logits[0, -1], k=beam_width)
+                best_token_id = None
+                best_depth = float("inf")
+
+                for cand_id in top_ids:
+                    cand_id = cand_id.item()
+                    cand_token = inner.tokenizer.decode([cand_id])
+
+                    # Skip multi-token or empty
+                    re_enc = inner.tokenizer.encode(cand_token, add_special_tokens=False)
+                    if len(re_enc) != 1 or not cand_token.strip():
+                        continue
+
+                    try:
+                        r = self.score(current_prompt, target=cand_token)
+                        if r.depth_score < best_depth:
+                            best_depth = r.depth_score
+                            best_token_id = cand_id
+                    except Exception:
+                        continue
+
+                    torch.cuda.empty_cache()
+                    gc.collect()
+
+                if best_token_id is not None:
+                    pred_id = best_token_id
+                    last_depth = best_depth
+                else:
+                    pred_id = logits[0, -1].argmax().item()
+            else:
+                pred_id = logits[0, -1].argmax().item()
+
+            pred_token = inner.tokenizer.decode([pred_id])
+
+            # Verify single-token
+            re_encoded = inner.tokenizer.encode(pred_token, add_special_tokens=False)
+            if len(re_encoded) != 1:
+                break
+
+            # Check EOS
+            eos_id = getattr(inner.tokenizer, "eos_token_id", None)
+            if pred_id == eos_id:
+                break
+
+            # Score at check intervals for the trajectory record
+            if step % check_interval == 0:
+                try:
+                    r = self.score(current_prompt, target=pred_token)
+                    last_depth = r.depth_score
+                    trajectory.append((
+                        pred_token,
+                        r.depth_score,
+                        r.layer_entropy if r.layer_entropy is not None else 0.0,
+                    ))
+                except Exception:
+                    trajectory.append((pred_token, float("nan"), 0.0))
+            else:
+                trajectory.append((pred_token, last_depth, 0.0))
+
+            generated_tokens.append(pred_token)
+            current_prompt += pred_token
+
+            torch.cuda.empty_cache()
+            gc.collect()
+
+        generated_text = "".join(generated_tokens)
+        return generated_text, trajectory
+
     def score_stream(
         self, prompt: str, target: Optional[str] = None
     ) -> Generator[DepthResult, None, None]:

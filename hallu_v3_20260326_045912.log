@@ -1,0 +1,105 @@
+======================================================================
+FATHOM — HALLUCINATION CORRELATOR V3 (MATCHED PAIRS)
+Started: 2026-03-26 04:59:12
+Project: C:\Users\heyzo\clawd\sae-reasoning-depth
+Log: C:\Users\heyzo\clawd\sae-reasoning-depth\hallu_v3_20260326_045912.log
+======================================================================
+[GPU] NVIDIA GeForce RTX 4070 Laptop GPU — 8.0 GB
+[INIT] VRAM free: 6.89 GB
+
+[INIT] Loading DepthScorer (gemma-2-2b, max_feature_nodes=150)...
+[DepthScorer] Initializing with google/gemma-2-2b...
+Fetching 26 files:   0%|          | 0/26 [00:00<?, ?it/s]Fetching 26 files: 100%|##########| 26/26 [00:00<00:00, 25989.49it/s]
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|###3      | 1/3 [00:10<00:20, 10.24s/it]Loading checkpoint shards:  67%|######6   | 2/3 [00:21<00:10, 10.91s/it]Loading checkpoint shards: 100%|##########| 3/3 [00:22<00:00,  6.37s/it]Loading checkpoint shards: 100%|##########| 3/3 [00:22<00:00,  7.53s/it]
+Loaded pretrained model google/gemma-2-2b into HookedTransformer
+[DepthScorer] Model loaded in 52.2s (26 layers)
+[INIT] Model loaded in 83.9s
+
+======================================================================
+EXPERIMENT: HALLUCINATION V3 — MATCHED PAIRS
+  Design: [question + correct] vs [question + incorrect]
+  Test: paired t-test on depth deltas
+  Samples: n=100 TruthfulQA questions
+  Checkpoint: every 10 pairs (auto-resume)
+======================================================================
+[HalluV3] Loaded 50 TruthfulQA samples
+[HalluV3] 50 samples have both correct + incorrect answers
+[HalluV3] Scoring pairs (resuming from 0)...
+  [1/50] d_correct=8.179 d_incorrect=7.997 delta=+0.181 correct=shallower
+  [2/50] d_correct=7.665 d_incorrect=7.468 delta=+0.197 correct=shallower
+  [3/50] d_correct=8.148 d_incorrect=8.023 delta=+0.125 correct=shallower
+  [4/50] d_correct=7.913 d_incorrect=7.929 delta=-0.016 correct=DEEPER
+  [5/50] d_correct=8.436 d_incorrect=7.982 delta=+0.454 correct=shallower
+  [6/50] d_correct=7.994 d_incorrect=8.184 delta=-0.190 correct=DEEPER
+  [7/50] d_correct=8.307 d_incorrect=8.142 delta=+0.165 correct=shallower
+  [8/50] d_correct=8.725 d_incorrect=8.447 delta=+0.278 correct=shallower
+  [9/50] d_correct=8.603 d_incorrect=8.614 delta=-0.012 correct=DEEPER
+  [10/50] d_correct=7.772 d_incorrect=7.875 delta=-0.102 correct=DEEPER
+  [CHECKPOINT] Saved at pair 10 (10 scored)
+  [11/50] d_correct=8.651 d_incorrect=8.624 delta=+0.027 correct=shallower
+  [12/50] d_correct=8.435 d_incorrect=8.437 delta=-0.003 correct=DEEPER
+  [13/50] d_correct=7.788 d_incorrect=7.686 delta=+0.102 correct=shallower
+  [14/50] d_correct=8.551 d_incorrect=8.448 delta=+0.102 correct=shallower
+  [15/50] d_correct=8.458 d_incorrect=8.490 delta=-0.032 correct=DEEPER
+  [16/50] d_correct=8.344 d_incorrect=8.277 delta=+0.066 correct=shallower
+  [17/50] d_correct=8.438 d_incorrect=8.532 delta=-0.094 correct=DEEPER
+  [18/50] d_correct=8.464 d_incorrect=8.531 delta=-0.067 correct=DEEPER
+  [19/50] d_correct=8.428 d_incorrect=8.206 delta=+0.222 correct=shallower
+  [20/50] d_correct=8.375 d_incorrect=8.515 delta=-0.139 correct=DEEPER
+  [CHECKPOINT] Saved at pair 20 (20 scored)
+  [21/50] d_correct=8.564 d_incorrect=8.494 delta=+0.070 correct=shallower
+  [22/50] d_correct=8.778 d_incorrect=8.755 delta=+0.022 correct=shallower
+  [23/50] d_correct=8.363 d_incorrect=8.351 delta=+0.012 correct=shallower
+  [24/50] d_correct=8.772 d_incorrect=8.937 delta=-0.165 correct=DEEPER
+  [25/50] d_correct=8.975 d_incorrect=8.905 delta=+0.071 correct=shallower
+  [26/50] d_correct=8.389 d_incorrect=8.497 delta=-0.108 correct=DEEPER
+  [27/50] d_correct=8.565 d_incorrect=8.568 delta=-0.003 correct=DEEPER
+  [28/50] d_correct=8.379 d_incorrect=8.372 delta=+0.007 correct=shallower
+  [29/50] d_correct=8.649 d_incorrect=8.608 delta=+0.041 correct=shallower
+  [30/50] d_correct=8.643 d_incorrect=8.452 delta=+0.192 correct=shallower
+  [CHECKPOINT] Saved at pair 30 (30 scored)
+  [31/50] d_correct=8.273 d_incorrect=8.381 delta=-0.108 correct=DEEPER
+  [32/50] d_correct=8.906 d_incorrect=8.906 delta=+0.000 correct=shallower
+  [33/50] d_correct=8.225 d_incorrect=8.432 delta=-0.207 correct=DEEPER
+  [34/50] d_correct=8.407 d_incorrect=8.322 delta=+0.085 correct=shallower
+  [35/50] d_correct=8.472 d_incorrect=8.257 delta=+0.215 correct=shallower
+  [36/50] d_correct=9.097 d_incorrect=8.917 delta=+0.181 correct=shallower
+  [37/50] d_correct=8.590 d_incorrect=8.441 delta=+0.148 correct=shallower
+  [38/50] d_correct=8.242 d_incorrect=8.631 delta=-0.390 correct=DEEPER
+  [39/50] d_correct=8.647 d_incorrect=8.323 delta=+0.324 correct=shallower
+  [40/50] d_correct=8.298 d_incorrect=8.368 delta=-0.070 correct=DEEPER
+  [CHECKPOINT] Saved at pair 40 (40 scored)
+  [41/50] d_correct=8.674 d_incorrect=8.806 delta=-0.132 correct=DEEPER
+  [42/50] d_correct=7.800 d_incorrect=7.654 delta=+0.145 correct=shallower
+  [43/50] d_correct=8.027 d_incorrect=8.428 delta=-0.401 correct=DEEPER
+  [44/50] d_correct=8.055 d_incorrect=8.286 delta=-0.230 correct=DEEPER
+  [45/50] d_correct=8.025 d_incorrect=8.218 delta=-0.193 correct=DEEPER
+  [46/50] d_correct=8.201 d_incorrect=8.183 delta=+0.018 correct=shallower
+  [47/50] d_correct=8.487 d_incorrect=8.639 delta=-0.152 correct=DEEPER
+  [48/50] d_correct=8.463 d_incorrect=8.472 delta=-0.009 correct=DEEPER
+  [49/50] d_correct=8.509 d_incorrect=8.494 delta=+0.015 correct=shallower
+  [50/50] d_correct=8.562 d_incorrect=8.615 delta=-0.052 correct=DEEPER
+  [CHECKPOINT] Saved at pair 50 (50 scored)
+[HalluV3] Complete: 50 pairs in 1526.0s
+[HalluV3] Report: C:\Users\heyzo\clawd\sae-reasoning-depth\EXPERIMENT_HALLUCINATION_V3.md
+
+======================================================================
+EXPERIMENT COMPLETE
+======================================================================
+Total time: 1614.7s (26.9 min)
+Pairs scored: 50
+
+Mean depth (correct):   8.3942
+Mean depth (incorrect): 8.3824
+Mean delta:             +0.0118
+% correct deeper:       46.0%
+
+Paired t-test (depth):    t=0.498, p=0.620399
+Paired t-test (entropy):  t=1.653, p=0.104751
+Paired t-test (w.depth):  t=0.498, p=0.620399
+
+Not significant (p=0.6204). Hypothesis not supported at n=50.
+
+Output: EXPERIMENT_HALLUCINATION_V3.md
+Output: hallu_v3_20260326_045912.log

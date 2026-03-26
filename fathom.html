@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM — Measure How Deeply AI Thinks</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --border: #1e1e1e;
+  --text: #c0c0c0;
+  --text-dim: #666;
+  --green: #00ff00;
+  --green-dim: #00aa00;
+  --gold: #ffd700;
+  --cyan: #00e5ff;
+  --orange: #ff9800;
+  --red: #ff3d00;
+  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Hero ─────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 80px 20px 60px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero h1 {
+  font-size: 56px;
+  letter-spacing: 20px;
+  color: var(--green);
+  text-shadow: 0 0 40px rgba(0,255,0,0.25);
+  margin-bottom: 12px;
+}
+
+.hero .tagline {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.hero .sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.hero .cta-row {
+  margin-top: 32px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero .cta-row a {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 12px 28px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cta-primary {
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+.cta-primary:hover {
+  background: var(--green);
+  color: var(--bg);
+}
+
+.cta-secondary {
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.cta-secondary:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* ── Sections ─────────────────────────────────── */
+.section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.section h2 {
+  font-size: 22px;
+  color: var(--green);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.section p {
+  color: var(--text);
+  max-width: 640px;
+  margin: 0 auto 16px;
+  text-align: center;
+}
+
+/* ── Discovery ────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 32px 0;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px 12px;
+  text-align: center;
+}
+
+.stat .value {
+  font-size: 20px;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+
+.stat .label {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── Terminal Demo ────────────────────────────── */
+.terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  margin: 32px auto;
+  max-width: 640px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.terminal .prompt {
+  color: var(--green-dim);
+}
+
+.terminal .output {
+  color: var(--text);
+}
+
+.terminal .dim {
+  color: var(--text-dim);
+}
+
+.terminal .highlight {
+  color: var(--green);
+}
+
+/* ── Use Cases Grid ───────────────────────────── */
+.use-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.use-case {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+
+.use-case:hover {
+  border-color: var(--green-dim);
+}
+
+.use-case .icon {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.use-case .name {
+  font-size: 13px;
+  color: var(--green);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.use-case .desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ── API Preview ──────────────────────────────── */
+.endpoint-list {
+  max-width: 640px;
+  margin: 24px auto;
+}
+
+.endpoint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.endpoint .method {
+  color: var(--green);
+  min-width: 50px;
+}
+
+.endpoint .path {
+  color: var(--text);
+  flex: 1;
+  margin-left: 12px;
+}
+
+.endpoint .desc {
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ── Footer ───────────────────────────────────── */
+.footer {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.footer a {
+  color: var(--green-dim);
+  text-decoration: none;
+}
+
+.footer .links {
+  margin-top: 12px;
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 640px) {
+  .hero h1 { font-size: 36px; letter-spacing: 12px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .use-cases-grid { grid-template-columns: 1fr; }
+  .endpoint .desc { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Hero ────────────────────────────────────────── -->
+<div class="hero">
+  <h1>FATHOM</h1>
+  <div class="tagline">Measure how deeply AI thinks.</div>
+  <div class="sub">Reasoning depth scoring via SAE circuit attribution</div>
+  <div class="cta-row">
+    <a href="/fathom/waitlist" class="cta-primary">JOIN WAITLIST</a>
+    <a href="/dashboard" class="cta-secondary">LIVE DASHBOARD</a>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ── The Discovery ───────────────────────────────── -->
+<div class="section">
+  <div class="section-label">The Discovery</div>
+  <h2>Surface Recall vs Explanatory Reasoning</h2>
+  <p>When a transformer retrieves a memorized answer, computation concentrates at output-proximal layers. When it genuinely reasons, computation distributes across mid-layers. This difference is measurable.</p>
+
+  <div class="stat-grid">
+    <div class="stat">
+      <div class="value">30</div>
+      <div class="label">Calibrated Pairs</div>
+    </div>
+    <div class="stat">
+      <div class="value">p&lt;0.0001</div>
+      <div class="label">Significance</div>
+    </div>
+    <div class="stat">
+      <div class="value">83.3%</div>
+      <div class="label">Directional</div>
+    </div>
+    <div class="stat">
+      <div class="value">+0.257</div>
+      <div class="label">Mean Delta</div>
+    </div>
+  </div>
+
+  <div class="terminal">
+    <div><span class="prompt">&gt;</span> <span class="output">fathom score "The capital of France is"</span></div>
+    <div><span class="dim">  depth: 8.54  entropy: 2.81  grade: C</span></div>
+    <div><span class="dim">  signal: shallow_recall</span></div>
+    <div>&nbsp;</div>
+    <div><span class="prompt">&gt;</span> <span class="output">fathom score "France's capital became the center of power because the convergence of"</span></div>
+    <div><span class="dim">  depth: 7.82  entropy: 3.41  grade: </span><span class="highlight">B+</span></div>
+    <div><span class="dim">  signal: </span><span class="highlight">deep_reasoning</span></div>
+  </div>
+</div>
+
+<!-- ── Use Cases ───────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Use Cases</div>
+  <h2>Fathom Goes Everywhere AI Thinks</h2>
+
+  <div class="use-cases-grid">
+    <div class="use-case">
+      <div class="icon">+</div>
+      <div class="name">MEDICINE</div>
+      <div class="desc">FDA AI explainability compliance. Circuit-level evidence that diagnostic AI reasons through cases, not pattern-matches.</div>
+    </div>
+    <div class="use-case">
+      <div class="icon">$</div>
+      <div class="name">LAW</div>
+      <div class="desc">Brief certification and citation verification. After Mata v. Avianca, prove your AI reasoned through the analysis.</div>
+    </div>
+    <div class="use-case">
+      <div class="icon">*</div>
+      <div class="name">JOURNALISM</div>
+      <div class="desc">Editorial quality gate for AI-assisted articles. Fathom Certified badge for newsrooms that verify AI reasoning depth.</div>
+    </div>
+    <div class="use-case">
+      <div class="icon">?</div>
+      <div class="name">EDUCATION</div>
+      <div class="desc">Measure whether AI tutors reason through explanations or pattern-match textbook answers. Parent and teacher dashboards.</div>
+    </div>
+    <div class="use-case">
+      <div class="icon">#</div>
+      <div class="name">GOVERNMENT</div>
+      <div class="desc">EU AI Act and US EO 14110 compliance. Circuit-level transparency for high-risk AI systems in public service.</div>
+    </div>
+    <div class="use-case">
+      <div class="icon">~</div>
+      <div class="name">SCIENCE</div>
+      <div class="desc">Depth-certify AI-generated hypotheses. Distinguish genuine multi-step reasoning from surface recombination of training data.</div>
+    </div>
+    <div class="use-case">
+      <div class="icon">&gt;</div>
+      <div class="name">AI AGENTS</div>
+      <div class="desc">Pre-action reasoning verification. Score every decision in an autonomous chain before execution. Shallow = halt and escalate.</div>
+    </div>
+    <div class="use-case">
+      <div class="icon">)</div>
+      <div class="name">AUDIO</div>
+      <div class="desc">Score AI analysis of meeting transcripts and podcasts. Ensure summaries reflect genuine comprehension, not keyword extraction.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── API ──────────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">The API</div>
+  <h2>15 Endpoints. One GPU. Sub-3s.</h2>
+
+  <div class="endpoint-list">
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/score</span>
+      <span class="desc">Single prompt depth score</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/compare</span>
+      <span class="desc">Surface vs insight analysis</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/fathom_score</span>
+      <span class="desc">Grade 0-100 with interpretation</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/fingerprint</span>
+      <span class="desc">Cognitive signature vector</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/trajectory</span>
+      <span class="desc">Token-by-token depth tracking</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/batch</span>
+      <span class="desc">Score up to 20 prompts</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/predict_correctness</span>
+      <span class="desc">Correctness prediction</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/detect_adversarial</span>
+      <span class="desc">Prompt injection detection</span>
+    </div>
+    <div class="endpoint">
+      <span class="method">POST</span>
+      <span class="path">/v2/filter_dataset</span>
+      <span class="desc">Training data curation</span>
+    </div>
+  </div>
+
+  <div class="terminal">
+    <div><span class="prompt">$</span> <span class="output">curl -X POST localhost:8400/v2/fathom_score \</span></div>
+    <div><span class="output">  -H "Content-Type: application/json" \</span></div>
+    <div><span class="output">  -d '{"prompt": "your AI output here"}'</span></div>
+    <div>&nbsp;</div>
+    <div><span class="dim">{</span></div>
+    <div><span class="dim">  "fathom_score": </span><span class="highlight">78</span><span class="dim">,</span></div>
+    <div><span class="dim">  "grade": "</span><span class="highlight">A</span><span class="dim">",</span></div>
+    <div><span class="dim">  "interpretation": "Strong distributed reasoning"</span></div>
+    <div><span class="dim">}</span></div>
+  </div>
+</div>
+
+<!-- ── Pricing ──────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Pricing</div>
+  <h2>From Free to Enterprise</h2>
+  <p>Free for researchers. $29/mo for developers. Custom for hospitals, law firms, and government agencies.</p>
+
+  <div class="stat-grid">
+    <div class="stat">
+      <div class="value">$0</div>
+      <div class="label">Free / 100 req</div>
+    </div>
+    <div class="stat">
+      <div class="value">$29</div>
+      <div class="label">Developer / 10k</div>
+    </div>
+    <div class="stat">
+      <div class="value">$199</div>
+      <div class="label">Pro / 100k</div>
+    </div>
+    <div class="stat">
+      <div class="value">Custom</div>
+      <div class="label">Enterprise</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /.container -->
+
+<!-- ── Footer ──────────────────────────────────────── -->
+<div class="footer">
+  <div>darkflobi &mdash; fathom v2.0 &mdash; 2026</div>
+  <div class="links">
+    <a href="/fathom/waitlist">Waitlist</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="https://github.com/darkflobi/fathom">GitHub</a>
+  </div>
+  <div style="margin-top: 16px; font-size: 10px;">Built in the dark. Measured in the light.</div>
+</div>
+
+</body>
+</html>

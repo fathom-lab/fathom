@@ -1,0 +1,60 @@
+======================================================================
+FATHOM EXPERIMENT RUNNER
+Started: 2026-03-26 03:13:29
+Project: C:\Users\heyzo\clawd\sae-reasoning-depth
+Log: C:\Users\heyzo\clawd\sae-reasoning-depth\experiment_run_20260326_031329.log
+======================================================================
+[GPU] NVIDIA GeForce RTX 4070 Laptop GPU — 8.0 GB
+[GPU] CUDA 12.1, PyTorch 2.5.1+cu121
+
+[INIT] Loading DepthScorer (gemma-2-2b)...
+[DepthScorer] Initializing with google/gemma-2-2b...
+Fetching 26 files:   0%|          | 0/26 [00:00<?, ?it/s]Fetching 26 files: 100%|##########| 26/26 [00:00<00:00, 23805.26it/s]
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/3 [00:01<?, ?it/s]
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 656, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 549, in main
+    scorer = DepthScorer(model_name="google/gemma-2-2b")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 206, in __init__
+    self._load_model(model_name, model_type, dtype)
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 218, in _load_model
+    self._model = ReplacementModel.from_pretrained(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model.py", line 62, in from_pretrained
+    return cls.from_pretrained_and_transcoders(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model.py", line 114, in from_pretrained_and_transcoders
+    return TransformerLensReplacementModel.from_pretrained_and_transcoders(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 111, in from_pretrained_and_transcoders
+    model = super().from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformer_lens\HookedTransformer.py", line 1376, in from_pretrained
+    state_dict = loading.get_pretrained_state_dict(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformer_lens\loading_from_pretrained.py", line 2344, in get_pretrained_state_dict
+    hf_model = AutoModelForCausalLM.from_pretrained(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\models\auto\auto_factory.py", line 604, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\modeling_utils.py", line 277, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\modeling_utils.py", line 5048, in from_pretrained
+    ) = cls._load_pretrained_model(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\modeling_utils.py", line 5468, in _load_pretrained_model
+    _error_msgs, disk_offload_index = load_shard_file(args)
+                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\modeling_utils.py", line 831, in load_shard_file
+    state_dict = load_state_dict(
+                 ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\modeling_utils.py", line 484, in load_state_dict
+    with safe_open(checkpoint_file, framework="pt") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: The paging file is too small for this operation to complete. (os error 1455)

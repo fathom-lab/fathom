@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM Leaderboard</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --border: #1e1e1e;
+  --text: #c0c0c0;
+  --text-dim: #666;
+  --green: #00ff00;
+  --green-dim: #00aa00;
+  --gold: #ffd700;
+  --cyan: #00e5ff;
+  --orange: #ff9800;
+  --red: #ff3d00;
+  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.header {
+  text-align: center;
+  padding: 60px 20px 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+  font-size: 42px;
+  letter-spacing: 16px;
+  color: var(--green);
+  text-shadow: 0 0 20px rgba(0,255,0,0.3);
+  margin-bottom: 6px;
+}
+
+.header .subtitle {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.header .meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 24px;
+}
+
+.stat-badge {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  text-align: center;
+}
+
+.stat-badge .value {
+  color: var(--green);
+  font-size: 16px;
+}
+
+.stat-badge .label {
+  color: var(--text-dim);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Table ─────────────────────────────────────── */
+.table-section {
+  padding: 40px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead th {
+  text-align: left;
+  padding: 12px 8px;
+  border-bottom: 2px solid var(--green-dim);
+  color: var(--green-dim);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+tbody tr:hover {
+  background: var(--surface);
+}
+
+tbody td {
+  padding: 14px 8px;
+}
+
+.rank {
+  color: var(--text-dim);
+  width: 40px;
+  text-align: center;
+}
+
+.rank-1 { color: var(--gold); }
+
+.model-name {
+  color: var(--text);
+}
+
+.model-provider {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.depth-score {
+  color: var(--green);
+  font-size: 15px;
+}
+
+.grade {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.grade-A  { color: var(--green); border: 1px solid var(--green-dim); }
+.grade-B  { color: var(--gold); border: 1px solid #aa8f00; }
+.grade-C  { color: var(--orange); border: 1px solid #995600; }
+.grade-pending { color: var(--text-dim); border: 1px solid var(--border); }
+
+.delta-pos { color: var(--green); }
+.delta-neg { color: var(--red); }
+.delta-na  { color: var(--text-dim); }
+
+.status-verified { color: var(--green); }
+.status-pending  { color: var(--text-dim); font-style: italic; }
+
+.date-col {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+/* ── Footer ───────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.footer a {
+  color: var(--green-dim);
+  text-decoration: none;
+}
+
+.footer .submit {
+  margin-top: 16px;
+  font-size: 11px;
+}
+
+.footer .submit a {
+  color: var(--green);
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 700px) {
+  .header h1 { font-size: 28px; letter-spacing: 8px; }
+  table { font-size: 11px; }
+  .stats-row { flex-wrap: wrap; gap: 12px; }
+  td:nth-child(5), th:nth-child(5),
+  td:nth-child(6), th:nth-child(6) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>FATHOM</h1>
+  <div class="subtitle">Which AI models think the deepest?</div>
+  <div class="meta">THE FATHOM BENCHMARK LEADERBOARD</div>
+  <div class="stats-row">
+    <div class="stat-badge">
+      <div class="value">30</div>
+      <div class="label">Benchmark Pairs</div>
+    </div>
+    <div class="stat-badge">
+      <div class="value" id="model-count">—</div>
+      <div class="label">Models Tested</div>
+    </div>
+    <div class="stat-badge">
+      <div class="value" id="last-updated">—</div>
+      <div class="label">Last Updated</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="table-section">
+    <div class="loading" id="loading">Loading scores...</div>
+    <table id="leaderboard" style="display:none">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Model</th>
+          <th>Depth Score</th>
+          <th>Grade</th>
+          <th>Delta</th>
+          <th>Direction</th>
+          <th>Tested</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  <div>Benchmark: 30 calibrated surface/insight pairs | p=0.000051</div>
+  <div class="submit">
+    Submit your model for testing: <a href="mailto:fathom@darkflobi.com">fathom@darkflobi.com</a>
+  </div>
+  <div style="margin-top: 16px;">
+    <a href="/">Home</a> &nbsp;|&nbsp;
+    <a href="/dashboard">Dashboard</a> &nbsp;|&nbsp;
+    <a href="/fathom/waitlist">Waitlist</a>
+  </div>
+  <div style="margin-top: 16px; font-size: 10px;">darkflobi &mdash; fathom v2.0</div>
+</div>
+
+<script>
+const API_BASE = window.location.origin;
+
+function gradeClass(grade) {
+  if (!grade || grade === '—') return 'grade-pending';
+  if (grade.startsWith('A')) return 'grade-A';
+  if (grade.startsWith('B')) return 'grade-B';
+  if (grade.startsWith('C')) return 'grade-C';
+  return 'grade-pending';
+}
+
+async function loadLeaderboard() {
+  try {
+    const res = await fetch(API_BASE + '/api/leaderboard');
+    if (!res.ok) throw new Error('Failed to fetch');
+    const data = await res.json();
+
+    document.getElementById('last-updated').textContent = data.last_updated || '—';
+
+    // Sort: verified models first (by delta desc), then pending
+    const models = data.models || [];
+    const verified = models.filter(m => m.status === 'verified')
+      .sort((a, b) => (b.benchmark_delta || 0) - (a.benchmark_delta || 0));
+    const pending = models.filter(m => m.status !== 'verified');
+    const sorted = [...verified, ...pending];
+
+    const testedCount = verified.length;
+    document.getElementById('model-count').textContent = testedCount;
+
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '';
+
+    sorted.forEach((m, i) => {
+      const rank = m.status === 'verified' ? (i + 1) : '—';
+      const rankClass = rank === 1 ? 'rank rank-1' : 'rank';
+      const depth = m.mean_depth_score != null ? m.mean_depth_score.toFixed(3) : '—';
+      const depthClass = m.mean_depth_score != null ? 'depth-score' : 'delta-na';
+      const delta = m.benchmark_delta != null ? (m.benchmark_delta > 0 ? '+' : '') + m.benchmark_delta.toFixed(3) : '—';
+      const deltaClass = m.benchmark_delta != null ? (m.benchmark_delta > 0 ? 'delta-pos' : 'delta-neg') : 'delta-na';
+      const pct = m.pct_directional != null ? m.pct_directional.toFixed(1) + '%' : '—';
+      const date = m.tested_date || '—';
+      const statusClass = m.status === 'verified' ? 'status-verified' : 'status-pending';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="${rankClass}">${rank}</td>
+        <td>
+          <div class="model-name">${m.display_name}</div>
+          <div class="model-provider">${m.provider} &middot; ${m.params}</div>
+        </td>
+        <td class="${depthClass}">${depth}</td>
+        <td><span class="grade ${gradeClass(m.grade)}">${m.grade}</span></td>
+        <td class="${deltaClass}">${delta}</td>
+        <td class="${deltaClass}">${pct}</td>
+        <td class="date-col">${date}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('leaderboard').style.display = 'table';
+  } catch (e) {
+    document.getElementById('loading').textContent = 'Failed to load leaderboard.';
+  }
+}
+
+loadLeaderboard();
+</script>
+
+</body>
+</html>

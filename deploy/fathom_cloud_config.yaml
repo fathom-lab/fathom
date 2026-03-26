@@ -1,0 +1,92 @@
+# FATHOM CLOUD — Deployment Configuration
+# =========================================
+# Platform-agnostic deployment spec for GPU cloud providers
+
+service:
+  name: fathom-api
+  version: "2.0"
+  port: 8400
+  protocol: http
+
+# GPU Requirements
+compute:
+  gpu:
+    minimum: "T4"            # NVIDIA T4 (16GB VRAM) — minimum viable
+    recommended: "A10G"      # NVIDIA A10G (24GB VRAM) — production
+    vram_minimum_gb: 8       # gemma-2-2b in bf16 + transcoders
+    vram_recommended_gb: 16  # headroom for batch scoring
+  cpu:
+    minimum_cores: 4
+    recommended_cores: 8
+  memory:
+    minimum_gb: 16
+    recommended_gb: 32
+  storage:
+    minimum_gb: 20           # model weights + transcoders
+    recommended_gb: 50
+
+# Scaling
+scaling:
+  min_instances: 1
+  max_instances: 10
+  target_gpu_utilization: 0.7
+  scale_up_threshold: 0.8    # GPU util > 80% for 2 min
+  scale_down_threshold: 0.3  # GPU util < 30% for 10 min
+  cooldown_seconds: 300
+
+# Performance
+performance:
+  avg_score_time_s: 2.0      # single prompt scoring
+  avg_compare_time_s: 4.0    # surface vs insight comparison
+  avg_batch_time_s: 40.0     # 20-prompt batch
+  startup_time_s: 120        # model loading cold start
+  requests_per_hour_per_gpu: 1800  # at ~2s per score
+
+# Cost Analysis (T4 pricing as of March 2026)
+cost:
+  t4_hourly_rate: 0.50       # $/hr (RunPod/Lambda)
+  a10g_hourly_rate: 1.10     # $/hr
+  cost_per_score_t4: 0.00028 # $0.50/hr / 1800 req/hr
+  cost_per_1000_scores_t4: 0.28
+  cost_per_score_a10g: 0.00061
+  cost_per_1000_scores_a10g: 0.61
+  monthly_fixed_cost:
+    t4: 360.00               # $0.50 * 720 hrs
+    a10g: 792.00             # $1.10 * 720 hrs
+  break_even:
+    developer_tier: 104      # customers at $29/mo to cover T4
+    professional_tier: 2     # customers at $199/mo to cover T4
+
+# Health & Monitoring
+health:
+  endpoint: /v2/health
+  interval_seconds: 30
+  timeout_seconds: 10
+  start_period_seconds: 120
+  unhealthy_threshold: 3
+
+# Environment Variables
+environment:
+  required:
+    - FATHOM_API_KEY          # API authentication key
+  optional:
+    - PYTORCH_CUDA_ALLOC_CONF # default: max_split_size_mb:512
+    - SAFETENSORS_FAST_GPU    # default: 1
+    - FATHOM_MOCK             # set to 1 for testing without GPU
+    - HF_HOME                 # HuggingFace cache directory
+
+# Platform-Specific Notes
+platforms:
+  runpod:
+    template: "RunPod Serverless GPU"
+    gpu_type: "NVIDIA T4"
+    docker_image: "fathom-api:latest"
+    idle_timeout: 300
+  railway:
+    plan: "Pro (GPU)"
+    region: "us-west"
+    dockerfile: "Dockerfile"
+  render:
+    plan: "GPU Instance"
+    type: "web"
+    docker_command: "uvicorn depth_api_v2:app --host 0.0.0.0 --port 8400"

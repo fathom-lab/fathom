@@ -1,0 +1,17 @@
+======================================================================
+FATHOM EXPERIMENT RUNNER
+Started: 2026-03-26 03:12:53
+Project: C:\Users\heyzo\clawd\sae-reasoning-depth
+Log: C:\Users\heyzo\clawd\sae-reasoning-depth\experiment_run_20260326_031253.log
+======================================================================
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 656, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 542, in main
+    gpu_name = gpu_check()
+               ^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 67, in gpu_check
+    mem = torch.cuda.get_device_properties(dev).total_mem / (1024 ** 3)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'torch._C._CudaDeviceProperties' object has no attribute 'total_mem'. Did you mean: 'total_memory'?

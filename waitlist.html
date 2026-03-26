@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM — Early Access</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --border: #1e1e1e;
+  --text: #c0c0c0;
+  --text-dim: #666;
+  --green: #00ff00;
+  --green-dim: #00aa00;
+  --red: #ff3d00;
+  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 560px;
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.header h1 {
+  font-size: 48px;
+  letter-spacing: 16px;
+  color: var(--green);
+  text-shadow: 0 0 30px rgba(0,255,0,0.3);
+  margin-bottom: 8px;
+}
+
+.header .label {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.header .tagline {
+  font-size: 16px;
+  color: var(--text);
+  margin-top: 24px;
+  line-height: 1.5;
+}
+
+.form-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.form-section label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.input-row input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-row input:focus {
+  border-color: var(--green-dim);
+}
+
+.input-row input::placeholder {
+  color: var(--text-dim);
+}
+
+.input-row button {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.input-row button:hover {
+  background: var(--green);
+  color: var(--bg);
+  text-shadow: none;
+}
+
+.input-row button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.counter {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 48px;
+}
+
+.counter .number {
+  color: var(--green);
+  font-size: 14px;
+}
+
+.status {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 16px;
+  min-height: 20px;
+}
+
+.status.success { color: var(--green); }
+.status.error { color: var(--red); }
+
+.features {
+  margin-top: 48px;
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+}
+
+.features h3 {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.feature {
+  padding: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.feature .label {
+  font-size: 11px;
+  color: var(--green-dim);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.feature .desc {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.footer {
+  text-align: center;
+  margin-top: 48px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.footer a {
+  color: var(--green-dim);
+  text-decoration: none;
+}
+
+@media (max-width: 560px) {
+  .input-row { flex-direction: column; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 36px; letter-spacing: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>FATHOM</h1>
+    <div class="label">API &mdash; Early Access</div>
+    <div class="tagline">Be first to measure how deeply AI thinks.</div>
+  </div>
+
+  <div class="form-section">
+    <label>Email address</label>
+    <div class="input-row">
+      <input type="email" id="email" placeholder="you@research.lab" autocomplete="email">
+      <button id="submit-btn" onclick="joinWaitlist()">JOIN WAITLIST</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="counter">
+    <span class="number" id="count">—</span> researchers already waiting
+  </div>
+
+  <div class="features">
+    <h3>What you get</h3>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="label">/v2/score</div>
+        <div class="desc">Measure reasoning depth of any prompt</div>
+      </div>
+      <div class="feature">
+        <div class="label">/v2/compare</div>
+        <div class="desc">Surface vs insight analysis</div>
+      </div>
+      <div class="feature">
+        <div class="label">/v2/fingerprint</div>
+        <div class="desc">Cognitive signature vectors</div>
+      </div>
+      <div class="feature">
+        <div class="label">/v2/fathom_score</div>
+        <div class="desc">Single-number depth grade (0-100)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a href="/">darkflobi</a> &mdash; fathom v2.0
+  </div>
+</div>
+
+<script>
+const API_BASE = window.location.origin;
+
+async function loadCount() {
+  try {
+    const res = await fetch(API_BASE + '/waitlist/count');
+    if (res.ok) {
+      const data = await res.json();
+      document.getElementById('count').textContent = data.count;
+    }
+  } catch (e) {
+    // silent — counter just shows dash
+  }
+}
+
+async function joinWaitlist() {
+  const email = document.getElementById('email').value.trim();
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('status');
+
+  if (!email || !email.includes('@')) {
+    status.textContent = 'Enter a valid email.';
+    status.className = 'status error';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+  status.textContent = '';
+
+  try {
+    const res = await fetch(API_BASE + '/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      status.textContent = data.message || "You're on the list.";
+      status.className = 'status success';
+      document.getElementById('email').value = '';
+      loadCount();
+    } else {
+      status.textContent = data.detail || 'Something went wrong.';
+      status.className = 'status error';
+    }
+  } catch (e) {
+    status.textContent = 'Connection failed. Try again.';
+    status.className = 'status error';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'JOIN WAITLIST';
+}
+
+// Enter key submits
+document.getElementById('email').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') joinWaitlist();
+});
+
+// Load count on page load
+loadCount();
+</script>
+
+</body>
+</html>
