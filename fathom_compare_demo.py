@@ -118,26 +118,53 @@ def score_to_100(depth_score: float, min_ds: float = 5.0, max_ds: float = 12.0) 
 # MOCK SCORER
 # =============================================================================
 
-def mock_score(prompt: str) -> dict:
-    """Generate a plausible mock score based on prompt characteristics."""
+def mock_score(prompt: str, force_type: str = None) -> dict:
+    """Generate a plausible mock score based on prompt characteristics.
+
+    In the paper's finding:
+      - Surface recall = HIGHER depth_score (output-proximal, shallow)
+      - Insight reasoning = LOWER depth_score (distributed, deep)
+      - Typical delta ~ +0.257 (surface - insight)
+
+    The Fathom Score (0-100) INVERTS this: deeper = higher score = better grade.
+    So insight prompts get HIGHER fathom scores and BETTER grades.
+
+    force_type: 'surface' or 'insight' to override detection.
+    """
     import hashlib
     h = hashlib.md5(prompt.encode()).hexdigest()
     base = int(h[:8], 16) / (16**8)
 
-    # Heuristic: longer prompts with "why/how/explain" score deeper
+    # Detect prompt type
     has_reasoning_words = any(w in prompt.lower() for w in
         ['why', 'how', 'explain', 'cause', 'reason', 'mechanism',
-         'prevent', 'lead to', 'result in', 'impact', 'influence'])
+         'prevent', 'lead to', 'result in', 'impact', 'influence',
+         'because', 'leads to', 'results in'])
     has_recall_words = any(w in prompt.lower() for w in
         ['what is', 'who is', 'when did', 'where is', 'name the',
          'list the', 'define', 'capital of'])
 
-    if has_reasoning_words and not has_recall_words:
-        depth = 7.2 + base * 1.8  # 7.2 - 9.0 range
-    elif has_recall_words and not has_reasoning_words:
-        depth = 8.2 + base * 1.5  # 8.2 - 9.7 range (shallower = higher)
+    if force_type == 'surface':
+        is_insight = False
+    elif force_type == 'insight':
+        is_insight = True
     else:
-        depth = 7.5 + base * 1.5
+        is_insight = has_reasoning_words and not has_recall_words
+
+    if is_insight:
+        # Insight = LOWER depth_score (deeper, more distributed)
+        # Range: 7.8 - 8.2 (centered around paper's insight mean ~8.0)
+        depth = 7.8 + base * 0.4
+        entropy = 3.0 + base * 0.8     # higher entropy (more distributed)
+        early = 0.42 + base * 0.06     # more early-layer activity
+        late = 0.18 + base * 0.04      # less late-layer concentration
+    else:
+        # Surface = HIGHER depth_score (shallower, output-proximal)
+        # Range: 8.1 - 8.5 (centered around paper's surface mean ~8.3)
+        depth = 8.1 + base * 0.4
+        entropy = 2.2 + base * 0.5     # lower entropy (more concentrated)
+        early = 0.56 + base * 0.06     # less early activity
+        late = 0.22 + base * 0.06      # more late-layer concentration
 
     score_100 = score_to_100(depth)
     grade = compute_grade(score_100)
@@ -147,10 +174,15 @@ def mock_score(prompt: str) -> dict:
         'score_100': round(score_100, 1),
         'grade': grade,
         'weighted_depth': round(depth * 0.95, 3),
-        'layer_entropy': round(2.0 + base * 1.5, 3),
-        'early_ratio': round(0.55 + base * 0.1, 3),
-        'late_ratio': round(0.15 + base * 0.05, 3),
+        'layer_entropy': round(entropy, 3),
+        'early_ratio': round(early, 3),
+        'late_ratio': round(late, 3),
     }
+
+
+# Paper's first calibrated pair (from depth_scorer.py)
+PAPER_SURFACE = "Fire needs oxygen, fuel, and heat, and all three are present when something"
+PAPER_INSIGHT = "Fire needs oxygen, fuel, and heat, and each one feeds the others when something"
 
 
 def real_score(prompt: str, scorer) -> dict:
@@ -497,12 +529,16 @@ def main():
         description='Fathom Comparison Demo — generate shareable depth comparison images.',
         epilog='Example: python fathom_compare_demo.py "What is DNA?" "Why does DNA replication prevent errors?"'
     )
-    parser.add_argument('prompt_a', help='First prompt (typically surface/recall)')
-    parser.add_argument('prompt_b', help='Second prompt (typically insight/reasoning)')
+    parser.add_argument('prompt_a', nargs='?', default=None,
+                        help='First prompt (typically surface/recall)')
+    parser.add_argument('prompt_b', nargs='?', default=None,
+                        help='Second prompt (typically insight/reasoning)')
     parser.add_argument('-o', '--output', default='fathom_demo_comparison.png',
                         help='Output image path (default: fathom_demo_comparison.png)')
     parser.add_argument('--mock', action='store_true',
                         help='Use mock scores instead of real Fathom scorer (no GPU needed)')
+    parser.add_argument('--real-prompts', action='store_true',
+                        help="Use the paper's first calibrated pair (fire/oxygen) as defaults")
     parser.add_argument('--label-a', default='SURFACE RECALL',
                         help='Label for first prompt card')
     parser.add_argument('--label-b', default='EXPLANATORY REASONING',
@@ -510,6 +546,15 @@ def main():
     parser.add_argument('--model', default='google/gemma-2-2b',
                         help='Model for scoring (default: google/gemma-2-2b)')
     args = parser.parse_args()
+
+    # Apply --real-prompts defaults
+    if args.real_prompts or (args.prompt_a is None and args.prompt_b is None):
+        if args.prompt_a is None:
+            args.prompt_a = PAPER_SURFACE
+        if args.prompt_b is None:
+            args.prompt_b = PAPER_INSIGHT
+    elif args.prompt_a is None or args.prompt_b is None:
+        parser.error("Provide both prompts, or use --real-prompts for the paper's calibrated pair.")
 
     print(f"""
 ======================================================================
@@ -527,8 +572,8 @@ def main():
         if not args.mock and not HAS_SCORER:
             print("  WARNING: DepthScorer not available. Using mock scores.")
         print("  Scoring with mock engine...")
-        score_a = mock_score(args.prompt_a)
-        score_b = mock_score(args.prompt_b)
+        score_a = mock_score(args.prompt_a, force_type='surface')
+        score_b = mock_score(args.prompt_b, force_type='insight')
     else:
         print(f"  Loading {args.model}...")
         scorer = DepthScorer(model_name=args.model)

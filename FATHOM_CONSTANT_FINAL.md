@@ -1,7 +1,7 @@
 # FATHOM CONSTANT — Cross-Architecture Universality Test
 
-**Date:** 2026-03-26 06:41:04
-**Duration:** 898.1s
+**Date:** 2026-03-26 09:50:13
+**Duration:** 480.7s
 **Pairs:** 30 (paper power replication set, p=0.000051)
 
 ## Hypothesis
@@ -54,7 +54,7 @@ provides SAEs, not transcoders. These are incompatible with circuit-tracer's
 
 **Error:** You are trying to access a gated repo.
 Make sure to have access to it at https://huggingface.co/meta-llama/Llama-3.2-1B.
-403 Client Error. (Request ID: Root=1-69c510c3-18034c7107af61df08d40d39;dfbae35e-7cb6-4641-9996-02580eaad243)
+403 Client Error. (Request ID: Root=1-69c53b78-3030699327fb43553a7c5722;5f01e889-0f40-47cd-a4bc-eb57656fb3a0)
 
 Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.2-1B/resolve/main/config.json.
 Your request to access model meta-llama/Llama-3.2-1B is awaiting a review from the repo authors.
@@ -98,7 +98,7 @@ Traceback (most recent call last):
     hf_raise_for_status(response)
   File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\utils\_http.py", line 420, in hf_raise_for_status
     raise _format(GatedRepoError, message, response) from e
-huggingface_hub.errors.GatedRepoError: 403 Client Error. (Request ID: Root=1-69c510c3-18034c7107af61df08d40d39;dfbae35e-7cb6-4641-9996-02580eaad243)
+huggingface_hub.errors.GatedRepoError: 403 Client Error. (Request ID: Root=1-69c53b78-3030699327fb43553a7c5722;5f01e889-0f40-47cd-a4bc-eb57656fb3a0)
 
 Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.2-1B/resolve/main/config.json.
 Your request to access model meta-llama/Llama-3.2-1B is awaiting a review from the repo authors.
@@ -148,7 +148,7 @@ Traceback (most recent call last):
     raise OSError(
 OSError: You are trying to access a gated repo.
 Make sure to have access to it at https://huggingface.co/meta-llama/Llama-3.2-1B.
-403 Client Error. (Request ID: Root=1-69c510c3-18034c7107af61df08d40d39;dfbae35e-7cb6-4641-9996-02580eaad243)
+403 Client Error. (Request ID: Root=1-69c53b78-3030699327fb43553a7c5722;5f01e889-0f40-47cd-a4bc-eb57656fb3a0)
 
 Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.2-1B/resolve/main/config.json.
 Your request to access model meta-llama/Llama-3.2-1B is awaiting a review from the repo authors.
