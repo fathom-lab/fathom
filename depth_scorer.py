@@ -215,8 +215,12 @@ class DepthScorer:
         from circuit_tracer import ReplacementModel
 
         t0 = time.time()
+        # Some models (Qwen3, etc.) require trust_remote_code=True for TransformerLens
+        extra_kwargs = {}
+        if "qwen" in model_name.lower() or "qwen" in model_type.lower():
+            extra_kwargs["trust_remote_code"] = True
         self._model = ReplacementModel.from_pretrained(
-            model_name, model_type, dtype=dtype
+            model_name, model_type, dtype=dtype, **extra_kwargs
         )
         # Try to read layer count dynamically, fall back to registry, then default
         try:

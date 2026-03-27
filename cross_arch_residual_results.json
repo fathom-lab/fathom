@@ -1,0 +1,275 @@
+{
+  "test": "cross_architecture_residual_stream_depth",
+  "method": "TransformerLens residual stream L2 norm, weighted mean layer",
+  "n_pairs": 10,
+  "hypothesis": "Surface prompts concentrate activation at higher (output-proximal) layers; insight prompts show more distributed earlier-layer activation.",
+  "results": [
+    {
+      "model": "google/gemma-2-2b",
+      "n_layers": 26,
+      "method": "residual_stream_max_norm_layer",
+      "n_pairs": 10,
+      "summary": {
+        "surface_mean": 16.8041,
+        "insight_mean": 16.8406,
+        "mean_delta": -0.0365,
+        "ratio": 0.9978,
+        "pct_expected_direction": 30.0,
+        "t_statistic": -0.9245,
+        "p_value_one_tailed": 0.810332,
+        "n_pairs": 10
+      },
+      "pairs": [
+        {
+          "pair_idx": 0,
+          "surface_depth": 16.8387,
+          "insight_depth": 16.8701,
+          "delta": -0.0314,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 1,
+          "surface_depth": 16.7206,
+          "insight_depth": 16.7967,
+          "delta": -0.0761,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 2,
+          "surface_depth": 16.9306,
+          "insight_depth": 16.791,
+          "delta": 0.1396,
+          "direction": "+"
+        },
+        {
+          "pair_idx": 3,
+          "surface_depth": 16.8138,
+          "insight_depth": 16.736,
+          "delta": 0.0777,
+          "direction": "+"
+        },
+        {
+          "pair_idx": 4,
+          "surface_depth": 16.6424,
+          "insight_depth": 16.7576,
+          "delta": -0.1152,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 5,
+          "surface_depth": 16.8608,
+          "insight_depth": 16.7881,
+          "delta": 0.0727,
+          "direction": "+"
+        },
+        {
+          "pair_idx": 6,
+          "surface_depth": 16.8147,
+          "insight_depth": 16.8554,
+          "delta": -0.0407,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 7,
+          "surface_depth": 16.8952,
+          "insight_depth": 16.9038,
+          "delta": -0.0085,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 8,
+          "surface_depth": 16.713,
+          "insight_depth": 17.0216,
+          "delta": -0.3085,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 9,
+          "surface_depth": 16.8113,
+          "insight_depth": 16.8855,
+          "delta": -0.0742,
+          "direction": "-"
+        }
+      ],
+      "elapsed_seconds": 25.1
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B",
+      "n_layers": 28,
+      "method": "residual_stream_max_norm_layer",
+      "n_pairs": 10,
+      "summary": {
+        "surface_mean": 15.8719,
+        "insight_mean": 16.1548,
+        "mean_delta": -0.2829,
+        "ratio": 0.9825,
+        "pct_expected_direction": 10.0,
+        "t_statistic": -2.4299,
+        "p_value_one_tailed": 0.981005,
+        "n_pairs": 10
+      },
+      "pairs": [
+        {
+          "pair_idx": 0,
+          "surface_depth": 15.6684,
+          "insight_depth": 15.7861,
+          "delta": -0.1177,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 1,
+          "surface_depth": 15.6979,
+          "insight_depth": 15.9343,
+          "delta": -0.2364,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 2,
+          "surface_depth": 16.079,
+          "insight_depth": 15.8432,
+          "delta": 0.2357,
+          "direction": "+"
+        },
+        {
+          "pair_idx": 3,
+          "surface_depth": 15.9789,
+          "insight_depth": 16.0846,
+          "delta": -0.1058,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 4,
+          "surface_depth": 15.5395,
+          "insight_depth": 15.7997,
+          "delta": -0.2602,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 5,
+          "surface_depth": 15.7871,
+          "insight_depth": 16.0146,
+          "delta": -0.2275,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 6,
+          "surface_depth": 16.0537,
+          "insight_depth": 16.2272,
+          "delta": -0.1735,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 7,
+          "surface_depth": 16.3218,
+          "insight_depth": 16.4098,
+          "delta": -0.088,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 8,
+          "surface_depth": 15.7546,
+          "insight_depth": 16.7309,
+          "delta": -0.9763,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 9,
+          "surface_depth": 15.8379,
+          "insight_depth": 16.7176,
+          "delta": -0.8797,
+          "direction": "-"
+        }
+      ],
+      "elapsed_seconds": 120.7
+    },
+    {
+      "model": "gpt2-xl",
+      "n_layers": 48,
+      "method": "residual_stream_max_norm_layer",
+      "n_pairs": 10,
+      "summary": {
+        "surface_mean": 29.1728,
+        "insight_mean": 29.4215,
+        "mean_delta": -0.2488,
+        "ratio": 0.9915,
+        "pct_expected_direction": 0.0,
+        "t_statistic": -4.719,
+        "p_value_one_tailed": 0.999455,
+        "n_pairs": 10
+      },
+      "pairs": [
+        {
+          "pair_idx": 0,
+          "surface_depth": 29.137,
+          "insight_depth": 29.4939,
+          "delta": -0.3569,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 1,
+          "surface_depth": 29.1411,
+          "insight_depth": 29.4693,
+          "delta": -0.3282,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 2,
+          "surface_depth": 29.2335,
+          "insight_depth": 29.2992,
+          "delta": -0.0656,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 3,
+          "surface_depth": 29.0501,
+          "insight_depth": 29.326,
+          "delta": -0.2759,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 4,
+          "surface_depth": 28.8443,
+          "insight_depth": 29.2011,
+          "delta": -0.3568,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 5,
+          "surface_depth": 29.0138,
+          "insight_depth": 29.0761,
+          "delta": -0.0624,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 6,
+          "surface_depth": 29.4125,
+          "insight_depth": 29.5224,
+          "delta": -0.1099,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 7,
+          "surface_depth": 29.9769,
+          "insight_depth": 30.052,
+          "delta": -0.0751,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 8,
+          "surface_depth": 29.0368,
+          "insight_depth": 29.602,
+          "delta": -0.5652,
+          "direction": "-"
+        },
+        {
+          "pair_idx": 9,
+          "surface_depth": 28.8817,
+          "insight_depth": 29.1734,
+          "delta": -0.2917,
+          "direction": "-"
+        }
+      ],
+      "elapsed_seconds": 10.0
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+[console_scripts]
+fathom = fathom_cli:main

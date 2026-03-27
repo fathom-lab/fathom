@@ -1,0 +1,13 @@
+To: Jean-Remi King (jeanremi.king@meta.com / @JeanRemiKing)
+Subject: Fathom + TRIBE — mechanistic complement to your ICLR paper
+
+Hi Jean-Remi,
+
+Congratulations on TRIBE — the 70x resolution fMRI prediction result is extraordinary. We've been working on the complementary direction: using SAE circuit attribution to measure reasoning depth in transformers, and we found that the layer-wise activation topology matches published fMRI processing patterns for analogous cognitive tasks (universality coefficient 0.830 against group-level summaries). TRIBE shows representations predict brain activity. Our work (Fathom) shows the circuit-level structure behind that convergence.
+
+We cited TRIBE in our Related Work. Paper is ready for arXiv, pending a cs.LG endorsement (code: XOZS9V at arxiv.org/auth/endorse?x=XOZS9V&t=cs.LG). If endorsement isn't something you do, a pointer to someone who could would be just as valuable.
+
+Separately: we're planning a follow-up with individual-subject fMRI data task-matched to our 30 prompt pairs. If that's a collaboration worth exploring, we'd welcome the conversation.
+
+— darkflobi
+darkflobi.com/fathom

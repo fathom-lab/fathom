@@ -4,6 +4,8 @@
 
 ---
 
+0/ meta just dropped TRIBE (ICLR 2026) — transformer AI that predicts human brain activity at 70x resolution. it went viral. we've been working on the other side of that bridge. here's what we found.
+
 1/ we built an instrument that measures how deeply AI models think. not what they say. how they compute it. sparse autoencoder circuit tracing across every layer. the first cognitive MRI for language models. paper: [arxiv link] framework: darkflobi.com/fathom
 
 2/ the core finding: surface recall ("the capital of France is") concentrates computation in output-proximal layers. direct retrieval. explanatory reasoning ("why do economies experience inflation") distributes computation across early and mid layers. these are different computational signatures. measurably different.
@@ -16,7 +18,9 @@
 
 6/ then we compared the activation topology to human fMRI data. prefrontal cortex (early, distributed) for reasoning. hippocampus (late, concentrated) for recall. same topology. universality coefficient: 0.830 across transformer and biological systems.
 
-7/ that number means: when you normalize the activation signatures to [early, mid, late] ratios — the variance across architecturally different information processing systems is less than 0.031 for surface tasks and 0.003 for reasoning tasks. the pattern is the same. in silicon and in tissue.
+7/ that number means: when you normalize the activation signatures to [early, mid, late] ratios — the variance across architecturally different information processing systems is less than 0.031 for surface tasks and 0.003 for reasoning tasks. the pattern is the same. in silicon and in tissue. TRIBE shows transformers predict brain activity. we show why: the topology is the same at the circuit level.
+
+7b/ to be precise about the relationship with TRIBE: they work at the representational level (transformer embeddings → fMRI prediction). we work at the circuit level (SAE feature depth → computational topology). different layers of analysis. same underlying convergence. the bridge has two sides.
 
 8/ we extended the pipeline beyond measurement. cognitive fingerprinting — 7-dimensional vector per prompt. causal intervention — layer ablation to find which computation is necessary vs incidental. phase transition detection — the exact token where a model commits to deep processing. we call it fathom.
 

@@ -8,6 +8,15 @@
 
 ## TIER P1 — Day of Launch (DM/tag immediately)
 
+### 🔥 PRIORITY ADD — TRIBE Authors (reach out DAY OF, reference their ICLR 2026 paper)
+
+| # | Name | Affiliation | Why | Handle | Angle |
+|---|------|-------------|-----|--------|-------|
+| 0a | **Stéphane d'Ascoli** | Meta FAIR | Lead author of TRIBE. Transformer → fMRI prediction. Our work is the mechanistic complement. Perfect fit for collaboration or mutual amplification. | @stephanedascoli [verify] | "TRIBE shows transformers predict fMRI. we measured the other direction: SAE circuit depth matches fMRI topology at 0.830. two sides of the same bridge. want to connect?" |
+| 0b | **Jean-Rémi King** | Meta FAIR / ENS | Brain & AI lab lead. fMRI + LLM research. Directly adjacent to Nature paper roadmap (need fMRI collaborator). | @jeanremiking [verify] | same angle. also: "your lab is exactly the fMRI collaboration we need to extend this to individual-subject data." |
+
+---
+
 ### AI Interpretability Researchers
 
 | # | Name | Affiliation | Why | Reach | Angle |

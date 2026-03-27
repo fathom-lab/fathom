@@ -521,6 +521,200 @@ def generate_comparison(prompt_a: str, score_a: dict,
 
 
 # =============================================================================
+# TRIBE CONVERGENCE IMAGE
+# =============================================================================
+
+def generate_tribe_image(output_path: str = "fathom_tribe_convergence.png"):
+    """
+    Generate a shareable TRIBE x Fathom convergence diagram.
+    1200x675 (Twitter summary_large_image).
+    """
+    if not HAS_PIL:
+        print("ERROR: Pillow required. pip install Pillow")
+        return None
+
+    W, H = 1200, 675
+    BLUE  = (68, 136, 255)
+    BLUE2 = (40, 80, 180)
+    GREEN = (0, 255, 136)
+    GREEN2= (0, 180, 80)
+    DIM   = (40, 40, 40)
+    MUTE  = (80, 80, 80)
+    MID   = (120, 120, 120)
+    LIGHT = (180, 180, 180)
+    WHITE = (234, 234, 234)
+    BG    = (8, 8, 8)
+    SURF  = (16, 16, 16)
+    LINE  = (28, 28, 28)
+
+    img  = Image.new('RGB', (W, H), BG)
+    draw = ImageDraw.Draw(img)
+
+    # Fonts
+    f_title  = load_font(38, bold=True)
+    f_sub    = load_font(14)
+    f_label  = load_font(13, bold=True)
+    f_stat   = load_font(42, bold=True)
+    f_stat_s = load_font(11)
+    f_tag    = load_font(10, bold=True)
+    f_body   = load_font(12)
+    f_footer = load_font(10)
+
+    # --- Background glow ---
+    # Blue glow left, green glow right
+    for r in range(220, 0, -4):
+        alpha = int(18 * (1 - r/220))
+        draw.ellipse([180-r, H//2-r, 180+r, H//2+r],
+                     fill=(BLUE[0], BLUE[1], BLUE[2]))
+    img2 = img.copy()
+    draw2 = ImageDraw.Draw(img2)
+    for r in range(220, 0, -4):
+        draw2.ellipse([W-180-r, H//2-r, W-180+r, H//2+r],
+                      fill=(GREEN[0], GREEN[1], GREEN[2]))
+    # Blend both glows subtly
+    glow = Image.new('RGB', (W, H), BG)
+    gd   = ImageDraw.Draw(glow)
+    for r in range(180, 0, -3):
+        t = r / 180
+        c_b = (int(BLUE[0]*t*0.12), int(BLUE[1]*t*0.12), int(BLUE[2]*t*0.12))
+        c_g = (int(GREEN[0]*t*0.10), int(GREEN[1]*t*0.10), int(GREEN[2]*t*0.10))
+        gd.ellipse([160-r, H//2-r, 160+r, H//2+r], fill=c_b)
+        gd.ellipse([W-160-r, H//2-r, W-160+r, H//2+r], fill=c_g)
+    img = Image.blend(img, glow, 0.5)
+    draw = ImageDraw.Draw(img)
+
+    # CRT scanlines
+    for y in range(0, H, 3):
+        draw.line([(0, y), (W, y)], fill=(0, 0, 0, 0))
+    # subtle scanline via overdraw
+    for y in range(0, H, 3):
+        draw.line([(0, y), (W, y)], fill=(0, 0, 0))
+
+    # --- Header ---
+    label = "FATHOM x TRIBE -- ICLR 2026"
+    bbox = draw.textbbox((0,0), label, font=f_tag)
+    draw.text(((W - (bbox[2]-bbox[0]))//2, 28), label, fill=MUTE, font=f_tag)
+
+    title = "Two sides of the same bridge."
+    bbox = draw.textbbox((0,0), title, font=f_title)
+    tw = bbox[2] - bbox[0]
+    draw.text(((W-tw)//2, 52), title, fill=WHITE, font=f_title)
+
+    sub = "Meta's TRIBE predicts fMRI from transformers. Fathom measures the circuit-level topology that explains why."
+    bbox = draw.textbbox((0,0), sub, font=f_body)
+    sw = bbox[2] - bbox[0]
+    draw.text(((W-sw)//2, 104), sub, fill=MID, font=f_body)
+
+    # Divider
+    draw.line([(80, 132), (W-80, 132)], fill=LINE, width=1)
+
+    # --- Two panels ---
+    PAD    = 60
+    PCOL_W = 360
+    PCOL_H = 340
+    LEFT_X = PAD
+    RIGHT_X= W - PAD - PCOL_W
+    PANEL_Y= 155
+    CX     = W // 2
+
+    for px, color, tag, name, arrow, desc, stat_val, stat_label in [
+        (LEFT_X,  BLUE,  "TRIBE -- META / ICLR 2026",
+         "Representation",  "Representation -> Brain",
+         "Transformer hidden states predict human\nfMRI responses at 70x resolution.\nRepresentational geometry converges\nacross biological and artificial systems.",
+         "70x", "fMRI prediction resolution"),
+        (RIGHT_X, GREEN, "FATHOM -- DARKFLOBI 2026",
+         "Circuit",  "Circuit -> Topology",
+         "SAE feature activation depth mirrors\npublished fMRI processing patterns\nfor analogous cognitive tasks.\nCircuit-level architecture converges.",
+         "0.830", "cross-system convergence coefficient"),
+    ]:
+        # Panel border
+        draw.rectangle([px, PANEL_Y, px+PCOL_W, PANEL_Y+PCOL_H],
+                        fill=SURF, outline=(*color, 255) if len(color)==3 else color)
+        # Top accent bar
+        draw.rectangle([px, PANEL_Y, px+PCOL_W, PANEL_Y+2], fill=color)
+
+        iy = PANEL_Y + 18
+        # Tag
+        draw.text((px+16, iy), tag, fill=color, font=f_tag)
+        iy += 20
+
+        # Arrow label
+        draw.text((px+16, iy), arrow, fill=LIGHT, font=f_label)
+        iy += 24
+
+        # Separator
+        draw.line([(px+16, iy), (px+PCOL_W-16, iy)], fill=LINE, width=1)
+        iy += 12
+
+        # Description (word-wrapped manually)
+        for line in desc.split('\n'):
+            draw.text((px+16, iy), line, fill=MID, font=f_body)
+            iy += 18
+
+        # Stat
+        iy = PANEL_Y + PCOL_H - 90
+        draw.line([(px+16, iy), (px+PCOL_W-16, iy)], fill=LINE, width=1)
+        iy += 12
+        # Big number
+        bbox = draw.textbbox((0,0), stat_val, font=f_stat)
+        sw = bbox[2] - bbox[0]
+        glow_color = tuple(min(255, int(c*0.3)) for c in color)
+        draw.text((px + 16, iy), stat_val, fill=color, font=f_stat)
+        iy += (bbox[3]-bbox[1]) + 4
+        draw.text((px+16, iy), stat_label, fill=MUTE, font=f_stat_s)
+
+    # --- Center bridge connector ---
+    CY = PANEL_Y + PCOL_H // 2
+    BW = 40  # bridge box half-width
+
+    # Horizontal line connecting panels
+    draw.line([(LEFT_X + PCOL_W + 2, CY), (RIGHT_X - 2, CY)], fill=DIM, width=1)
+
+    # Center node
+    draw.rectangle([CX-BW, CY-22, CX+BW, CY+22], fill=BG, outline=MUTE)
+    cx_label = "converge"
+    bbox = draw.textbbox((0,0), cx_label, font=f_tag)
+    draw.text((CX - (bbox[2]-bbox[0])//2, CY - (bbox[3]-bbox[1])//2 - 2),
+              cx_label, fill=MUTE, font=f_tag)
+
+    # Arrows pointing to center
+    # Left arrow tip (pointing right)
+    ax = CX - BW - 1
+    draw.polygon([(ax, CY), (ax-10, CY-6), (ax-10, CY+6)], fill=BLUE)
+    # Right arrow tip (pointing left)
+    ax2 = CX + BW + 1
+    draw.polygon([(ax2, CY), (ax2+10, CY-6), (ax2+10, CY+6)], fill=GREEN)
+
+    # --- Quote bar at bottom ---
+    QY = PANEL_Y + PCOL_H + 22
+    draw.line([(80, QY), (W-80, QY)], fill=LINE, width=1)
+    QY += 14
+
+    quote = "These are not competing results. TRIBE works at the representational level. Fathom works at the circuit level."
+    # Split into two lines at "Fathom"
+    q1 = "These are not competing results. TRIBE works at the representational level."
+    q2 = "Fathom works at the circuit level. Two instruments. One convergence."
+    for q in [q1, q2]:
+        bbox = draw.textbbox((0,0), q, font=f_body)
+        draw.text(((W-(bbox[2]-bbox[0]))//2, QY), q, fill=MID, font=f_body)
+        QY += 18
+
+    # --- Footer ---
+    draw.line([(80, H-38), (W-80, H-38)], fill=LINE, width=1)
+    draw.text((80, H-26), "darkflobi.com/fathom-tribe", fill=MUTE, font=f_footer)
+    fr = "p=0.000051  |  n=30  |  SAE circuit attribution"
+    bbox = draw.textbbox((0,0), fr, font=f_footer)
+    draw.text((W - 80 - (bbox[2]-bbox[0]), H-26), fr, fill=MUTE, font=f_footer)
+
+    # Final scanline pass
+    img = draw_scanlines(img, spacing=3, alpha=10)
+
+    img.save(output_path, 'PNG', optimize=True)
+    print(f"  Saved: {output_path} ({W}x{H})")
+    return output_path
+
+
+# =============================================================================
 # CLI
 # =============================================================================
 
@@ -545,7 +739,17 @@ def main():
                         help='Label for second prompt card')
     parser.add_argument('--model', default='google/gemma-2-2b',
                         help='Model for scoring (default: google/gemma-2-2b)')
+    parser.add_argument('--tribe', action='store_true',
+                        help='Generate TRIBE x Fathom convergence image instead of comparison')
     args = parser.parse_args()
+
+    # --tribe: short-circuit to convergence image
+    if args.tribe:
+        tribe_out = args.output if args.output != 'fathom_demo_comparison.png' else 'fathom_tribe_convergence.png'
+        print(f"\n  Generating TRIBE x Fathom convergence image -> {tribe_out}\n")
+        path = generate_tribe_image(output_path=tribe_out)
+        print(f"  Done: {path}\n")
+        return
 
     # Apply --real-prompts defaults
     if args.real_prompts or (args.prompt_a is None and args.prompt_b is None):
