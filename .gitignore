@@ -4,3 +4,5 @@ __pycache__/
 .env
 secrets/
 *.key
+
+figures/.claude/
