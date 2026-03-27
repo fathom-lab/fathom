@@ -3,6 +3,8 @@ Subject: arXiv cs.LG endorsement request — SAE circuit depth distinguishes rea
 
 Hi Neel,
 
+With Anthropic's Mythos leak today — a step change in reasoning capability — the question of whether depth topology holds at the next capability tier has gone from interesting to urgent. We'd like to be published before it drops.
+
 We used SAE feature attribution (circuit-tracer, same Gemma transcoders from your work) to show that surface recall concentrates activation at output-proximal layers while explanatory reasoning distributes across earlier layers — pre-registered, p=0.000051, n=30 vocabulary-controlled pairs, LOO robust. Paper is ready to submit and we need a cs.LG endorsement.
 
 Endorsement link (takes ~2 min): arxiv.org/auth/endorse?x=XOZS9V&t=cs.LG

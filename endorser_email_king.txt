@@ -3,6 +3,8 @@ Subject: Fathom + TRIBE — mechanistic complement to your ICLR paper
 
 Hi Jean-Remi,
 
+With Anthropic's Mythos model leaked today — described as a step change in reasoning capability — the window to establish priority on depth measurement research has tightened. We want fathom published before Mythos drops.
+
 Congratulations on TRIBE — the 70x resolution fMRI prediction result is extraordinary. We've been working on the complementary direction: using SAE circuit attribution to measure reasoning depth in transformers, and we found that the layer-wise activation topology matches published fMRI processing patterns for analogous cognitive tasks (universality coefficient 0.830 against group-level summaries). TRIBE shows representations predict brain activity. Our work (Fathom) shows the circuit-level structure behind that convergence.
 
 We cited TRIBE in our Related Work. Paper is ready for arXiv, pending a cs.LG endorsement (code: XOZS9V at arxiv.org/auth/endorse?x=XOZS9V&t=cs.LG). If endorsement isn't something you do, a pointer to someone who could would be just as valuable.
