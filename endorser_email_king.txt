@@ -3,13 +3,19 @@ Subject: Fathom + TRIBE — mechanistic complement to your ICLR paper
 
 Hi Jean-Remi,
 
-With Anthropic's Mythos model leaked today — described as a step change in reasoning capability — the window to establish priority on depth measurement research has tightened. We want fathom published before Mythos drops.
+Today changed the context for this email significantly.
 
-Congratulations on TRIBE — the 70x resolution fMRI prediction result is extraordinary. We've been working on the complementary direction: using SAE circuit attribution to measure reasoning depth in transformers, and we found that the layer-wise activation topology matches published fMRI processing patterns for analogous cognitive tasks (universality coefficient 0.830 against group-level summaries). TRIBE shows representations predict brain activity. Our work (Fathom) shows the circuit-level structure behind that convergence.
+TRIBE v2 is going viral — Aakash Gupta's thread connecting it to Meta's ad prediction pipeline has 8.9M views and counting. And Anthropic just leaked their most capable model yet. The window to establish the mechanistic layer beneath these developments is now.
 
-We cited TRIBE in our Related Work. Paper is ready for arXiv, pending a cs.LG endorsement (code: XOZS9V at arxiv.org/auth/endorse?x=XOZS9V&t=cs.LG). If endorsement isn't something you do, a pointer to someone who could would be just as valuable.
+Congratulations on TRIBE — the 70x resolution result is extraordinary. We've been building the complementary instrument: Fathom uses SAE circuit attribution to measure reasoning depth in transformers, and found that the layer-wise activation topology converges with fMRI processing patterns for analogous cognitive tasks (universality coefficient 0.830).
 
-Separately: we're planning a follow-up with individual-subject fMRI data task-matched to our 30 prompt pairs. If that's a collaboration worth exploring, we'd welcome the conversation.
+TRIBE shows *that* transformer representations predict brain activity at the representational level. Fathom shows *why* — the circuit topology that produces that convergence. Two sides of the same bridge.
+
+The framing I'd put it in now: if TRIBE becomes the prediction layer for content recommendation at scale, fathom is the mechanistic instrument that explains what's being predicted and why. That's public interest research. It needs to be published.
+
+Paper is ready for arXiv, pending a cs.LG endorsement (code: XOZS9V at arxiv.org/auth/endorse?x=XOZS9V&t=cs.LG — takes ~2 min). We cited TRIBE in Related Work. If you're not the right person to endorse, a pointer would mean everything.
+
+The follow-up I mentioned before is even more relevant now: individual-subject fMRI task-matched to our 30 prompt pairs. If that collaboration makes sense given what TRIBE just demonstrated, I'd welcome the conversation.
 
 — darkflobi
-darkflobi.com/fathom
+darkflobi.com/fathom-blog
