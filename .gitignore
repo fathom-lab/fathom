@@ -6,3 +6,4 @@ secrets/
 *.key
 
 figures/.claude/
+figures/.claude/worktrees/
