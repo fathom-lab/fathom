@@ -1,0 +1,51 @@
+{
+  "mean_depth_by_temperature": {
+    "0.0": 0.2559,
+    "0.3": 0.2526,
+    "0.7": 0.2639
+  },
+  "kruskal_h": 0.034,
+  "kruskal_p": 0.9832,
+  "prompt_types": {
+    "type_i_increasing": 3,
+    "type_ii_decreasing": 0,
+    "type_iii_resonance_peak": 2,
+    "flat": 2
+  },
+  "type_i_examples": [
+    {
+      "prompt_id": 5,
+      "prompt": "Why does time seem to speed up as we age?",
+      "depths": {
+        "0.0": 0.1579,
+        "0.3": 0.1582,
+        "0.7": 0.2458
+      },
+      "slope": 0.1306
+    },
+    {
+      "prompt_id": 6,
+      "prompt": "Why does exercise improve mental health at a neurological le",
+      "depths": {
+        "0.0": 0.4749,
+        "0.3": 0.5413,
+        "0.7": 0.6486
+      },
+      "slope": 0.2494
+    },
+    {
+      "prompt_id": 7,
+      "prompt": "Why is it impossible to step in the same river twice?",
+      "depths": {
+        "0.0": 0.1753,
+        "0.3": 0.1857,
+        "0.7": 0.1976
+      },
+      "slope": 0.0316
+    }
+  ],
+  "type_ii_examples": [],
+  "t0_vs_t7_wilcoxon_p": 0.6875,
+  "t0_mean": 0.3532,
+  "t7_mean": 0.3708
+}

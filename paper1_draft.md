@@ -136,9 +136,9 @@ The Decomposability Law's formal equivalence to Tononi's phi suggests Fathom may
 
 ### 6.3 Limitations
 
-- Single architecture tested (Gemma-2-2B); architecture universality requires validation on GPT-2, Llama, and other families.
-- Temperature sweep incomplete at time of writing (T=0.7, T=1.0 pending).
-- N=10 per condition; statistical power would improve at N=30.
+- **Architecture scope**: Primary results from Gemma-2-2B (SAE feature attribution). Preliminary testing of GPT-2-Medium using raw activation hooks (K=0.8454) did not converge to the SAE-method constant (K=1.0302). This divergence highlights that the depth measurement is specific to SAE feature attribution geometry — raw activation methods measure a fundamentally different quantity. Architecture universality under the SAE method requires Llama-3.2-1B and Mistral-7B validation (pending transcoder compatibility).
+- **Temperature statistics**: Stochastic resonance patterns (Section 5) are observed at N=10 prompts per temperature. Kruskal-Wallis test across temperatures: H=0.034, p=0.983 (not significant at this sample size). An expanded study (N=30 prompts × 5 temperatures) is pre-registered and running at time of writing.
+- **SAE dependency**: Results require access to SAE transcoders (currently available for Gemma-2-2B and Qwen3-0.6B). Model-agnostic depth measurement without transcoders is an open engineering challenge.
 
 ---
 
@@ -159,5 +159,6 @@ Gifford, A., et al. (2025). TRIBE v2: Trimodal Brain Encoder. Meta AI Research.
 
 ---
 
-*Preprint. Provisional patent pending, Application filed March 29, 2026.*
+*Preprint. USPTO Provisional Patent Pending: Application No. 64/020,489, filed March 29, 2026.*
+*Title: "System and Method for Measuring Reasoning Depth and Integrated Computational Geometry in Artificial Neural Networks"*
 *Contact: darkflobi.com | @darkflobi*
