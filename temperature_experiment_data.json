@@ -1,0 +1,422 @@
+[
+  {
+    "temperature": 0.0,
+    "prompt_id": 0,
+    "prompt": "A bat and ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost? Show your work.",
+    "answer": "# Finding the Cost of the Ball\n\n**Let me set up equations:**\n\nLet b = cost of the ball\n\nThen the bat costs = b + $1\n\n**Write an equation for the total cost:**\n\nb + (b + $1) = $1.10\n\n**Solve:**\n\n2b + $1 = $1.10\n\n2b = $0.10\n\nb = $0.05\n\n**The ball costs $0.05 (or 5 cents)**\n\n**Check the answer:**\n- Ball: $0.05\n- Bat: $0.05 + $1.00 = $1.05\n- Total: $0.05 + $1.05 = $1.10 \u2713",
+    "depth": 0.0
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 1,
+    "prompt": "All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly? Explain.",
+    "answer": "# No, we cannot conclude that some roses fade quickly.\n\n## Why not?\n\nThis is a logical error. Here's the problem:\n\n**What we know:**\n- All roses are flowers (roses \u2286 flowers)\n- Some flowers fade quickly (some members of the flowers set fade quickly)\n\n**What we cannot determine:**\n- Whether the flowers that fade quickly include any roses\n\n## A concrete example\n\nImagine:\n- All roses are flowers \u2713\n- Some flowers (like daisies) fade quickly \u2713\n- But roses might last a long time \u2713\n\nThis scenario is perfectly consistent with both premises, yet contradicts the conclusion.\n\n## The logical principle\n\nFor the conclusion to work, we'd need to know that **some of the flowers that fade quickly are roses**\u2014but we only know that some flowers fade quickly. The \"some\" could refer to an entirely different subset of flowers.",
+    "depth": 0.37986340184386336
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 2,
+    "prompt": "A man is twice as old as his daughter. In 20 years he will be 1.5x her age. How old is he now?",
+    "answer": "# Setting Up the Problem\n\nLet me define:\n- d = daughter's current age\n- m = man's current age\n\n# Creating Equations\n\n**From \"A man is twice as old as his daughter\":**\n$$m = 2d$$\n\n**From \"In 20 years he will be 1.5x her age\":**\n$$m + 20 = 1.5(d + 20)$$\n\n# Solving\n\nExpanding the second equation:\n$$m + 20 = 1.5d + 30$$\n$$m = 1.5d + 10$$\n\nNow I have two expressions for m:\n$$2d = 1.5d + 10$$\n$$0.5d = 10$$\n$$d = 20$$\n\nTherefore:\n$$m = 2(20) = 40$$\n\n# Verification\n\n- Now: He",
+    "depth": 0.0
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 3,
+    "prompt": "If you have 3 red marbles and 5 blue marbles, and you draw 2 without replacement, what's the probability both are red?",
+    "answer": "# Probability Both Marbles Are Red\n\n**Setup:**\n- 3 red marbles\n- 5 blue marbles\n- Total: 8 marbles\n\n**Calculation:**\n\nSince we're drawing without replacement, the probability changes after the first draw.\n\n- P(1st marble is red) = 3/8\n- P(2nd marble is red | 1st was red) = 2/7\n\n**P(both red) = 3/8 \u00d7 2/7 = 6/56 = 3/28**\n\n**As a decimal:** \u2248 0.107 or about **10.7%**",
+    "depth": 0.08699024419802488
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 4,
+    "prompt": "Why does a mirror reverse left-right but not up-down?",
+    "answer": "# The Mirror Reversal Puzzle\n\nThis is a great question because the answer is counterintuitive: **a mirror actually reverses front-to-back, not left-to-right.**\n\nHere's what's really happening:\n\n## The Actual Reversal\n\nWhen you face a mirror, it reverses the *depth dimension* (front-to-back). Your nose points forward; its mirror image points backward. This is the only axis that gets flipped.\n\n## Why It *Feels* Like Left-Right\n\nYour brain interprets the mirror image as if it were another person *facing you*. When someone faces you:\n- Their left side appears on your right\n- Their right side appears on your left\n\nSo you perceive a left-right swap, but that's your brain's interpretation, not what the mirror actually does.\n\n## Why Not Up-Down?\n\nUp-down isn't reversed because gravity and your",
+    "depth": 0.39049235104037433
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 5,
+    "prompt": "Why does time seem to speed up as we age?",
+    "answer": "A few overlapping explanations:\n\n**Proportional theory**: A year is 1/10th of a 10-year-old's life but only 1/50th of a 50-year-old's. So proportionally, it feels smaller.\n\n**Novelty and memory**: Childhood is packed with new experiences\u2014first day of school, first kiss, moving houses. Novel events create stronger memories and feel like they take longer. Adult routines feel compressed because familiar experiences don't register as distinctly.\n\n**Attention and presence**: Kids often live in the moment. Adults tend to be on autopilot more\u2014commuting, working familiar jobs\u2014so time passes without being \"noticed.\"\n\n**Biological factors**: Some research suggests our internal clock (circadian rhythms) may actually run faster as we age, though this is less settled.\n\nThe tricky part is that this is partly *perception* (how fast it feels",
+    "depth": 0.15789570476393186
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 6,
+    "prompt": "Why does exercise improve mental health at a neurological level?",
+    "answer": "# How Exercise Improves Mental Health\n\nExercise triggers several neurological changes:\n\n## Brain Chemistry\n- **Endorphins**: Natural opioids that reduce pain perception and create mood elevation\n- **Serotonin & dopamine**: Neurotransmitters that regulate mood, motivation, and reward\u2014exercise increases their availability\n- **BDNF** (brain-derived neurotrophic factor): A protein that supports neuron growth and plasticity, particularly in memory and learning regions\n\n## Structural Changes\n- **Neurogenesis**: Exercise stimulates new neuron formation, especially in the hippocampus (crucial for memory and emotion regulation)\n- **Brain volume**: Regular activity can increase gray matter in areas linked to emotional control and decision-making\n\n## Stress Response\n- **Cortisol reduction**: Exercise helps regulate this stress hormone\n- **Nervous system balance**: Physical activity shifts you from sympathetic (",
+    "depth": 0.47485697949691524
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 7,
+    "prompt": "Why is it impossible to step in the same river twice?",
+    "answer": "This is Heraclitus's famous paradox, and the answer depends on what you mean by \"the same river.\"\n\n**The literal interpretation:** The river's water is constantly flowing, so the water you step in the second time is different from the first. In that sense, it's technically a different river.\n\n**The practical interpretation:** Despite the changing water, we still call it \"the same river\" because it has continuity\u2014same location, banks, name, and identity. So you *can* step in the same river twice in the way we normally use language.\n\n**The deeper point:** Heraclitus was highlighting that everything is in constant flux. The river is a metaphor for reality itself\u2014nothing stays static. Even you've changed between the two steps.\n\nSo the paradox works best as a philosophical observation about change and identity rather than a literal impossibility. You can wade into the Nile twice, but neither you nor",
+    "depth": 0.17534433801091018
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 8,
+    "prompt": "What would it mean for a statement to be both true and unprovable?",
+    "answer": "# True but Unprovable\n\nThis describes a statement that corresponds to reality (or follows necessarily from the axioms) yet cannot be derived through valid logical steps within a given system.\n\n## The Key Insight\n\nThe distinction hinges on separating **truth** from **provability**:\n\n- **Truth** = correspondence to what actually holds (in a model or interpretation)\n- **Provability** = derivable from axioms using allowed inference rules\n\nThese aren't the same thing. A statement can satisfy one without the other.\n\n## A Concrete Example\n\nG\u00f6del's incompleteness theorems show this actually happens:\n\nIn arithmetic, there exist statements that are:\n- **True** (they accurately describe numbers)\n- **Unprovable** (no finite proof exists within the system)\n\nThe classic example is G\u00f6del's sentence, which essentially says \"I am not provable in this system\"\u2014and",
+    "depth": 0.5722813728975176
+  },
+  {
+    "temperature": 0.0,
+    "prompt_id": 9,
+    "prompt": "Is free will compatible with determinism? Make the strongest case for yes.",
+    "answer": "# The Compatibilist Case\n\nThe strongest argument hinges on redefining what \"free will\" actually requires:\n\n## Freedom means acting on your own desires, not escaping causation\n\nWhen you deliberate and choose based on your values, reasoning, and preferences\u2014rather than being coerced or compelled against them\u2014you're exercising free will. The fact that your desires themselves have prior causes doesn't undermine this. Consider:\n\n- You're free when you do what you *want* to do\n- You're unfree when forced against your wants (coercion, addiction, compulsion)\n- Causation is what makes your character and reasoning *yours* in the first place\n\n## The alternative is incoherent\n\nIf free will required being *uncaused*, it would require randomness. But random actions aren't more \"free\"\u2014they're just unpredictable. A choice made by coin flip isn't",
+    "depth": 0.32155819359357807
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 0,
+    "prompt": "A bat and ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost? Show your work.",
+    "answer": "# Finding the Cost of the Ball\n\n**Let me set up equations:**\n\nLet b = cost of the ball\n\nThen the bat costs = b + $1\n\n**Write the equation:**\n\nball + bat = $1.10\n\nb + (b + 1) = 1.10\n\n**Solve:**\n\n2b + 1 = 1.10\n\n2b = 0.10\n\nb = $0.05\n\n**Check the answer:**\n- Ball: $0.05\n- Bat: $0.05 + $1.00 = $1.05\n- Total: $0.05 + $1.05 = $1.10 \u2713\n\n**The ball costs $0.05 (or 5 cents)**",
+    "depth": 0.0
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 1,
+    "prompt": "All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly? Explain.",
+    "answer": "# No, we cannot conclude that some roses fade quickly.\n\n## Why not?\n\nThis is a logical error. Here's the problem:\n\n**What we know:**\n- All roses are flowers (roses \u2286 flowers)\n- Some flowers fade quickly (some members of the flower category fade quickly)\n\n**What we cannot determine:**\n- Whether any of those quick-fading flowers are actually roses\n\n## A visual example\n\nImagine flowers divided into groups:\n- **Roses** (all are flowers) \u2713\n- **Tulips** (fade quickly) \u2713\n- **Daisies** (fade quickly) \u2713\n- **Orchids** (long-lasting) \u2713\n\nThe quick-fading flowers could be entirely tulips and daisies, with roses being the long-lasting ones. The premises don't tell us.\n\n## The logical principle\n\nFor the conclusion",
+    "depth": 0.4865598748818627
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 2,
+    "prompt": "A man is twice as old as his daughter. In 20 years he will be 1.5x her age. How old is he now?",
+    "answer": "# Setting Up the Problem\n\nLet me define:\n- d = daughter's current age\n- m = man's current age\n\n# Creating Equations\n\n**From \"A man is twice as old as his daughter\":**\n$$m = 2d$$\n\n**From \"In 20 years he will be 1.5x her age\":**\n$$m + 20 = 1.5(d + 20)$$\n\n# Solving\n\nExpanding the second equation:\n$$m + 20 = 1.5d + 30$$\n$$m = 1.5d + 10$$\n\nNow I have two expressions for m:\n$$2d = 1.5d + 10$$\n$$0.5d = 10$$\n$$d = 20$$\n\nTherefore:\n$$m = 2(20) = 40$$\n\n# Verification\n- Now: He",
+    "depth": 0.0
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 3,
+    "prompt": "If you have 3 red marbles and 5 blue marbles, and you draw 2 without replacement, what's the probability both are red?",
+    "answer": "# Probability Both Marbles Are Red\n\n**Total marbles:** 3 red + 5 blue = 8 marbles\n\n**Drawing without replacement:**\n\n- **First draw (red):** 3/8\n- **Second draw (red):** 2/7 (one red marble removed)\n\n**Probability both are red:**\n\n$$P(\\text{both red}) = \\frac{3}{8} \\times \\frac{2}{7} = \\frac{6}{56} = \\frac{3}{28}$$\n\n**Answer: 3/28 \u2248 0.107 or about 10.7%**",
+    "depth": 0.0072358500743909815
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 4,
+    "prompt": "Why does a mirror reverse left-right but not up-down?",
+    "answer": "# The Mirror Reversal Puzzle\n\nThis is a great question because the usual answer\u2014\"mirrors reverse left-right but not up-down\"\u2014is actually misleading.\n\n## What's really happening\n\nA mirror reverses **front-to-back** (toward and away from the mirror). It doesn't inherently care about left, right, up, or down.\n\nHere's why it *seems* to reverse left-right:\n\nWhen you face a mirror, your left and right are naturally oriented front-to-back relative to it. So when the mirror flips front-to-back, your left and right appear swapped. Your up-down, however, runs parallel to the mirror's surface, so front-to-back flipping doesn't affect it.\n\n## A thought experiment\n\nImagine lying on your side facing a mirror:\n- Now your left-right runs parallel to the mirror\n- Your up-down runs front",
+    "depth": 0.3761355734787273
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 5,
+    "prompt": "Why does time seem to speed up as we age?",
+    "answer": "A few overlapping explanations:\n\n**Proportional theory**: A year is 1/10th of a 10-year-old's life but only 1/50th of a 50-year-old's. So proportionally, it feels smaller.\n\n**Novelty and memory**: Childhood is packed with new experiences\u2014first day of school, learning to read, etc. Novel events create stronger memories and feel longer in retrospect. Adults often repeat similar routines, so time blurs together and feels like it flew by.\n\n**Attention and presence**: Kids tend to be more absorbed in the moment. Adults juggle more responsibilities and operate on autopilot more, so time passes less consciously.\n\n**Biological factors**: Some research suggests our internal \"clock\" may actually run faster as we age, though this is less settled.\n\nThe interesting part: time doesn't actually speed up\u2014our *perception* of it does.",
+    "depth": 0.15816968638026907
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 6,
+    "prompt": "Why does exercise improve mental health at a neurological level?",
+    "answer": "# How Exercise Improves Mental Health\n\nExercise triggers several neurological changes:\n\n## Brain Chemistry\n- **Endorphins**: Exercise stimulates release of these natural opioids, creating mood elevation\n- **Neurotransmitters**: Increases serotonin, dopamine, and norepinephrine\u2014all linked to mood, motivation, and focus\n- **BDNF**: Boosts brain-derived neurotrophic factor, which supports neuron growth and resilience\n\n## Structural Changes\n- **Neurogenesis**: Regular exercise promotes new neuron formation, especially in the hippocampus (memory and emotion regulation)\n- **Brain connectivity**: Strengthens connections between brain regions involved in emotional processing and stress response\n\n## Stress Response\n- **Cortisol regulation**: Exercise helps normalize stress hormone levels\n- **Amygdala**: Reduces reactivity in the brain's threat-detection",
+    "depth": 0.5412970959749046
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 7,
+    "prompt": "Why is it impossible to step in the same river twice?",
+    "answer": "This is Heraclitus's famous paradox, and the answer depends on what you mean by \"the same river.\"\n\n**The literal interpretation:** The river is constantly flowing\u2014new water passes through every moment. So the water you step in the second time is physically different from the first time. In that strict sense, it's not the same river.\n\n**The practical interpretation:** We still call it the same river because it has continuity\u2014same location, same banks, same name. The river as a *system* persists even though its contents change.\n\n**Why it matters:** This paradox highlights a deeper question about identity and change. What makes something \"the same\" thing if its parts are constantly being replaced? This applies beyond rivers\u2014your body replaces most of its cells over time, yet you're still you.\n\nMost people today would say you *can* step in the same river twice (it's the same river), but you're stepping",
+    "depth": 0.18574023614895552
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 8,
+    "prompt": "What would it mean for a statement to be both true and unprovable?",
+    "answer": "# True but Unprovable\n\nThis describes a genuine logical possibility with real examples:\n\n## What it means\n\nA statement would be **true in reality** but **not derivable from a given set of axioms** (the foundational rules you're working with). The truth exists independently of what you can demonstrate.\n\n## A concrete example\n\nG\u00f6del's Incompleteness Theorem shows this actually happens. Within formal arithmetic, there exist statements that are:\n- True (they accurately describe mathematical reality)\n- Unprovable (you cannot derive them from standard axioms)\n\nThe classic example is G\u00f6del's sentence, which essentially says \"this statement is unprovable in this system\"\u2014and it's right.\n\n## Why this matters\n\nThis reveals something counterintuitive: **truth and provability aren't the same thing**. A formal system can be:\n- Consistent (never proves something false)\n-",
+    "depth": 0.4232332556742418
+  },
+  {
+    "temperature": 0.3,
+    "prompt_id": 9,
+    "prompt": "Is free will compatible with determinism? Make the strongest case for yes.",
+    "answer": "# The Compatibilist Case\n\nThe strongest argument hinges on redefining what \"free will\" actually requires:\n\n## Freedom means acting on your own desires, not escaping causation\n\nWhen you deliberate and choose based on your values, reasoning, and preferences\u2014rather than being coerced or manipulated\u2014you're free in the way that matters. A deterministic universe doesn't undermine this. Your choice to have coffee instead of tea flows from *you*\u2014your tastes, your decision-making process\u2014even if that process is fully caused.\n\nThe alternative\u2014requiring choices to be *uncaused*\u2014is actually incoherent as a basis for responsibility. An uncaused choice is random, not free. Why would you be more responsible for a coin flip in your brain than for a decision that flows from your character and reasoning?\n\n## Practical compatibility\n\nWe care about the distinction that determinism preserves:\n- **",
+    "depth": 0.3480064693059563
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 0,
+    "prompt": "A bat and ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost? Show your work.",
+    "answer": "# Finding the Cost of the Ball\n\n**Set up the equation:**\n\nLet b = cost of the ball\n\nThen the bat costs = b + $1\n\n**Write the equation:**\n\nb + (b + $1) = $1.10\n\n**Solve:**\n\n2b + $1 = $1.10\n\n2b = $0.10\n\nb = $0.05\n\n**Answer: The ball costs $0.05 (or 5 cents)**\n\n**Check your work:**\n- Ball: $0.05\n- Bat: $0.05 + $1.00 = $1.05\n- Total: $0.05 + $1.05 = $1.10 \u2713",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 1,
+    "prompt": "All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly? Explain.",
+    "answer": "# No, we cannot conclude that some roses fade quickly.\n\n## Why not?\n\nThis is a classic logical fallor. Here's the structure:\n\n- All roses are flowers\n- Some flowers fade quickly\n- Conclusion: Some roses fade quickly \u274c\n\n## The problem\n\nJust because some flowers fade quickly doesn't tell us *which* flowers fade quickly. Those flowers that fade quickly could be:\n- Tulips\n- Daisies\n- Peonies\n- Any other flower type\n\nThere's no logical connection between \"some flowers fade quickly\" and roses specifically.\n\n## A helpful comparison\n\nConsider this parallel argument:\n- All dogs are animals\n- Some animals are dangerous\n- Therefore, some dogs are dangerous \u274c\n\nThis clearly doesn't work\u2014the dangerous animals could be sharks, snakes, or bears.\n\n## What we'd need\n\nTo conclude that some roses fade quickly, we'd need a premise like",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 2,
+    "prompt": "A man is twice as old as his daughter. In 20 years he will be 1.5x her age. How old is he now?",
+    "answer": "# Setting Up the Problem\n\nLet me define:\n- d = daughter's current age\n- m = man's current age\n\n# Creating Equations\n\n**From \"a man is twice as old as his daughter\":**\n$$m = 2d$$\n\n**From \"in 20 years he will be 1.5x her age\":**\n$$m + 20 = 1.5(d + 20)$$\n\n# Solving\n\nSubstituting m = 2d into the second equation:\n$$2d + 20 = 1.5(d + 20)$$\n\n$$2d + 20 = 1.5d + 30$$\n\n$$0.5d = 10$$\n\n$$d = 20$$\n\nTherefore:\n$$m = 2(20) = 40$$\n\n# Verification\n\n- Now: He's 40, she's 20",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 3,
+    "prompt": "If you have 3 red marbles and 5 blue marbles, and you draw 2 without replacement, what's the probability both are red?",
+    "answer": "# Probability Both Marbles Are Red\n\n**Setup:**\n- 3 red marbles\n- 5 blue marbles\n- Total: 8 marbles\n\n**Calculation:**\n\nSince we're drawing without replacement:\n\n- P(1st marble is red) = 3/8\n- P(2nd marble is red | 1st was red) = 2/7\n\n**P(both red) = 3/8 \u00d7 2/7 = 6/56 = 3/28**\n\n**\u2248 0.107 or about 10.7%**",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 4,
+    "prompt": "Why does a mirror reverse left-right but not up-down?",
+    "answer": "# The Mirror Reversal Puzzle\n\nThis is actually a great misconception to untangle. **Mirrors don't preferentially reverse left-right\u2014they reverse front-to-back.**\n\nHere's what's really happening:\n\n## The Key Insight\n\nA mirror reverses the direction *perpendicular to its surface*. When you face a mirror:\n- Your front-to-back axis gets reversed (you see yourself facing backward)\n- But we interpret this reversal as left-right because that's the axis that *appears* flipped in the image\n\n## Why It Feels Like Left-Right\n\nWhen your mirror image's left hand is on the *right side* of the mirror, your brain interprets this as \"left and right are swapped.\" But that's only because you're used to looking at people *facing the same direction as you*.\n\n**Try this:** Imagine two people standing back-to-back. The",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 5,
+    "prompt": "Why does time seem to speed up as we age?",
+    "answer": "A few overlapping explanations:\n\n**Proportional theory**: A year represents 1/10th of a 10-year-old's life but only 1/50th of a 50-year-old's. Each unit feels smaller in comparison.\n\n**Novelty and memory**: Childhood is packed with new experiences\u2014first day of school, learning to read. Novel events create more distinct memories, which our brains use to estimate duration. Routine days blur together, making stretches feel shorter in retrospect.\n\n**Attention shifts**: Kids often focus intently on single activities. Adults juggle multiple concerns, so time gets divided among them, making each moment feel thinner.\n\n**Biological factors**: Some research suggests metabolic rate and how our nervous system processes time might shift with age, though this is less settled than the psychological explanations.\n\nThe interesting catch: time doesn't actually *feel* faster in the moment\u2014you",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 6,
+    "prompt": "Why does exercise improve mental health at a neurological level?",
+    "answer": "# How Exercise Improves Mental Health\n\nExercise triggers several neurological changes:\n\n## Neurochemical shifts\n- **Endorphins** reduce pain perception and create mood elevation\n- **Dopamine** increases, enhancing motivation and reward sensation\n- **Serotonin** rises, improving mood regulation\n- **BDNF** (brain-derived neurotrophic factor) supports neuron growth and resilience\n\n## Structural brain changes\n- Increases **hippocampus volume** (critical for memory and emotion regulation)\n- Strengthens **prefrontal cortex** function (decision-making, emotional control)\n- Enhances neural connectivity across brain regions\n\n## Stress response improvements\n- Reduces **cortisol** levels over time\n- Lowers baseline nervous system arousal\n- Improves your brain's ability to recover from stress\n\n## Other mechanisms\n- Increases **blood flow",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 7,
+    "prompt": "Why is it impossible to step in the same river twice?",
+    "answer": "This is Heraclitus's famous observation, and it works on a few levels:\n\n**Literally**: The water has moved on\u2014different H\u2082O molecules occupy that spot, so it's physically not the same river.\n\n**Philosophically**: It suggests everything is in constant flux. You can't return to an identical moment or place because time keeps moving and things keep changing.\n\n**Practically**: Even if you step in the same location, you're different too (older, with different experiences), so the encounter itself is fundamentally altered.\n\nThat said, the paradox has limits. We *do* meaningfully refer to \"the same river\" over time\u2014it has continuity of identity, location, and character even as its contents change. So whether this is a profound truth or a clever play on words depends on what you think \"sameness\" really means.\n\nIt's a useful reminder that change is constant, but it doesn't quite",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 8,
+    "prompt": "What would it mean for a statement to be both true and unprovable?",
+    "answer": "# True But Unprovable Statements\n\nThis is a genuine logical possibility, though it requires careful thinking about what \"true\" and \"provable\" mean.\n\n## The Basic Idea\n\nA statement could be:\n- **True** in reality (accurately describes how things are)\n- **Unprovable** within some formal system (can't be derived from that system's axioms and rules)\n\nThese aren't contradictory because truth and provability operate at different levels.\n\n## A Concrete Example\n\nG\u00f6del's incompleteness theorems show this actually *happens*. Within any consistent formal system powerful enough to describe arithmetic:\n- There exist statements that are true (they accurately describe numbers)\n- Yet unprovable within that system\n\nThe statement roughly says: \"This statement is unprovable in this system.\" If it were provable, we'd have a contradiction, so it must be unprovable\u2014which means",
+    "depth": null
+  },
+  {
+    "temperature": 0.7,
+    "prompt_id": 9,
+    "prompt": "Is free will compatible with determinism? Make the strongest case for yes.",
+    "answer": "# The Compatibilist Case\n\nThe strongest argument goes like this:\n\n**Free will doesn't require being uncaused\u2014it requires acting on your own desires without external constraint.**\n\nWhen you deliberate and choose based on your values, reasoning, and preferences, you're exercising free will. That this process is *itself* determined by your character and circumstances doesn't undermine it\u2014it's what makes it *yours*.\n\nConsider:\n- A chess player's move is determined by the rules, their skill, and their strategy. We don't call this less free.\n- You act freely when you do what you actually want to do. You act unfreely when coerced against your wants.\n- The alternative\u2014uncaused choices\u2014is incoherent: a random neural firing isn't \"freer,\" it's just not determined by *you*.\n\n**The key insight**: \"Free\" and \"determined by my own character\"",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 0,
+    "prompt": "A bat and ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost? Show your work.",
+    "answer": "# Finding the Cost of the Ball\n\n**Let me set up equations:**\n\nLet b = cost of the ball\n\nThen (b + 1) = cost of the bat\n\n**Write the equation:**\n\nb + (b + 1) = 1.10\n\n**Solve:**\n\n2b + 1 = 1.10\n\n2b = 0.10\n\nb = 0.05\n\n**Answer: The ball costs $0.05 (or 5 cents)**\n\n**Check:**\n- Ball: $0.05\n- Bat: $0.05 + $1.00 = $1.05\n- Total: $0.05 + $1.05 = $1.10 \u2713",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 1,
+    "prompt": "All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly? Explain.",
+    "answer": "# No, we cannot conclude that some roses fade quickly.\n\n## Why not?\n\nThis is a logical error. Here's the problem:\n\n**The statements tell us:**\n- All roses \u2192 flowers\n- Some flowers \u2192 fade quickly\n\n**But we don't know which flowers fade quickly.** The flowers that fade quickly could be tulips, daisies, and peonies\u2014with *no roses among them*.\n\n## Visual example\n\nImagine:\n- All roses are in the \"flowers\" category \u2713\n- Some flowers (say, 5 daisies out of 100 total flowers) fade quickly \u2713\n- Zero roses fade quickly \u2713\n\nBoth premises are true, but the conclusion is false.\n\n## The logical principle\n\nJust because Group A is part of Group B, and Group B has some members with Property X, doesn't mean Group A's members have Property X. You'd need to know specifically",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 2,
+    "prompt": "A man is twice as old as his daughter. In 20 years he will be 1.5x her age. How old is he now?",
+    "answer": "# Setting Up the Problem\n\nLet me define:\n- d = daughter's current age\n- m = man's current age\n\n# Creating Equations\n\n**From \"A man is twice as old as his daughter\":**\n$$m = 2d$$\n\n**From \"In 20 years he will be 1.5x her age\":**\n$$m + 20 = 1.5(d + 20)$$\n\n# Solving\n\nExpanding the second equation:\n$$m + 20 = 1.5d + 30$$\n$$m = 1.5d + 10$$\n\nNow I have two expressions for m:\n$$2d = 1.5d + 10$$\n$$0.5d = 10$$\n$$d = 20$$\n\nTherefore:\n$$m = 2(20) = 40$$\n\n# Verification\n\n- Now: He",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 3,
+    "prompt": "If you have 3 red marbles and 5 blue marbles, and you draw 2 without replacement, what's the probability both are red?",
+    "answer": "# Probability Both Marbles Are Red\n\n**Total marbles:** 3 red + 5 blue = 8 marbles\n\n## Calculating the probability:\n\n**First draw:** P(red) = 3/8\n\n**Second draw:** P(red | first was red) = 2/7\n- (Now only 2 red marbles left out of 7 total)\n\n**Both red:** \n$$P(\\text{both red}) = \\frac{3}{8} \\times \\frac{2}{7} = \\frac{6}{56} = \\frac{3}{28}$$\n\n**Answer: 3/28 \u2248 0.107 or about 10.7%**",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 4,
+    "prompt": "Why does a mirror reverse left-right but not up-down?",
+    "answer": "# The Mirror's Actual Behavior\n\nHere's the counterintuitive part: **a mirror doesn't actually reverse left-right specifically**. It reverses front-to-back (the direction perpendicular to the mirror's surface).\n\n## Why it *seems* like left-right reversal\n\nWhen you face a mirror:\n- Your right side is on the right side of the mirror image\n- Your left side is on the left side of the mirror image\n\nBut imagine a person standing *behind* the mirror facing the same direction as you. From their perspective, their left side would be on your right. The mirror creates this front-to-back flip, which our brains interpret as left-right reversal because **we're used to thinking about what other people see when facing us**.\n\n## Why up-down isn't reversed\n\nUp and down run parallel to the mirror's surface, so they're unaffected by the front-to",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 5,
+    "prompt": "Why does time seem to speed up as we age?",
+    "answer": "A few overlapping explanations:\n\n**Proportional theory**: A year is 5% of a 20-year-old's life but only 1% of an 80-year-old's. So proportionally, it feels shorter\u2014though this doesn't explain *experience* as clearly as it sounds.\n\n**Novelty and memory**: When you're young, most experiences are new, so your brain encodes them in detail. Routine experiences create fewer distinct memories. As adults, more days blur together, making time feel like it flew.\n\n**Attention and presence**: Kids often live in the moment. Adults are usually thinking about the future or past, which can make the present feel rushed and compress how we perceive it passing.\n\n**Changed expectations**: You notice time more when you're waiting for something or paying attention to its passage. As an adult with more autonomy, you might check the clock less frequently.\n\nWorth noting: the",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 6,
+    "prompt": "Why does exercise improve mental health at a neurological level?",
+    "answer": "# Exercise and Mental Health: The Neurology\n\nExercise triggers several interconnected neurological changes:\n\n## Neurochemical shifts\n- **Endorphins and endocannabinoids** reduce pain perception and create mood elevation\n- **Dopamine** improves motivation and reward processing\n- **Serotonin** stabilizes mood; low levels link to depression\n- **BDNF** (brain-derived neurotrophic factor) promotes neuron growth and resilience\n\n## Structural brain changes\n- Exercise increases **hippocampus volume**, crucial for memory and emotional regulation\n- Strengthens **prefrontal cortex** function, improving impulse control and perspective\n- Enhances connectivity between brain regions that manage stress\n\n## Stress system regulation\n- Reduces **cortisol** (stress hormone) over time\n- Calms the amygdala's threat response\n- Helps balance your",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 7,
+    "prompt": "Why is it impossible to step in the same river twice?",
+    "answer": "The classic answer comes from the ancient Greek philosopher Heraclitus: the river is constantly flowing, so the water you step in is always changing. By the time you step in again, it's literally different water.\n\nBut there are interesting layers to unpack:\n\n**The literal version** works well\u2014the water molecules have moved downstream.\n\n**A deeper philosophical question** is whether \"sameness\" matters. Is a river defined by its water, or by its location, channel, and name? If it's the latter, you *can* step in the same river twice.\n\n**The real insight** Heraclitus was driving at is about **constant change**\u2014that stability and identity exist amid flux. The river maintains its identity as a river despite perpetual change.\n\nModern physics adds another wrinkle: even *you* have changed at the molecular level since your last step, so it's not just the river that's different.\n\nSo",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 8,
+    "prompt": "What would it mean for a statement to be both true and unprovable?",
+    "answer": "# True but Unprovable Statements\n\nThis describes a real phenomenon in logic, most famously shown by G\u00f6del's incompleteness theorems.\n\n## The Basic Idea\n\nA statement could be **true in reality** but **unprovable within a given formal system**\u2014meaning you can't derive it from the system's axioms and rules, no matter how hard you try.\n\n## Why This Matters\n\nThe key insight is that **truth and provability are different things**:\n\n- **Truth** = corresponds to how things actually are\n- **Provability** = can be derived from a particular set of axioms and rules\n\nA formal system might be perfectly consistent and rigorous, yet still be incomplete\u2014unable to prove all true statements within its domain.\n\n## A Simple Example\n\nG\u00f6del constructed statements that essentially say \"I am not provable in this system.\" Such a statement:\n- Cannot be proven true",
+    "depth": null
+  },
+  {
+    "temperature": 1.0,
+    "prompt_id": 9,
+    "prompt": "Is free will compatible with determinism? Make the strongest case for yes.",
+    "answer": "# The Compatibilist Case\n\nThe strongest argument hinges on redefining freedom to match how we actually use the term.\n\n## What We Actually Care About\n\nWhen you deliberate about a choice, feel responsible for an action, or praise someone's decision, you're not checking whether it violates physical laws. You care about:\n\n- **Acting on your own desires** (not external coercion)\n- **Responding to reasons** (not acting randomly)\n- **Having the capacity to reflect** on your values\n\nA determined choice that flows from *your* reasoning is meaningfully \"yours\" in every way that matters practically and morally.\n\n## The Core Insight\n\nIndeterminism doesn't help. A random quantum fluctuation in your brain isn't more \"free\"\u2014it's just less connected to who you are. True freedom requires both:\n\n1. **Absence of external constraint** (determinism allows this)",
+    "depth": null
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 0,
+    "prompt": "A bat and ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost? Show your work.",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CYjY5F5YsRGaAkd2f'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 1,
+    "prompt": "All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly? Explain.",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CZrWaq2ei6F4DmdLG'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 2,
+    "prompt": "A man is twice as old as his daughter. In 20 years he will be 1.5x her age. How old is he now?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CavkWZK63cN4Pxc26'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 3,
+    "prompt": "If you have 3 red marbles and 5 blue marbles, and you draw 2 without replacement, what's the probability both are red?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CbzFN3uY4kwYVpjZe'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 4,
+    "prompt": "Why does a mirror reverse left-right but not up-down?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4Cd4zAtQvdDZgb5QhE'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 5,
+    "prompt": "Why does time seem to speed up as we age?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CeAU4oMvQj28GzejX'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 6,
+    "prompt": "Why does exercise improve mental health at a neurological level?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CfGh7ZGR1JtGV9hjB'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 7,
+    "prompt": "Why is it impossible to step in the same river twice?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CgPAZuprbKZ5rPvDC'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 8,
+    "prompt": "What would it mean for a statement to be both true and unprovable?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4ChTuEVREjSC2Vw9TB'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 1.5,
+    "prompt_id": 9,
+    "prompt": "Is free will compatible with determinism? Make the strongest case for yes.",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CimHjENEosfmFJRRR'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 0,
+    "prompt": "A bat and ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost? Show your work.",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4Ck89CdWWD58PJhQSa'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 1,
+    "prompt": "All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly? Explain.",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CmH6WAEHLsiAoi54T'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 2,
+    "prompt": "A man is twice as old as his daughter. In 20 years he will be 1.5x her age. How old is he now?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CnMqGqvnuTaNr2Mzy'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 3,
+    "prompt": "If you have 3 red marbles and 5 blue marbles, and you draw 2 without replacement, what's the probability both are red?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CoX2x7rSPeFvCXAmg'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 4,
+    "prompt": "Why does a mirror reverse left-right but not up-down?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CpjxV9wvULZPXGJMy'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 5,
+    "prompt": "Why does time seem to speed up as we age?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4Cr4LDyP5xAsMFq5Mp'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 6,
+    "prompt": "Why does exercise improve mental health at a neurological level?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CsAZCwCWSe7wKGHTK'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 7,
+    "prompt": "Why is it impossible to step in the same river twice?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CtGHmu8LD1BbtLJfF'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 8,
+    "prompt": "What would it mean for a statement to be both true and unprovable?",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CuMmqt3LyjqYaKL7p'}",
+    "depth": 0.0
+  },
+  {
+    "temperature": 2.0,
+    "prompt_id": 9,
+    "prompt": "Is free will compatible with determinism? Make the strongest case for yes.",
+    "answer": "ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'temperature: range: 0..1'}, 'request_id': 'req_011CZX4CvWUTuHipUrzz5mye'}",
+    "depth": 0.0
+  }
+]
