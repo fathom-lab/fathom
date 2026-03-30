@@ -1,0 +1,1736 @@
+C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py:233: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py:554: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py:629: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py:857: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("shutdown")
+INFO:     Started server process [74628]
+INFO:     Waiting for application startup.
+Fetching 26 files:   0%|          | 0/26 [00:00<?, ?it/s]Fetching 26 files: 100%|##########| 26/26 [00:00<00:00, 12999.39it/s]
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|###3      | 1/3 [00:29<00:59, 29.78s/it]Loading checkpoint shards:  67%|######6   | 2/3 [01:06<00:33, 33.62s/it]Loading checkpoint shards: 100%|##########| 3/3 [01:07<00:00, 19.08s/it]Loading checkpoint shards: 100%|##########| 3/3 [01:07<00:00, 22.63s/it]
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8400 (Press CTRL+C to quit)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 198, in _run_attribution
+    rows = ctx.compute_batch(
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\context_transformerlens.py", line 223, in compute_batch
+    self._resid_activations[last_layer].backward(
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\autograd\__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\autograd\graph.py", line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\utils\hooks.py", line 139, in hook
+    out = hook(self.module, res, self.grad_outputs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformer_lens\hook_points.py", line 100, in full_hook
+    return hook(module_output, hook=self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\context_transformerlens.py", line 109, in _hook_fn
+    grads.to(output_vecs.dtype)[read_index],
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 113, in attribute
+    reload_handle()
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\utils\disk_offload.py", line 53, in reload_handle
+    module.to(device=org_device)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\nn\modules\module.py", line 1340, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\nn\modules\module.py", line 900, in _apply
+    module._apply(fn)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\nn\modules\module.py", line 900, in _apply
+    module._apply(fn)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\nn\modules\module.py", line 900, in _apply
+    module._apply(fn)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\nn\modules\module.py", line 927, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\torch\nn\modules\module.py", line 1326, in convert
+    return t.to(
+           ^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:65311', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:65319', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:65326', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:65328', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:65336', 'POST', '/v2/fathom_score', '1.1', 503)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:54516', 'POST', '/v2/fathom_score', '1.1', 503)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:60675', 'POST', '/v2/fathom_score', '1.1', 503)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:57545', 'GET', '/v2/health', '1.1', 200)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:61346', 'GET', '/v2/health', '1.1', 200)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:57332', 'GET', '/v2/health', '1.1', 200)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:51710', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:51901', 'GET', '/v2/health', '1.1', 200)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:51916', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:51928', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 526, in fathom_score_endpoint
+    depth_result = scorer.score(req.prompt, target=req.target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 432, in score
+    result = self._extract_features(prompt, target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 286, in _extract_features
+    graph = attribute(
+            ^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute.py", line 81, in attribute
+    return attribute_transformerlens(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 97, in attribute
+    return _run_attribution(
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\attribution\attribute_transformerlens.py", line 137, in _run_attribution
+    input_ids = model.ensure_tokenized(prompt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 387, in ensure_tokenized
+    tokens = tokens.to(self.cfg.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 541, in fathom_score_endpoint
+    raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+fastapi.exceptions.HTTPException: 503: GPU out of memory. Try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 63, in wrapped_app
+    await response(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:51954', 'POST', '/v2/fathom_score', '1.1', 503)
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1164, in emit
+    self.flush()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\logging\__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 22] Invalid argument
+Call stack:
+  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_api_v2.py", line 892, in <module>
+    server.run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\responses.py", line 166, in __call__
+    await send({"type": "http.response.start", "status": self.status_code, "headers": self.raw_headers})
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 39, in sender
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 161, in _send
+    await send(message)
+  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 483, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:56781', 'GET', '/v2/health', '1.1', 200)

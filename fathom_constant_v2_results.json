@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-27 12:54:51",
+  "duration_s": 624.1,
+  "n_pairs": 30,
+  "pair_source": "paper power replication set (p=0.000051)",
+  "constant": {
+    "constant": 1.0212,
+    "convergent": true,
+    "spread": 0.0282,
+    "n_models": 2,
+    "ratios": {
+      "google/gemma-2-2b": 1.0302,
+      "Qwen/Qwen3-0.6B": 1.002
+    },
+    "total_pairs": 44
+  },
+  "models": [
+    {
+      "model_name": "google/gemma-2-2b",
+      "transcoder_set": "gemma",
+      "n_pairs": 30,
+      "surface_mean": 8.2076,
+      "insight_mean": 7.9668,
+      "delta": 0.2408,
+      "ratio": 1.0302,
+      "pct_expected_direction": 0.7667,
+      "compute_time_s": 472.0,
+      "error": null
+    },
+    {
+      "model_name": "Qwen/Qwen3-0.6B",
+      "transcoder_set": "mwhanna/qwen3-0.6b-transcoders-lowl0",
+      "n_pairs": 14,
+      "surface_mean": 12.3672,
+      "insight_mean": 12.3419,
+      "delta": 0.0253,
+      "ratio": 1.002,
+      "pct_expected_direction": 0.7143,
+      "compute_time_s": 621.84,
+      "error": null
+    }
+  ]
+}

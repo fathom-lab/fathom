@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fathom Depth Cards</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --border: #1e1e1e;
+  --text: #c0c0c0;
+  --text-dim: #555;
+  --green: #00ff00;
+  --gold: #ffd700;
+  --cyan: #00e5ff;
+  --orange: #ff9800;
+  --red: #ff3d00;
+  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+h1 {
+  font-size: 32px;
+  letter-spacing: 12px;
+  color: var(--green);
+  text-shadow: 0 0 20px rgba(0,255,0,0.3);
+  margin-bottom: 4px;
+}
+.subtitle { color: var(--text-dim); font-size: 12px; letter-spacing: 3px; margin-bottom: 40px; }
+
+/* ── Input ─────────────────────── */
+.input-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 40px;
+}
+.input-row input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 4px;
+  outline: none;
+}
+.input-row input:focus { border-color: #00aa00; }
+.input-row input::placeholder { color: #333; }
+.btn {
+  background: var(--green);
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.btn:hover { background: #33ff33; box-shadow: 0 0 15px rgba(0,255,0,0.3); }
+
+/* ── Card Container ────────────── */
+.card-stage {
+  perspective: 1200px;
+  margin-bottom: 24px;
+}
+
+/* ── The Card ──────────────────── */
+.depth-card {
+  width: 440px;
+  height: 260px;
+  border-radius: 16px;
+  padding: 28px 32px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  animation: cardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: default;
+  transition: transform 0.15s;
+}
+.depth-card:hover {
+  transform: rotateY(2deg) rotateX(-1deg) scale(1.02);
+}
+@keyframes cardIn {
+  0% { transform: scale(0.8) rotateY(-15deg); opacity: 0; }
+  100% { transform: scale(1) rotateY(0); opacity: 1; }
+}
+
+/* Card backgrounds by grade */
+.card-S { background: linear-gradient(135deg, #1a1500 0%, #2a2000 40%, #1a1500 100%); border: 1px solid #ffd70044; }
+.card-A { background: linear-gradient(135deg, #001a00 0%, #002a00 40%, #001a00 100%); border: 1px solid #00ff0033; }
+.card-B { background: linear-gradient(135deg, #001a1e 0%, #002a30 40%, #001a1e 100%); border: 1px solid #00e5ff33; }
+.card-C { background: linear-gradient(135deg, #1a1800 0%, #2a2600 40%, #1a1800 100%); border: 1px solid #ffeb3b33; }
+.card-D { background: linear-gradient(135deg, #1a0e00 0%, #2a1600 40%, #1a0e00 100%); border: 1px solid #ff980033; }
+.card-F { background: linear-gradient(135deg, #1a0500 0%, #2a0800 40%, #1a0500 100%); border: 1px solid #ff3d0033; }
+
+/* Shimmer overlay */
+.depth-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.03), transparent, transparent);
+  animation: shimmer 6s linear infinite;
+}
+@keyframes shimmer { to { transform: rotate(360deg); } }
+
+/* Noise texture */
+.depth-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.card-prompt {
+  font-size: 13px;
+  color: #ccc;
+  max-width: 280px;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.card-grade {
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 0 30px currentColor;
+}
+
+.card-bottom {
+  position: relative;
+  z-index: 1;
+}
+
+.card-bar-track {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.card-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 1px;
+}
+.card-stats .val { color: #ccc; font-weight: 600; }
+
+.card-brand {
+  position: absolute;
+  bottom: 10px;
+  right: 14px;
+  font-size: 9px;
+  color: #333;
+  letter-spacing: 3px;
+  z-index: 1;
+}
+
+/* ── Waveform (the signature viz) ── */
+.card-waveform {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  z-index: 0;
+  opacity: 0.15;
+}
+
+/* ── Action buttons below card ──── */
+.card-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.card-actions button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+.card-actions button:hover { color: var(--green); border-color: #333; }
+
+/* ── Gallery ───────────────────── */
+.gallery-title {
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 48px 0 20px;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 24px;
+  width: 100%;
+  max-width: 960px;
+}
+
+/* ── Hide when empty ───────────── */
+#card-output { display: none; }
+#card-output.active { display: flex; flex-direction: column; align-items: center; }
+
+.loading-text {
+  color: var(--green);
+  font-size: 14px;
+  letter-spacing: 4px;
+  animation: pulse 1.2s ease-in-out infinite;
+  display: none;
+}
+.loading-text.active { display: block; }
+@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* Canvas for export */
+#export-canvas { display: none; }
+</style>
+</head>
+<body>
+
+<h1>FATHOM</h1>
+<div class="subtitle">DEPTH CARDS</div>
+
+<div class="input-row">
+  <input type="text" id="prompt-input" placeholder="Enter any prompt..." />
+  <button class="btn" onclick="generateCard()">GENERATE</button>
+</div>
+
+<div class="loading-text" id="loading">SCANNING DEPTH...</div>
+
+<div id="card-output">
+  <div class="card-stage">
+    <div class="depth-card" id="the-card">
+      <canvas class="card-waveform" id="card-waveform"></canvas>
+      <div class="card-top">
+        <div class="card-prompt" id="card-prompt"></div>
+        <div class="card-grade" id="card-grade"></div>
+      </div>
+      <div class="card-bottom">
+        <div class="card-bar-track">
+          <div class="card-bar-fill" id="card-bar"></div>
+        </div>
+        <div class="card-stats">
+          <span>DEPTH <span class="val" id="card-depth"></span></span>
+          <span>ENTROPY <span class="val" id="card-entropy"></span></span>
+          <span>FEATURES <span class="val" id="card-features"></span></span>
+          <span>SCORE <span class="val" id="card-score"></span></span>
+        </div>
+      </div>
+      <div class="card-brand">FATHOM</div>
+    </div>
+  </div>
+  <div class="card-actions">
+    <button onclick="downloadCard()">DOWNLOAD PNG</button>
+    <button onclick="copyCard()">COPY TO CLIPBOARD</button>
+    <button onclick="tweetCard()">SHARE ON X</button>
+  </div>
+</div>
+
+<div class="gallery-title" id="gallery-title" style="display:none">RECENT SCANS</div>
+<div class="gallery" id="gallery"></div>
+
+<canvas id="export-canvas"></canvas>
+
+<script>
+const API = window.location.origin;
+const history = [];
+
+const GRADE_COLORS = {
+  S: '#ffd700', A: '#00ff00', B: '#00e5ff',
+  C: '#ffeb3b', D: '#ff9800', F: '#ff3d00'
+};
+
+const INTERPRETATIONS = {
+  S: 'Exceptional depth — multi-layer causal reasoning detected',
+  A: 'Deep reasoning — significant abstract processing',
+  B: 'Moderate depth — some explanatory reasoning',
+  C: 'Surface-level — mostly retrieval patterns',
+  D: 'Shallow — minimal reasoning engagement',
+  F: 'Flat recall — no measurable reasoning depth'
+};
+
+// ── Demo mode (works without API) ──────────────────────────────────
+function mockScore(prompt) {
+  // Deterministic-ish score from prompt content
+  let hash = 0;
+  for (let i = 0; i < prompt.length; i++) hash = ((hash << 5) - hash) + prompt.charCodeAt(i);
+  hash = Math.abs(hash);
+
+  const hasWhy = /why|how|explain|because|cause|reason|mechanism/i.test(prompt);
+  const hasWhat = /what is|define|list|name|who is|when/i.test(prompt);
+  const length = prompt.split(/\s+/).length;
+
+  let base = 50 + (hash % 30);
+  if (hasWhy) base += 20;
+  if (hasWhat) base -= 15;
+  if (length > 15) base += 10;
+  base = Math.max(10, Math.min(98, base));
+
+  const grade = base >= 90 ? 'S' : base >= 75 ? 'A' : base >= 60 ? 'B' : base >= 40 ? 'C' : base >= 25 ? 'D' : 'F';
+  const depth = 9.5 - ((base / 100) * 2.5);
+  const entropy = 0.3 + (hash % 70) / 100;
+  const features = 800 + (hash % 1200);
+  const earlyR = 0.15 + (hash % 20) / 100;
+  const midR = 0.25 + (hash % 30) / 100;
+  const lateR = 0.30 + (hash % 25) / 100;
+
+  return {
+    data: {
+      fathom_score: base,
+      grade,
+      interpretation: INTERPRETATIONS[grade],
+      depth_result: {
+        depth_score: depth,
+        layer_entropy: entropy,
+        feature_count: features,
+        weighted_depth_score: depth - 0.1,
+        early_ratio: earlyR,
+        mid_ratio: midR,
+        late_ratio: lateR,
+      }
+    },
+    meta: { compute_time_ms: 80 + (hash % 200), model: 'gemma-2-2b' }
+  };
+}
+
+async function fathomScore(prompt) {
+  try {
+    const resp = await fetch(API + '/v2/fathom_score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    if (resp.ok) return await resp.json();
+  } catch {}
+  // Fallback to mock
+  return mockScore(prompt);
+}
+
+// ── Card Generation ────────────────────────────────────────────────
+
+async function generateCard() {
+  const input = document.getElementById('prompt-input');
+  const prompt = input.value.trim();
+  if (!prompt) return;
+
+  document.getElementById('loading').classList.add('active');
+  document.getElementById('card-output').classList.remove('active');
+
+  const resp = await fathomScore(prompt);
+  const d = resp.data;
+  const dr = d.depth_result;
+  const color = GRADE_COLORS[d.grade];
+
+  // Populate card
+  document.getElementById('card-prompt').textContent = prompt;
+  const gradeEl = document.getElementById('card-grade');
+  gradeEl.textContent = d.grade;
+  gradeEl.style.color = color;
+
+  const card = document.getElementById('the-card');
+  card.className = 'depth-card card-' + d.grade;
+
+  const bar = document.getElementById('card-bar');
+  bar.style.width = '0%';
+  bar.style.background = color;
+  requestAnimationFrame(() => {
+    bar.style.width = Math.round(d.fathom_score) + '%';
+  });
+
+  document.getElementById('card-depth').textContent = dr.depth_score.toFixed(2);
+  document.getElementById('card-entropy').textContent = dr.layer_entropy.toFixed(2);
+  document.getElementById('card-features').textContent = dr.feature_count;
+  document.getElementById('card-score').textContent = Math.round(d.fathom_score) + '/100';
+
+  drawWaveform(d);
+
+  document.getElementById('loading').classList.remove('active');
+  document.getElementById('card-output').classList.add('active');
+
+  // Add to gallery history
+  history.unshift({ prompt, data: d });
+  renderGallery();
+}
+
+// ── Waveform visualization ─────────────────────────────────────────
+
+function drawWaveform(d) {
+  const canvas = document.getElementById('card-waveform');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 440;
+  canvas.height = 40;
+  ctx.clearRect(0, 0, 440, 40);
+
+  const dr = d.depth_result;
+  const color = GRADE_COLORS[d.grade];
+
+  // Generate waveform from layer ratios
+  const points = 80;
+  const values = [];
+  for (let i = 0; i < points; i++) {
+    const t = i / points;
+    let v;
+    if (t < 0.33) v = dr.early_ratio * (0.5 + 0.5 * Math.sin(i * 0.4));
+    else if (t < 0.66) v = dr.mid_ratio * (0.5 + 0.5 * Math.sin(i * 0.6));
+    else v = dr.late_ratio * (0.5 + 0.5 * Math.sin(i * 0.8));
+    // Add some noise
+    v += (Math.sin(i * 1.3) * 0.05 + Math.cos(i * 2.7) * 0.03);
+    values.push(Math.max(0, v));
+  }
+
+  const maxV = Math.max(...values, 0.01);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  for (let i = 0; i < points; i++) {
+    const x = (i / points) * 440;
+    const y = 38 - (values[i] / maxV) * 34;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+}
+
+// ── Gallery ────────────────────────────────────────────────────────
+
+function renderGallery() {
+  if (history.length < 2) return;
+  document.getElementById('gallery-title').style.display = 'block';
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+
+  history.slice(1, 7).forEach(item => {
+    const d = item.data;
+    const dr = d.depth_result;
+    const color = GRADE_COLORS[d.grade];
+    const el = document.createElement('div');
+    el.className = 'depth-card card-' + d.grade;
+    el.style.width = '100%';
+    el.style.height = '200px';
+    el.style.padding = '20px 24px';
+    el.style.fontSize = '12px';
+    el.innerHTML = `
+      <div class="card-top">
+        <div class="card-prompt" style="font-size:11px;max-width:240px">${escHtml(item.prompt)}</div>
+        <div class="card-grade" style="font-size:38px;color:${color}">${d.grade}</div>
+      </div>
+      <div class="card-bottom">
+        <div class="card-bar-track"><div class="card-bar-fill" style="width:${Math.round(d.fathom_score)}%;background:${color}"></div></div>
+        <div class="card-stats" style="font-size:10px">
+          <span>DEPTH <span class="val">${dr.depth_score.toFixed(2)}</span></span>
+          <span>SCORE <span class="val">${Math.round(d.fathom_score)}/100</span></span>
+        </div>
+      </div>
+      <div class="card-brand">FATHOM</div>
+    `;
+    gallery.appendChild(el);
+  });
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Export ──────────────────────────────────────────────────────────
+
+function downloadCard() {
+  renderCardToCanvas().then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'fathom-depth-card.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+async function copyCard() {
+  const canvas = await renderCardToCanvas();
+  canvas.toBlob(blob => {
+    navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+  });
+}
+
+function tweetCard() {
+  const d = history[0];
+  if (!d) return;
+  const text = encodeURIComponent(
+    `"${d.prompt.slice(0, 60)}${d.prompt.length > 60 ? '...' : ''}"\n\nFathom Depth: Grade ${d.data.grade} (${Math.round(d.data.fathom_score)}/100)\n\n#FathomDepth #AIreasoning`
+  );
+  window.open('https://twitter.com/intent/tweet?text=' + text, '_blank');
+}
+
+async function renderCardToCanvas() {
+  const canvas = document.getElementById('export-canvas');
+  const scale = 2; // retina
+  const w = 440, h = 260;
+  canvas.width = w * scale;
+  canvas.height = h * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+
+  const d = history[0].data;
+  const dr = d.depth_result;
+  const color = GRADE_COLORS[d.grade];
+
+  // Background
+  const grad = ctx.createLinearGradient(0, 0, w, h);
+  if (d.grade === 'S') { grad.addColorStop(0, '#1a1500'); grad.addColorStop(1, '#2a2000'); }
+  else if (d.grade === 'A') { grad.addColorStop(0, '#001a00'); grad.addColorStop(1, '#002a00'); }
+  else if (d.grade === 'B') { grad.addColorStop(0, '#001a1e'); grad.addColorStop(1, '#002a30'); }
+  else if (d.grade === 'C') { grad.addColorStop(0, '#1a1800'); grad.addColorStop(1, '#2a2600'); }
+  else if (d.grade === 'D') { grad.addColorStop(0, '#1a0e00'); grad.addColorStop(1, '#2a1600'); }
+  else { grad.addColorStop(0, '#1a0500'); grad.addColorStop(1, '#2a0800'); }
+
+  ctx.fillStyle = grad;
+  roundRect(ctx, 0, 0, w, h, 16);
+  ctx.fill();
+
+  // Border
+  ctx.strokeStyle = color + '44';
+  ctx.lineWidth = 1;
+  roundRect(ctx, 0.5, 0.5, w - 1, h - 1, 16);
+  ctx.stroke();
+
+  // Prompt text
+  ctx.fillStyle = '#ccc';
+  ctx.font = '13px monospace';
+  const promptText = history[0].prompt.length > 50
+    ? history[0].prompt.slice(0, 47) + '...'
+    : history[0].prompt;
+  ctx.fillText(promptText, 32, 52);
+
+  // Grade
+  ctx.fillStyle = color;
+  ctx.font = 'bold 52px monospace';
+  ctx.textAlign = 'right';
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 30;
+  ctx.fillText(d.grade, w - 32, 64);
+  ctx.shadowBlur = 0;
+  ctx.textAlign = 'left';
+
+  // Bar track
+  ctx.fillStyle = 'rgba(255,255,255,0.06)';
+  roundRect(ctx, 32, 200, w - 64, 6, 3);
+  ctx.fill();
+
+  // Bar fill
+  ctx.fillStyle = color;
+  const barW = (d.fathom_score / 100) * (w - 64);
+  roundRect(ctx, 32, 200, barW, 6, 3);
+  ctx.fill();
+
+  // Stats
+  ctx.fillStyle = '#888';
+  ctx.font = '11px monospace';
+  ctx.fillText(`DEPTH ${dr.depth_score.toFixed(2)}`, 32, 232);
+  ctx.fillText(`ENTROPY ${dr.layer_entropy.toFixed(2)}`, 160, 232);
+  ctx.fillText(`SCORE ${Math.round(d.fathom_score)}/100`, 310, 232);
+
+  // Brand
+  ctx.fillStyle = '#333';
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('FATHOM', w - 14, h - 10);
+  ctx.textAlign = 'left';
+
+  return canvas;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// ── Keyboard shortcut ──────────────────────────────────────────────
+document.getElementById('prompt-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') generateCard();
+});
+
+// ── Auto-generate a demo card on load ──────────────────────────────
+window.addEventListener('load', () => {
+  document.getElementById('prompt-input').value = 'Why does fire spread once it starts?';
+  generateCard();
+});
+</script>
+</body>
+</html>

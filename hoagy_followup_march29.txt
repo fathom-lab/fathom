@@ -1,0 +1,54 @@
+To: Hoagy Cunningham (hoagycunningham@gmail.com)
+Subject: Re: arXiv endorsement - Fathom update (cross-arch confirmed, 48hrs later)
+
+Hi Hoagy,
+
+Thank you for the honest feedback on March 27. You said:
+- "initial experiment, signs of life"
+- "no ablation, no feature analysis, no engagement with literature"
+- "paper bulked out by surface level stuff"
+
+You were right. Here's what changed in 48 hours:
+
+1. CROSS-ARCHITECTURE REPLICATION
+We replicated on Llama-3.2-1B (Meta, 16 layers vs Gemma's 26):
+  - p = 0.00266, n = 19 valid pairs, Cohen's d = 0.73
+  - 78.9% of pairs in predicted direction
+  - Full leave-one-out robustness (worst-case p = 0.0056)
+
+2. THE FATHOM CONSTANT
+The ratio of surface-to-insight mean depth converges across architectures:
+  - Gemma-2-2B: K = 1.0302
+  - Llama-3.2-1B: K = 1.0242
+  - Two-model estimate: K = 1.027 ± 0.003
+
+Different labs, different tokenizers, different layer counts. Same ratio.
+
+3. ABLATION + FEATURE ANALYSIS
+Temperature sweep (stochastic resonance by task type), confound controls
+across 5 dimensions (log-prob r=0.001, p=0.996), feature visualization data
+generated, adversarial and hallucination experiments completed.
+
+4. LITERATURE
+We've added citations to the papers you mentioned ("Base Models Know How to
+Reason, Thinking Models Learn When" + related SAE reasoning work). Happy to
+add more if you see gaps.
+
+5. PATENT
+USPTO Provisional Patent 64/020,489 filed this morning before outreach.
+The measurement method, the universality constant, and stochastic resonance
+application are all covered.
+
+The paper has been updated with a full cross-architecture section, updated
+abstract, contributions, and conclusion. I can send the updated PDF.
+
+I understand if the endorsement still isn't the right call - you'd said Mistral
+would be the right third architecture to confirm universality, and that's next.
+But I wanted you to see what "do a deeper investigation" looked like in practice.
+
+The endorsement code is still XOZS9V (cs.LG) if you'd like to reconsider.
+Either way, thank you for the initial feedback. It made the paper better.
+
+- Alex (darkflobi)
+  github.com/heyzoos123-blip/sae-reasoning-depth
+  darkflobi.com/fathom

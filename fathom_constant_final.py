@@ -311,6 +311,13 @@ MODELS = [
         "note": "Primary model from paper",
     },
     {
+        "name": "google/gemma-2-2b-it",
+        "transcoder_set": "gemma",
+        "n_layers": 26,
+        "max_features": 150,
+        "note": "RLHF test — same architecture, instruction-tuned (RLHF hypothesis)",
+    },
+    {
         "name": "meta-llama/Llama-3.2-1B",
         "transcoder_set": "llama",
         "n_layers": 16,

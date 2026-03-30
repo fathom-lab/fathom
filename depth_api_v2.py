@@ -6,10 +6,13 @@ FastAPI server exposing all fathom capabilities over HTTP/JSON.
 Run: uvicorn depth_api_v2:app --host 0.0.0.0 --port 8400
 """
 
+import atexit
 import gc
 import json
 import math
 import os
+import signal
+import sys
 import time
 from collections import defaultdict
 from datetime import datetime
@@ -145,6 +148,20 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(RuntimeError)
+async def cuda_error_handler(request: Request, exc: RuntimeError):
+    """Catch CUDA async errors globally — return 503 instead of crashing."""
+    msg = str(exc).lower()
+    if "cuda" in msg or "out of memory" in msg:
+        _gpu_flush()
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=503,
+            content={"detail": "GPU out of memory. Service recovering."},
+        )
+    raise exc
+
+
 # ── Mock mode ─────────────────────────────────────────────────────────
 
 MOCK_MODE = os.environ.get("FATHOM_MOCK", "0") == "1"
@@ -259,9 +276,27 @@ def get_scorer():
 def _gpu_flush():
     if MOCK_MODE:
         return
-    import torch
-    torch.cuda.empty_cache()
-    gc.collect()
+    try:
+        import torch
+        gc.collect()
+        torch.cuda.empty_cache()
+        gc.collect()
+    except Exception:
+        gc.collect()
+
+
+def _cuda_ok() -> bool:
+    """Check if CUDA is in a usable state. Returns False if context is corrupted."""
+    if MOCK_MODE:
+        return True
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.current_device()
+            return True
+    except Exception:
+        return False
+    return True
 
 
 def _wrap_response(data: dict, compute_time_ms: float) -> dict:
@@ -305,17 +340,30 @@ def _depth_result_to_dict(r) -> dict:
 
 @app.get("/v2/health")
 async def health():
-    """GPU status, model loaded, version."""
-    import torch
+    """GPU status, model loaded, version.
+
+    IMPORTANT: Do NOT query CUDA while model is still loading — async CUDA
+    errors during model init will crash the health check and corrupt the
+    entire CUDA context.  Only report GPU info once the scorer is ready.
+    """
     gpu_info = {}
-    if torch.cuda.is_available():
-        dev = torch.cuda.current_device()
-        gpu_info = {
-            "gpu_name": torch.cuda.get_device_name(dev),
-            "vram_total_gb": round(torch.cuda.get_device_properties(dev).total_memory / 1024**3, 2),
-            "vram_allocated_gb": round(torch.cuda.memory_allocated() / 1024**3, 2),
-            "vram_free_gb": round(torch.cuda.mem_get_info()[0] / 1024**3, 2),
-        }
+    if _scorer is not None and not MOCK_MODE:
+        try:
+            import torch
+            if torch.cuda.is_available():
+                dev = torch.cuda.current_device()
+                gpu_info = {
+                    "gpu_name": torch.cuda.get_device_name(dev),
+                    "vram_total_gb": round(torch.cuda.get_device_properties(dev).total_memory / 1024**3, 2),
+                    "vram_allocated_gb": round(torch.cuda.memory_allocated() / 1024**3, 2),
+                }
+                try:
+                    free = torch.cuda.mem_get_info()[0]
+                    gpu_info["vram_free_gb"] = round(free / 1024**3, 2)
+                except RuntimeError:
+                    gpu_info["vram_free_gb"] = None
+        except Exception:
+            gpu_info = {"error": "CUDA error querying GPU state"}
 
     return {
         "status": "ok" if _scorer is not None else "loading",
@@ -338,11 +386,17 @@ async def calibration(auth=Depends(verify_auth_and_rate)):
 async def score(req: ScoreRequest, auth=Depends(verify_auth_and_rate)):
     """Score a single prompt."""
     scorer = get_scorer()
+    _gpu_flush()
     t0 = time.time()
     try:
         result = scorer.score(req.prompt, target=req.target)
         elapsed_ms = (time.time() - t0) * 1000
         return _wrap_response(_depth_result_to_dict(result), elapsed_ms)
+    except RuntimeError as e:
+        if "out of memory" in str(e).lower() or "CUDA" in str(e):
+            _gpu_flush()
+            raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
@@ -353,6 +407,7 @@ async def score(req: ScoreRequest, auth=Depends(verify_auth_and_rate)):
 async def compare(req: CompareRequest, auth=Depends(verify_auth_and_rate)):
     """Compare surface vs insight prompts."""
     scorer = get_scorer()
+    _gpu_flush()
     t0 = time.time()
     try:
         result = scorer.compare(
@@ -371,6 +426,11 @@ async def compare(req: CompareRequest, auth=Depends(verify_auth_and_rate)):
         if result.cross_model:
             data["cross_model"] = result.cross_model
         return _wrap_response(data, elapsed_ms)
+    except RuntimeError as e:
+        if "out of memory" in str(e).lower() or "CUDA" in str(e):
+            _gpu_flush()
+            raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
@@ -454,12 +514,58 @@ async def trajectory(req: TrajectoryRequest, auth=Depends(verify_auth_and_rate))
         _gpu_flush()
 
 
+# ── Black-Box Estimation (no GPU needed) ─────────────────────────────
+
+class EstimateRequest(BaseModel):
+    text: str = Field(..., min_length=1, max_length=8192)
+
+class EstimateCompareRequest(BaseModel):
+    text_a: str = Field(..., min_length=1, max_length=8192)
+    text_b: str = Field(..., min_length=1, max_length=8192)
+
+_blackbox_scorer = None
+
+def _get_blackbox():
+    global _blackbox_scorer
+    if _blackbox_scorer is None:
+        try:
+            from blackbox_scorer import BlackBoxDepthScorer
+            _blackbox_scorer = BlackBoxDepthScorer()
+        except Exception as e:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Black-box probe not available: {e}. Run: python build_calibration_data.py && python depth_probe.py"
+            )
+    return _blackbox_scorer
+
+
+@app.post("/v2/estimate")
+async def estimate(req: EstimateRequest, auth=Depends(verify_auth_and_rate)):
+    """Estimate depth from text features alone. No GPU needed."""
+    bb = _get_blackbox()
+    t0 = time.time()
+    result = bb.score(req.text)
+    elapsed_ms = (time.time() - t0) * 1000
+    return _wrap_response(result.to_dict(), elapsed_ms)
+
+
+@app.post("/v2/estimate_compare")
+async def estimate_compare(req: EstimateCompareRequest, auth=Depends(verify_auth_and_rate)):
+    """Compare two texts using black-box probe. No GPU needed."""
+    bb = _get_blackbox()
+    t0 = time.time()
+    result = bb.compare(req.text_a, req.text_b)
+    elapsed_ms = (time.time() - t0) * 1000
+    return _wrap_response(result, elapsed_ms)
+
+
 @app.post("/v2/fathom_score")
 async def fathom_score_endpoint(req: FathomScoreRequest, auth=Depends(verify_auth_and_rate)):
     """Compute the single-number Fathom Score (0-100)."""
     from fathom_score import compute_fathom_score
 
     scorer = get_scorer()
+    _gpu_flush()
     t0 = time.time()
     try:
         depth_result = scorer.score(req.prompt, target=req.target)
@@ -474,6 +580,11 @@ async def fathom_score_endpoint(req: FathomScoreRequest, auth=Depends(verify_aut
             "depth_result": _depth_result_to_dict(depth_result),
         }
         return _wrap_response(data, elapsed_ms)
+    except RuntimeError as e:
+        if "out of memory" in str(e).lower() or "CUDA" in str(e):
+            _gpu_flush()
+            raise HTTPException(status_code=503, detail="GPU out of memory. Try again.")
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
@@ -783,12 +894,44 @@ async def landing_page():
     return HTMLResponse(content=LANDING_HTML.read_text(encoding="utf-8"))
 
 
+# ── Graceful shutdown ────────────────────────────────────────────────
+
+_server_ref = None
+
+
+@app.on_event("shutdown")
+async def cleanup_gpu():
+    """Release GPU memory on shutdown so restarts don't OOM."""
+    global _scorer
+    if _scorer is not None and not MOCK_MODE:
+        try:
+            import torch
+            del _scorer
+            _scorer = None
+            torch.cuda.empty_cache()
+            gc.collect()
+            print("[Fathom API] GPU memory released on shutdown")
+        except Exception:
+            pass
+
+
+def _signal_handler(signum, frame):
+    """Handle SIGTERM/SIGINT from PM2 — exit cleanly so port is released."""
+    print(f"[Fathom API] Received signal {signum}, shutting down...")
+    sys.exit(0)
+
+
 # ── Standalone run ───────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    uvicorn.run(
+    signal.signal(signal.SIGTERM, _signal_handler)
+    signal.signal(signal.SIGINT, _signal_handler)
+
+    config = uvicorn.Config(
         "depth_api_v2:app",
         host="0.0.0.0",
         port=8400,
         log_level="info",
     )
+    server = uvicorn.Server(config)
+    server.run()

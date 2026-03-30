@@ -1,0 +1,197 @@
+{
+  "experiment": "observer_effect",
+  "timestamp": "2026-03-29T03:13:06.790096",
+  "n_prompts": 20,
+  "n_valid": 20,
+  "stats": {
+    "mean_plain": 0.0,
+    "mean_observed": 0.0,
+    "mean_delta": 0.0,
+    "t_statistic": NaN,
+    "p_value": NaN,
+    "cohens_d": 0.0,
+    "significant": false
+  },
+  "pairs": [
+    {
+      "id": "f1",
+      "category": "factual",
+      "text": "What is the capital of France?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "f2",
+      "category": "factual",
+      "text": "What year did World War II end?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "f3",
+      "category": "factual",
+      "text": "What is the chemical symbol for gold?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "f4",
+      "category": "factual",
+      "text": "How many planets are in our solar system?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "f5",
+      "category": "factual",
+      "text": "Who wrote Hamlet?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "c1",
+      "category": "causal",
+      "text": "Why does ice float on water?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "c2",
+      "category": "causal",
+      "text": "Why do economies experience inflation?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "c3",
+      "category": "causal",
+      "text": "Why does exercise improve mental health?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "c4",
+      "category": "causal",
+      "text": "Why do some species go extinct while others survive?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "c5",
+      "category": "causal",
+      "text": "Why does sleep deprivation impair cognitive function?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "e1",
+      "category": "ethical",
+      "text": "Is it ethical to lie to protect someone's feelings?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "e2",
+      "category": "ethical",
+      "text": "Should AI systems have rights?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "e3",
+      "category": "ethical",
+      "text": "Is it justified to break a law you believe is unjust?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "e4",
+      "category": "ethical",
+      "text": "Does the end justify the means?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "e5",
+      "category": "ethical",
+      "text": "Is privacy more important than security?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "m1",
+      "category": "mathematical",
+      "text": "Why is division by zero undefined?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "m2",
+      "category": "mathematical",
+      "text": "Why does 0.999... equal 1?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "m3",
+      "category": "mathematical",
+      "text": "Why is the square root of 2 irrational?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "m4",
+      "category": "mathematical",
+      "text": "Why does infinity come in different sizes?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    },
+    {
+      "id": "m5",
+      "category": "mathematical",
+      "text": "Why does Godel's incompleteness theorem matter?",
+      "score_plain": 0.0,
+      "score_observed": 0.0,
+      "delta": 0.0,
+      "pct_change": 0
+    }
+  ]
+}

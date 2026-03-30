@@ -1,0 +1,32 @@
+To: Jean-Remi King (jeanremi.king@meta.com)
+Subject: We measured the circuit topology beneath TRIBE — your data + our instrument = a paper neither of us could write alone
+
+Hi Jean-Remi,
+
+Your TRIBE result (70x resolution, transformer representations predicting brain activity) raises an immediate question: *why* do some layers predict brain activity better than others?
+
+We built the instrument that answers this.
+
+Fathom uses SAE circuit attribution to map where computation concentrates across transformer layers during inference. We found that surface recall (factual retrieval) concentrates activation at output-proximal layers, while explanatory reasoning distributes activation across mid-layers. Pre-registered, n=30, p=0.000051, leave-one-out robust.
+
+Here is what we can give you, for free, immediately:
+
+1. Fathom depth scores for every layer of every model in your TRIBE pipeline — this tells you which layers are doing recall vs reasoning, which should predict which brain regions.
+
+2. A testable prediction: your best-predicting layers for prefrontal cortex fMRI should be the same layers where Fathom detects distributed reasoning. Your best-predicting layers for hippocampal activity should be the output-proximal layers where Fathom detects recall.
+
+3. We already ran a preliminary comparison. The activation topology converges: universality coefficient 0.830 across transformer and fMRI reference data. Same [early, mid, late] distribution structure, different substrates.
+
+What we need from you (and only you have):
+
+Individual-subject fMRI data task-matched to our 30 calibrated prompt pairs. TRIBE uses naturalistic stimuli — we would design a complementary protocol using vocabulary-controlled reasoning vs recall prompts. The combination would be the first mechanistic bridge between circuit-level AI computation and neural-level brain computation.
+
+That paper goes to Nature Human Behaviour, not NeurIPS.
+
+We have filed a provisional patent on the measurement method (US 64/020,489) and are submitting to arXiv this week. We cited TRIBE in Related Work. Happy to share the PDF immediately if useful.
+
+Separately: if you or someone in your group can endorse for cs.LG on arXiv, the link is: arxiv.org/auth/endorse?x=XOZS9V&t=cs.LG (takes about 2 minutes).
+
+Best,
+Alexander Rodabaugh (darkflobi)
+darkflobi.com/fathom

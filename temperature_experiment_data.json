@@ -144,70 +144,70 @@
     "prompt_id": 0,
     "prompt": "A bat and ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost? Show your work.",
     "answer": "# Finding the Cost of the Ball\n\n**Set up the equation:**\n\nLet b = cost of the ball\n\nThen the bat costs = b + $1\n\n**Write the equation:**\n\nb + (b + $1) = $1.10\n\n**Solve:**\n\n2b + $1 = $1.10\n\n2b = $0.10\n\nb = $0.05\n\n**Answer: The ball costs $0.05 (or 5 cents)**\n\n**Check your work:**\n- Ball: $0.05\n- Bat: $0.05 + $1.00 = $1.05\n- Total: $0.05 + $1.05 = $1.10 \u2713",
-    "depth": null
+    "depth": 0.0
   },
   {
     "temperature": 0.7,
     "prompt_id": 1,
     "prompt": "All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly? Explain.",
     "answer": "# No, we cannot conclude that some roses fade quickly.\n\n## Why not?\n\nThis is a classic logical fallor. Here's the structure:\n\n- All roses are flowers\n- Some flowers fade quickly\n- Conclusion: Some roses fade quickly \u274c\n\n## The problem\n\nJust because some flowers fade quickly doesn't tell us *which* flowers fade quickly. Those flowers that fade quickly could be:\n- Tulips\n- Daisies\n- Peonies\n- Any other flower type\n\nThere's no logical connection between \"some flowers fade quickly\" and roses specifically.\n\n## A helpful comparison\n\nConsider this parallel argument:\n- All dogs are animals\n- Some animals are dangerous\n- Therefore, some dogs are dangerous \u274c\n\nThis clearly doesn't work\u2014the dangerous animals could be sharks, snakes, or bears.\n\n## What we'd need\n\nTo conclude that some roses fade quickly, we'd need a premise like",
-    "depth": null
+    "depth": 0.39540131931950856
   },
   {
     "temperature": 0.7,
     "prompt_id": 2,
     "prompt": "A man is twice as old as his daughter. In 20 years he will be 1.5x her age. How old is he now?",
     "answer": "# Setting Up the Problem\n\nLet me define:\n- d = daughter's current age\n- m = man's current age\n\n# Creating Equations\n\n**From \"a man is twice as old as his daughter\":**\n$$m = 2d$$\n\n**From \"in 20 years he will be 1.5x her age\":**\n$$m + 20 = 1.5(d + 20)$$\n\n# Solving\n\nSubstituting m = 2d into the second equation:\n$$2d + 20 = 1.5(d + 20)$$\n\n$$2d + 20 = 1.5d + 30$$\n\n$$0.5d = 10$$\n\n$$d = 20$$\n\nTherefore:\n$$m = 2(20) = 40$$\n\n# Verification\n\n- Now: He's 40, she's 20",
-    "depth": null
+    "depth": 0.0
   },
   {
     "temperature": 0.7,
     "prompt_id": 3,
     "prompt": "If you have 3 red marbles and 5 blue marbles, and you draw 2 without replacement, what's the probability both are red?",
     "answer": "# Probability Both Marbles Are Red\n\n**Setup:**\n- 3 red marbles\n- 5 blue marbles\n- Total: 8 marbles\n\n**Calculation:**\n\nSince we're drawing without replacement:\n\n- P(1st marble is red) = 3/8\n- P(2nd marble is red | 1st was red) = 2/7\n\n**P(both red) = 3/8 \u00d7 2/7 = 6/56 = 3/28**\n\n**\u2248 0.107 or about 10.7%**",
-    "depth": null
+    "depth": 0.04378308465671902
   },
   {
     "temperature": 0.7,
     "prompt_id": 4,
     "prompt": "Why does a mirror reverse left-right but not up-down?",
     "answer": "# The Mirror Reversal Puzzle\n\nThis is actually a great misconception to untangle. **Mirrors don't preferentially reverse left-right\u2014they reverse front-to-back.**\n\nHere's what's really happening:\n\n## The Key Insight\n\nA mirror reverses the direction *perpendicular to its surface*. When you face a mirror:\n- Your front-to-back axis gets reversed (you see yourself facing backward)\n- But we interpret this reversal as left-right because that's the axis that *appears* flipped in the image\n\n## Why It Feels Like Left-Right\n\nWhen your mirror image's left hand is on the *right side* of the mirror, your brain interprets this as \"left and right are swapped.\" But that's only because you're used to looking at people *facing the same direction as you*.\n\n**Try this:** Imagine two people standing back-to-back. The",
-    "depth": null
+    "depth": 0.38352318453959455
   },
   {
     "temperature": 0.7,
     "prompt_id": 5,
     "prompt": "Why does time seem to speed up as we age?",
     "answer": "A few overlapping explanations:\n\n**Proportional theory**: A year represents 1/10th of a 10-year-old's life but only 1/50th of a 50-year-old's. Each unit feels smaller in comparison.\n\n**Novelty and memory**: Childhood is packed with new experiences\u2014first day of school, learning to read. Novel events create more distinct memories, which our brains use to estimate duration. Routine days blur together, making stretches feel shorter in retrospect.\n\n**Attention shifts**: Kids often focus intently on single activities. Adults juggle multiple concerns, so time gets divided among them, making each moment feel thinner.\n\n**Biological factors**: Some research suggests metabolic rate and how our nervous system processes time might shift with age, though this is less settled than the psychological explanations.\n\nThe interesting catch: time doesn't actually *feel* faster in the moment\u2014you",
-    "depth": null
+    "depth": 0.24577934197195125
   },
   {
     "temperature": 0.7,
     "prompt_id": 6,
     "prompt": "Why does exercise improve mental health at a neurological level?",
     "answer": "# How Exercise Improves Mental Health\n\nExercise triggers several neurological changes:\n\n## Neurochemical shifts\n- **Endorphins** reduce pain perception and create mood elevation\n- **Dopamine** increases, enhancing motivation and reward sensation\n- **Serotonin** rises, improving mood regulation\n- **BDNF** (brain-derived neurotrophic factor) supports neuron growth and resilience\n\n## Structural brain changes\n- Increases **hippocampus volume** (critical for memory and emotion regulation)\n- Strengthens **prefrontal cortex** function (decision-making, emotional control)\n- Enhances neural connectivity across brain regions\n\n## Stress response improvements\n- Reduces **cortisol** levels over time\n- Lowers baseline nervous system arousal\n- Improves your brain's ability to recover from stress\n\n## Other mechanisms\n- Increases **blood flow",
-    "depth": null
+    "depth": 0.6486428513455541
   },
   {
     "temperature": 0.7,
     "prompt_id": 7,
     "prompt": "Why is it impossible to step in the same river twice?",
     "answer": "This is Heraclitus's famous observation, and it works on a few levels:\n\n**Literally**: The water has moved on\u2014different H\u2082O molecules occupy that spot, so it's physically not the same river.\n\n**Philosophically**: It suggests everything is in constant flux. You can't return to an identical moment or place because time keeps moving and things keep changing.\n\n**Practically**: Even if you step in the same location, you're different too (older, with different experiences), so the encounter itself is fundamentally altered.\n\nThat said, the paradox has limits. We *do* meaningfully refer to \"the same river\" over time\u2014it has continuity of identity, location, and character even as its contents change. So whether this is a profound truth or a clever play on words depends on what you think \"sameness\" really means.\n\nIt's a useful reminder that change is constant, but it doesn't quite",
-    "depth": null
+    "depth": 0.19756303865761402
   },
   {
     "temperature": 0.7,
     "prompt_id": 8,
     "prompt": "What would it mean for a statement to be both true and unprovable?",
     "answer": "# True But Unprovable Statements\n\nThis is a genuine logical possibility, though it requires careful thinking about what \"true\" and \"provable\" mean.\n\n## The Basic Idea\n\nA statement could be:\n- **True** in reality (accurately describes how things are)\n- **Unprovable** within some formal system (can't be derived from that system's axioms and rules)\n\nThese aren't contradictory because truth and provability operate at different levels.\n\n## A Concrete Example\n\nG\u00f6del's incompleteness theorems show this actually *happens*. Within any consistent formal system powerful enough to describe arithmetic:\n- There exist statements that are true (they accurately describe numbers)\n- Yet unprovable within that system\n\nThe statement roughly says: \"This statement is unprovable in this system.\" If it were provable, we'd have a contradiction, so it must be unprovable\u2014which means",
-    "depth": null
+    "depth": 0.4410280196706265
   },
   {
     "temperature": 0.7,
     "prompt_id": 9,
     "prompt": "Is free will compatible with determinism? Make the strongest case for yes.",
     "answer": "# The Compatibilist Case\n\nThe strongest argument goes like this:\n\n**Free will doesn't require being uncaused\u2014it requires acting on your own desires without external constraint.**\n\nWhen you deliberate and choose based on your values, reasoning, and preferences, you're exercising free will. That this process is *itself* determined by your character and circumstances doesn't undermine it\u2014it's what makes it *yours*.\n\nConsider:\n- A chess player's move is determined by the rules, their skill, and their strategy. We don't call this less free.\n- You act freely when you do what you actually want to do. You act unfreely when coerced against your wants.\n- The alternative\u2014uncaused choices\u2014is incoherent: a random neural firing isn't \"freer,\" it's just not determined by *you*.\n\n**The key insight**: \"Free\" and \"determined by my own character\"",
-    "depth": null
+    "depth": 0.28373997514966715
   },
   {
     "temperature": 1.0,

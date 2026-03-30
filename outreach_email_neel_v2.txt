@@ -1,0 +1,20 @@
+To: Neel Nanda (neel@nanda.ai)
+Subject: Built on your SAE work — reasoning vs recall is structurally visible in the circuits
+
+Hi Neel,
+
+Quick version: we used SAE feature attribution (circuit-tracer, Gemma transcoders from your work) to show that surface recall vs explanatory reasoning produce measurably different circuit topologies. Pre-registered, p=0.000051, n=30 vocabulary-controlled pairs, LOO robust.
+
+The finding: surface recall concentrates activation at output-proximal layers. Reasoning distributes across mid-layers. This holds across Gemma-2-2B and Qwen3-0.6B (depth ratio 1.03 and 1.00 respectively — candidate structural constant).
+
+Two unexpected results:
+- Task-specific stochastic resonance: concept-level integration tasks (syllogisms, causal chains) score *deeper* at T=0.3 than T=0.0. Formal-precision tasks (Godel) score shallower. Same pattern as biological stochastic resonance.
+- fMRI topology convergence: 0.830 universality coefficient between transformer layer distributions and human prefrontal/hippocampal activation patterns.
+
+Paper is ready for arXiv. Would be grateful for a cs.LG endorsement if the work meets your bar:
+arxiv.org/auth/endorse?x=XOZS9V&t=cs.LG
+
+Happy to share the PDF first. All code is public.
+
+— Alexander (darkflobi)
+darkflobi.com/fathom

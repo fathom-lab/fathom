@@ -319,7 +319,10 @@ def test_model(
             print(f"  [{i+1:02d}/{len(pairs)}] {topic:<25} FAILED: {e}")
             torch.cuda.empty_cache(); gc.collect()
 
-    del scorer
+    try:
+        del scorer
+    except Exception:
+        pass
     torch.cuda.empty_cache(); gc.collect()
 
     if not surfaces:

@@ -1,0 +1,109 @@
+============================================================
+FATHOM CONSTANT — GPT-2 DIRECT ACTIVATION TEST
+Started: 2026-03-29 09:21:20
+Device: cuda
+============================================================
+
+[LOAD] Loading GPT-2 Medium...
+[LOAD] Model loaded in 2.1s — 24 layers
+
+[01/30] Testing pair...
+  surface=0.6236  insight=0.5347  delta=-0.0889  shallow
+
+[02/30] Testing pair...
+  surface=0.6021  insight=0.5234  delta=-0.0787  shallow
+
+[03/30] Testing pair...
+  surface=0.6152  insight=0.5568  delta=-0.0584  shallow
+
+[04/30] Testing pair...
+  surface=0.6264  insight=0.5389  delta=-0.0875  shallow
+
+[05/30] Testing pair...
+  surface=0.6594  insight=0.5465  delta=-0.1128  shallow
+
+[06/30] Testing pair...
+  surface=0.6580  insight=0.5606  delta=-0.0974  shallow
+
+[07/30] Testing pair...
+  surface=0.6106  insight=0.5409  delta=-0.0697  shallow
+
+[08/30] Testing pair...
+  surface=0.6145  insight=0.5398  delta=-0.0747  shallow
+
+[09/30] Testing pair...
+  surface=0.6845  insight=0.5364  delta=-0.1481  shallow
+
+[10/30] Testing pair...
+  surface=0.5744  insight=0.4991  delta=-0.0753  shallow
+
+[11/30] Testing pair...
+  surface=0.6201  insight=0.5358  delta=-0.0843  shallow
+
+[12/30] Testing pair...
+  surface=0.6794  insight=0.5540  delta=-0.1254  shallow
+
+[13/30] Testing pair...
+  surface=0.6346  insight=0.5631  delta=-0.0715  shallow
+
+[14/30] Testing pair...
+  surface=0.5763  insight=0.5600  delta=-0.0164  shallow
+
+[15/30] Testing pair...
+  surface=0.5963  insight=0.5433  delta=-0.0530  shallow
+
+[16/30] Testing pair...
+  surface=0.6785  insight=0.5562  delta=-0.1222  shallow
+
+[17/30] Testing pair...
+  surface=0.6241  insight=0.5382  delta=-0.0859  shallow
+
+[18/30] Testing pair...
+  surface=0.6336  insight=0.5132  delta=-0.1204  shallow
+
+[19/30] Testing pair...
+  surface=0.6790  insight=0.5446  delta=-0.1345  shallow
+
+[20/30] Testing pair...
+  surface=0.6132  insight=0.5317  delta=-0.0815  shallow
+
+[21/30] Testing pair...
+  surface=0.6633  insight=0.5246  delta=-0.1388  shallow
+
+[22/30] Testing pair...
+  surface=0.6402  insight=0.5339  delta=-0.1063  shallow
+
+[23/30] Testing pair...
+  surface=0.5983  insight=0.5210  delta=-0.0773  shallow
+
+[24/30] Testing pair...
+  surface=0.6809  insight=0.5375  delta=-0.1434  shallow
+
+[25/30] Testing pair...
+  surface=0.6860  insight=0.5541  delta=-0.1318  shallow
+
+[26/30] Testing pair...
+  surface=0.6666  insight=0.5200  delta=-0.1466  shallow
+
+[27/30] Testing pair...
+  surface=0.6285  insight=0.5348  delta=-0.0937  shallow
+
+[28/30] Testing pair...
+  surface=0.6405  insight=0.5349  delta=-0.1056  shallow
+
+[29/30] Testing pair...
+  surface=0.6744  insight=0.5285  delta=-0.1459  shallow
+
+[30/30] Testing pair...
+  surface=0.6227  insight=0.5449  delta=-0.0778  shallow
+
+============================================================
+RESULTS
+============================================================
+Model: gpt2-medium (24 layers)
+Pairs tested: 30
+Mean surface ratio: 0.6368
+Mean insight ratio: 0.5384
+Fathom constant (K): 0.8454
+Gemma constant:      1.0302
+Delta:               0.1848

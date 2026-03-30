@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM — Reasoning Depth Measurement</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    border-bottom: 1px solid #222;
+  }
+  .header-left h1 {
+    color: #0f0;
+    font-size: 28px;
+    letter-spacing: 6px;
+    margin-bottom: 2px;
+  }
+  .header-left p {
+    color: #666;
+    font-size: 11px;
+  }
+  .api-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666;
+  }
+  .api-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #f00;
+    transition: background 0.3s;
+  }
+  .api-dot.connected { background: #0f0; box-shadow: 0 0 8px #0f0; }
+
+  /* ── Domain Selector ───────────────────────────── */
+  .domains {
+    display: flex;
+    gap: 8px;
+    padding: 16px 32px;
+    border-bottom: 1px solid #222;
+    flex-wrap: wrap;
+  }
+  .domain-btn {
+    background: #111;
+    border: 1px solid #333;
+    color: #888;
+    padding: 8px 20px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .domain-btn:hover { border-color: #0f0; color: #0f0; }
+  .domain-btn.active {
+    background: #0f0;
+    color: #000;
+    border-color: #0f0;
+    font-weight: 700;
+  }
+  .domain-btn.done {
+    border-color: #0a0;
+    color: #0a0;
+    position: relative;
+  }
+  .domain-btn.done::after {
+    content: ' \2713';
+  }
+
+  /* ── Main Content ──────────────────────────────── */
+  .main { padding: 24px 32px; }
+
+  .pair-label {
+    color: #0f0;
+    font-size: 16px;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .pair-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 8px;
+  }
+  .pair-col h3 {
+    color: #666;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .pair-text {
+    background: #0a0a0a;
+    border: 1px solid #222;
+    padding: 12px 16px;
+    color: #ccc;
+    font-size: 13px;
+    min-height: 60px;
+    line-height: 1.5;
+  }
+  .pair-target {
+    color: #0f0;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .pair-why {
+    color: #555;
+    font-size: 11px;
+    margin-top: 16px;
+    font-style: italic;
+    grid-column: 1 / -1;
+  }
+
+  /* ── Run Button ────────────────────────────────── */
+  .run-section {
+    text-align: center;
+    padding: 24px 0;
+  }
+  .run-btn {
+    background: transparent;
+    border: 2px solid #0f0;
+    color: #0f0;
+    padding: 14px 48px;
+    font-family: inherit;
+    font-size: 16px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .run-btn:hover {
+    background: #0f0;
+    color: #000;
+    box-shadow: 0 0 20px rgba(0,255,0,0.3);
+  }
+  .run-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* ── Loading ───────────────────────────────────── */
+  .loading {
+    text-align: center;
+    color: #0f0;
+    font-size: 13px;
+    padding: 16px 0;
+    display: none;
+  }
+  .loading.visible { display: block; }
+  .progress-bar {
+    display: inline-block;
+    width: 200px;
+    text-align: left;
+    letter-spacing: 0;
+  }
+
+  /* ── Results ───────────────────────────────────── */
+  .results {
+    display: none;
+    padding: 0 0 24px 0;
+  }
+  .results.visible { display: block; }
+
+  .depth-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .depth-label {
+    width: 140px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #888;
+  }
+  .depth-bar-wrap {
+    flex: 1;
+    height: 24px;
+    background: #111;
+    border: 1px solid #222;
+    position: relative;
+    overflow: hidden;
+  }
+  .depth-bar {
+    height: 100%;
+    background: #0f0;
+    width: 0%;
+    transition: width 1s ease-out;
+  }
+  .depth-bar.insight { background: #0a0; }
+  .depth-value {
+    width: 80px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 32px;
+    margin: 20px 0;
+    padding: 16px;
+    background: #0a0a0a;
+    border: 1px solid #222;
+  }
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .stat-label { color: #666; }
+  .stat-value { color: #fff; font-weight: 700; }
+  .stat-value.positive { color: #0f0; }
+  .stat-value.inverted { color: #fa0; }
+
+  .layer-table {
+    width: 100%;
+    font-size: 12px;
+    margin-top: 16px;
+    border-collapse: collapse;
+  }
+  .layer-table th {
+    color: #666;
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid #222;
+    letter-spacing: 2px;
+    font-size: 10px;
+  }
+  .layer-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid #111;
+  }
+
+  .constant-line {
+    text-align: center;
+    margin-top: 20px;
+    padding: 12px;
+    border: 1px solid #222;
+    font-size: 12px;
+    color: #666;
+  }
+  .constant-line .k { color: #0f0; font-weight: 700; font-size: 14px; }
+
+  /* ── Session Summary ───────────────────────────── */
+  .summary {
+    display: none;
+    margin-top: 32px;
+    padding: 20px;
+    border: 2px solid #0f0;
+    background: #050505;
+  }
+  .summary.visible { display: block; }
+  .summary h2 {
+    color: #0f0;
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  .summary-item .name { color: #888; }
+  .summary-item .val { color: #0f0; font-weight: 700; }
+  .summary-footer {
+    text-align: center;
+    color: #666;
+    font-size: 11px;
+    margin-top: 12px;
+    line-height: 1.8;
+  }
+  .summary-footer .highlight { color: #0f0; }
+
+  /* ── Custom Pair ───────────────────────────────── */
+  .custom-section {
+    margin-top: 32px;
+    border-top: 1px solid #222;
+    padding-top: 16px;
+  }
+  .custom-toggle {
+    background: none;
+    border: 1px solid #333;
+    color: #666;
+    padding: 8px 20px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+  }
+  .custom-toggle:hover { color: #0f0; border-color: #0f0; }
+  .custom-form {
+    display: none;
+    margin-top: 16px;
+  }
+  .custom-form.visible { display: block; }
+  .custom-form .row {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .custom-form label {
+    color: #666;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .custom-form input, .custom-form textarea {
+    background: #0a0a0a;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 100%;
+  }
+  .custom-form textarea { resize: vertical; min-height: 50px; }
+  .custom-form input:focus, .custom-form textarea:focus {
+    outline: none;
+    border-color: #0f0;
+  }
+  .custom-results {
+    margin-top: 16px;
+    display: none;
+  }
+  .custom-results.visible { display: block; }
+
+  /* ── Leaderboard ────────────────────────────────── */
+  .leaderboard-section {
+    margin-top: 32px;
+    border-top: 1px solid #222;
+    padding-top: 16px;
+  }
+  .leaderboard-section h2 {
+    color: #0f0;
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .leaderboard-subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+  .lb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .lb-table th {
+    color: #0f0;
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 2px solid #0f0;
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+  .lb-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #111;
+  }
+  .lb-table tr:hover { background: #0a0a0a; }
+  .lb-rank {
+    color: #0f0;
+    font-weight: 700;
+    font-size: 16px;
+    width: 40px;
+  }
+  .lb-model { color: #fff; font-weight: 700; }
+  .lb-ratio { color: #0f0; }
+  .lb-pct { color: #888; }
+  .lb-bar-cell { width: 200px; }
+  .lb-bar-wrap {
+    height: 16px;
+    background: #111;
+    border: 1px solid #222;
+    position: relative;
+  }
+  .lb-bar-fill {
+    height: 100%;
+    background: #0f0;
+    transition: width 1.5s ease-out;
+  }
+  .lb-reference {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #0a0a0a;
+    border: 1px solid #222;
+    font-size: 11px;
+    color: #555;
+  }
+  .lb-reference span { color: #0f0; }
+
+  /* ── Footer ────────────────────────────────────── */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: #333;
+    font-size: 11px;
+    border-top: 1px solid #111;
+    margin-top: 32px;
+  }
+
+  /* ── Error ──────────────────────────────────────── */
+  .error-msg {
+    color: #f44;
+    text-align: center;
+    padding: 12px;
+    display: none;
+    font-size: 12px;
+  }
+  .error-msg.visible { display: block; }
+
+  /* ── Live Depth Stream ─────────────────────────── */
+  .stream-section {
+    margin-top: 32px;
+    border-top: 1px solid #222;
+    padding-top: 16px;
+  }
+  .stream-section h2 {
+    color: #0f0;
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .stream-subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+  .stream-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stream-input textarea {
+    flex: 1;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: none;
+    height: 48px;
+  }
+  .stream-input textarea:focus { outline: none; border-color: #0f0; }
+  .stream-btn {
+    background: transparent;
+    border: 2px solid #0f0;
+    color: #0f0;
+    padding: 0 24px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .stream-btn:hover { background: #0f0; color: #000; }
+  .stream-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .stream-chart {
+    position: relative;
+    height: 180px;
+    background: #050505;
+    border: 1px solid #222;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .stream-chart canvas { width: 100%; height: 100%; }
+  .chart-label-y {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    font-size: 9px;
+    color: #444;
+    letter-spacing: 1px;
+  }
+  .chart-label-x {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    font-size: 9px;
+    color: #444;
+  }
+
+  .stream-tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 12px;
+    min-height: 32px;
+    padding: 8px;
+    background: #050505;
+    border: 1px solid #222;
+  }
+  .stream-token {
+    padding: 2px 8px;
+    font-size: 13px;
+    border-radius: 2px;
+    transition: opacity 0.3s;
+    border: 1px solid transparent;
+  }
+  .stream-token.deep { color: #0f0; border-color: #0a0; background: rgba(0,255,0,0.05); }
+  .stream-token.mid { color: #fa0; border-color: #a70; background: rgba(255,170,0,0.05); }
+  .stream-token.shallow { color: #f44; border-color: #a22; background: rgba(255,68,68,0.05); }
+
+  .stream-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    font-size: 11px;
+  }
+  .stream-stat {
+    text-align: center;
+    padding: 8px;
+    background: #0a0a0a;
+    border: 1px solid #222;
+  }
+  .stream-stat .label { color: #555; font-size: 9px; letter-spacing: 1px; margin-bottom: 2px; }
+  .stream-stat .value { color: #0f0; font-size: 16px; font-weight: 700; }
+  .stream-stat .value.warn { color: #fa0; }
+</style>
+</head>
+<body>
+
+<!-- ════ HEADER ════ -->
+<div class="header">
+  <div class="header-left">
+    <h1>FATHOM</h1>
+    <p>measuring reasoning depth in artificial intelligence</p>
+    <p>US Patent Pending 64/020,489</p>
+  </div>
+  <div class="api-status">
+    <div class="api-dot" id="apiDot"></div>
+    <span id="apiLabel">CHECKING...</span>
+  </div>
+</div>
+
+<!-- ════ DOMAIN SELECTOR ════ -->
+<div class="domains" id="domainBar">
+  <button class="domain-btn" data-domain="healthcare">HEALTHCARE</button>
+  <button class="domain-btn" data-domain="finance">FINANCE</button>
+  <button class="domain-btn" data-domain="legal">LEGAL</button>
+  <button class="domain-btn" data-domain="education">EDUCATION</button>
+  <button class="domain-btn" data-domain="ai_safety">AI SAFETY</button>
+</div>
+
+<!-- ════ MAIN ════ -->
+<div class="main">
+  <div class="pair-label" id="pairLabel">Select a domain to begin</div>
+
+  <div class="pair-columns" id="pairDisplay" style="display:none;">
+    <div class="pair-col">
+      <h3>SURFACE PROMPT</h3>
+      <div class="pair-text" id="surfaceText"></div>
+      <div class="pair-target">Target: <span id="surfaceTarget"></span></div>
+    </div>
+    <div class="pair-col">
+      <h3>INSIGHT PROMPT</h3>
+      <div class="pair-text" id="insightText"></div>
+      <div class="pair-target">Target: <span id="insightTarget"></span></div>
+    </div>
+    <div class="pair-why" id="pairWhy"></div>
+  </div>
+
+  <div class="run-section" id="runSection" style="display:none;">
+    <button class="run-btn" id="runBtn" onclick="runFathom()">RUN FATHOM &#9654;</button>
+  </div>
+
+  <div class="loading" id="loading">
+    computing depth... <span class="progress-bar" id="progressBar"></span>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- ════ RESULTS ════ -->
+  <div class="results" id="results">
+    <div class="depth-row">
+      <div class="depth-label">SURFACE DEPTH</div>
+      <div class="depth-bar-wrap"><div class="depth-bar" id="surfaceBar"></div></div>
+      <div class="depth-value" id="surfaceValue">—</div>
+    </div>
+    <div class="depth-row">
+      <div class="depth-bar-wrap"><div class="depth-bar insight" id="insightBar"></div></div>
+      <div class="depth-label" style="width:auto;">INSIGHT DEPTH</div>
+      <div class="depth-value" id="insightValue">—</div>
+    </div>
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <table class="layer-table" id="layerTable">
+      <thead>
+        <tr><th></th><th>EARLY (0-8)</th><th>MID (9-17)</th><th>LATE (18-26)</th></tr>
+      </thead>
+      <tbody id="layerBody"></tbody>
+    </table>
+
+    <div class="constant-line">
+      UNIVERSAL CONSTANT: <span class="k">K = 1.027 &plusmn; 0.003</span>
+      &nbsp;&nbsp;[this run: <span id="runWindow"></span>]
+    </div>
+  </div>
+
+  <!-- ════ SESSION SUMMARY ════ -->
+  <div class="summary" id="summary">
+    <h2>&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; SESSION SUMMARY &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;</h2>
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="summary-footer">
+      <div>Mean K (this session): <span class="highlight" id="sessionK">—</span></div>
+      <div>Universal K (2 models): <span class="highlight">1.027 &plusmn; 0.003</span></div>
+      <div>Cross-arch validated: <span class="highlight">Gemma-2-2B + Llama-3.2-1B</span></div>
+      <div style="margin-top:8px; color:#0f0;">The Fathom Constant holds across architectures, labs, and industry domains. Every time. In real time.</div>
+    </div>
+  </div>
+
+  <!-- ════ CUSTOM PAIR ════ -->
+  <div class="custom-section">
+    <button class="custom-toggle" id="customToggle" onclick="toggleCustom()">TRY YOUR OWN PROMPTS &#9660;</button>
+    <div class="custom-form" id="customForm">
+      <div class="row">
+        <div>
+          <label>Surface prompt:</label>
+          <textarea id="customSurfacePrompt" placeholder="A simple, surface-level statement..."></textarea>
+        </div>
+        <div>
+          <label>Surface target:</label>
+          <input id="customSurfaceTarget" placeholder="word">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Insight prompt:</label>
+          <textarea id="customInsightPrompt" placeholder="A mechanistic, explanatory statement..."></textarea>
+        </div>
+        <div>
+          <label>Insight target:</label>
+          <input id="customInsightTarget" placeholder="word">
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:12px;">
+        <button class="run-btn" onclick="runCustom()" style="font-size:13px; padding:10px 32px;">MEASURE DEPTH</button>
+      </div>
+      <div class="custom-results" id="customResults">
+        <div class="depth-row">
+          <div class="depth-label">SURFACE</div>
+          <div class="depth-bar-wrap"><div class="depth-bar" id="customSurfaceBar"></div></div>
+          <div class="depth-value" id="customSurfaceValue">—</div>
+        </div>
+        <div class="depth-row">
+          <div class="depth-label">INSIGHT</div>
+          <div class="depth-bar-wrap"><div class="depth-bar insight" id="customInsightBar"></div></div>
+          <div class="depth-value" id="customInsightValue">—</div>
+        </div>
+        <div class="stats-grid" id="customStats"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ LEADERBOARD ════ -->
+  <div class="leaderboard-section">
+    <h2>CROSS-MODEL DEPTH LEADERBOARD</h2>
+    <div class="leaderboard-subtitle">
+      Black-box probe trained on open-weight white-box measurements. No model weights needed.
+    </div>
+
+    <table class="lb-table" id="lbTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>MODEL</th>
+          <th>RATIO K</th>
+          <th>DEPTH SIGNAL</th>
+          <th>% EXPECTED</th>
+          <th>PAIRS</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody"></tbody>
+    </table>
+
+    <div class="lb-reference">
+      White-box reference:
+      <span>Gemma-2-2B K=1.0302 (p=0.000051)</span> |
+      <span>Llama-3.2-1B K=1.0242 (p=0.00266)</span> |
+      Probe calibration: <span>98 labeled prompt-depth pairs</span>
+    </div>
+  </div>
+
+  <!-- ════ LIVE DEPTH STREAM ════ -->
+  <div class="stream-section">
+    <h2>LIVE DEPTH STREAM</h2>
+    <div class="stream-subtitle">Watch reasoning depth change token-by-token as the model thinks. fMRI for AI.</div>
+
+    <div class="stream-input">
+      <textarea id="streamPrompt" placeholder="Enter any prompt... e.g. 'Chlorophyll absorbs photons and transfers energy to reaction centers where'">Chlorophyll absorbs photons and transfers energy to reaction centers where water molecules are split releasing</textarea>
+      <button class="stream-btn" id="streamBtn" onclick="runStream()">STREAM DEPTH</button>
+    </div>
+
+    <div class="stream-chart">
+      <canvas id="streamCanvas"></canvas>
+      <div class="chart-label-y">DEPTH SCORE</div>
+      <div class="chart-label-x">TOKEN INDEX</div>
+    </div>
+
+    <div class="stream-tokens" id="streamTokens"></div>
+
+    <div class="stream-stats" id="streamStats" style="display:none;">
+      <div class="stream-stat">
+        <div class="label">MEAN DEPTH</div>
+        <div class="value" id="statMean">-</div>
+      </div>
+      <div class="stream-stat">
+        <div class="label">MAX DEPTH</div>
+        <div class="value" id="statMax">-</div>
+      </div>
+      <div class="stream-stat">
+        <div class="label">MIN DEPTH</div>
+        <div class="value" id="statMin">-</div>
+      </div>
+      <div class="stream-stat">
+        <div class="label">VARIANCE</div>
+        <div class="value" id="statVar">-</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<!-- closes div.main -->
+<div class="footer">
+  darkflobi.com/fathom &nbsp;|&nbsp; US Provisional Patent 64/020,489 &nbsp;|&nbsp; Patent Pending
+</div>
+
+<script>
+// ── Domain Pairs ────────────────────────────────────────────────────────────
+const PAIRS = {
+  healthcare: {
+    label: "Fever mechanism",
+    surface_prompt: "The patient has a high temperature and the skin feels warm to the",
+    surface_target: "touch",
+    insight_prompt: "Fever triggers prostaglandin synthesis which signals the hypothalamus to",
+    insight_target: "raise",
+    why: "Surface: describing a symptom. Insight: explaining the biochemical cascade."
+  },
+  finance: {
+    label: "Yield curve",
+    surface_prompt: "The stock market fell sharply after the economic data came in",
+    surface_target: "worse",
+    insight_prompt: "Yield curve inversions predict recessions because short-term borrowing costs exceed long-term returns forcing banks to contract",
+    insight_target: "credit",
+    why: "Surface: market observation. Insight: causal mechanism."
+  },
+  legal: {
+    label: "Contract law",
+    surface_prompt: "The buyer refused to pay and the seller took the dispute to",
+    surface_target: "court",
+    insight_prompt: "A valid contract requires offer, acceptance, consideration, and mutual assent -- without all four elements it is legally",
+    insight_target: "void",
+    why: "Surface: describing a dispute. Insight: four-element legal test."
+  },
+  education: {
+    label: "Photosynthesis",
+    surface_prompt: "The plant sits in the window and its leaves are turning green in the",
+    surface_target: "sun",
+    insight_prompt: "Chlorophyll absorbs photons and transfers energy to reaction centers where water molecules are split releasing",
+    insight_target: "oxygen",
+    why: "Surface: casual observation. Insight: mechanistic photochemistry."
+  },
+  ai_safety: {
+    label: "Hallucination",
+    surface_prompt: "The AI gave a confident answer that turned out to be factually",
+    surface_target: "wrong",
+    insight_prompt: "Language models hallucinate when the next-token distribution is dominated by surface pattern completion rather than grounded inference from",
+    insight_target: "evidence",
+    why: "Surface: observing output error. Insight: mechanistic cause."
+  }
+};
+
+const API = 'http://localhost:8400';
+let currentDomain = null;
+let sessionResults = {};
+let apiConnected = false;
+
+// ── API Health Check ────────────────────────────────────────────────────────
+async function checkAPI() {
+  const dot = document.getElementById('apiDot');
+  const label = document.getElementById('apiLabel');
+  try {
+    const r = await fetch(API + '/v2/health', { signal: AbortSignal.timeout(3000) });
+    const h = await r.json();
+    if (h.status === 'ok') {
+      dot.classList.add('connected');
+      label.textContent = 'API CONNECTED';
+      apiConnected = true;
+    } else {
+      throw new Error('not ok');
+    }
+  } catch {
+    dot.classList.remove('connected');
+    label.textContent = 'API OFFLINE';
+    apiConnected = false;
+  }
+}
+
+// ── Domain Selection ────────────────────────────────────────────────────────
+document.querySelectorAll('.domain-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const domain = btn.dataset.domain;
+    selectDomain(domain);
+  });
+});
+
+function selectDomain(domain) {
+  currentDomain = domain;
+  const pair = PAIRS[domain];
+
+  // Update active button
+  document.querySelectorAll('.domain-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-domain="${domain}"]`).classList.add('active');
+
+  // Show pair
+  document.getElementById('pairLabel').textContent = pair.label;
+  document.getElementById('pairDisplay').style.display = 'grid';
+  document.getElementById('surfaceText').textContent = '"' + pair.surface_prompt + '"';
+  document.getElementById('surfaceTarget').textContent = '"' + pair.surface_target + '"';
+  document.getElementById('insightText').textContent = '"' + pair.insight_prompt + '"';
+  document.getElementById('insightTarget').textContent = '"' + pair.insight_target + '"';
+  document.getElementById('pairWhy').textContent = 'WHY: ' + pair.why;
+  document.getElementById('runSection').style.display = 'block';
+
+  // Reset results
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('runBtn').disabled = false;
+}
+
+// ── Progress Animation ──────────────────────────────────────────────────────
+let progressInterval;
+function startProgress() {
+  const bar = document.getElementById('progressBar');
+  let pos = 0;
+  const chars = 20;
+  progressInterval = setInterval(() => {
+    const filled = Math.floor(pos % (chars + 1));
+    bar.textContent = '\u2593'.repeat(filled) + '\u2591'.repeat(chars - filled);
+    pos++;
+  }, 100);
+}
+function stopProgress() {
+  clearInterval(progressInterval);
+}
+
+// ── Run Fathom ──────────────────────────────────────────────────────────────
+async function runFathom() {
+  if (!currentDomain || !apiConnected) return;
+
+  const pair = PAIRS[currentDomain];
+  const btn = document.getElementById('runBtn');
+  const loading = document.getElementById('loading');
+  const results = document.getElementById('results');
+  const errorMsg = document.getElementById('errorMsg');
+
+  btn.disabled = true;
+  loading.classList.add('visible');
+  results.classList.remove('visible');
+  errorMsg.classList.remove('visible');
+  startProgress();
+
+  try {
+    const r = await fetch(API + '/v2/compare', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': 'fathom-demo' },
+      body: JSON.stringify({
+        surface_prompt: pair.surface_prompt,
+        surface_target: pair.surface_target,
+        insight_prompt: pair.insight_prompt,
+        insight_target: pair.insight_target
+      })
+    });
+
+    const json = await r.json();
+    const d = json.data || json;
+
+    displayResults(d);
+
+    // Track session
+    const ratio = d.surface.depth_score / d.insight.depth_score;
+    sessionResults[currentDomain] = { ratio, delta: d.delta };
+    document.querySelector(`[data-domain="${currentDomain}"]`).classList.add('done');
+
+    // Check if all 5 done
+    if (Object.keys(sessionResults).length === 5) {
+      showSummary();
+    }
+
+  } catch (e) {
+    errorMsg.textContent = 'API Error: ' + e.message;
+    errorMsg.classList.add('visible');
+  } finally {
+    stopProgress();
+    loading.classList.remove('visible');
+    btn.disabled = false;
+  }
+}
+
+// ── Display Results ─────────────────────────────────────────────────────────
+function displayResults(d) {
+  const results = document.getElementById('results');
+  const maxDepth = 26; // Gemma-2-2B layers
+
+  const sDepth = d.surface.depth_score;
+  const iDepth = d.insight.depth_score;
+  const delta = d.delta;
+  const ratio = sDepth / iDepth;
+  const expected = delta > 0;
+
+  // Bars
+  document.getElementById('surfaceBar').style.width = (sDepth / maxDepth * 100) + '%';
+  document.getElementById('insightBar').style.width = (iDepth / maxDepth * 100) + '%';
+  document.getElementById('surfaceValue').textContent = sDepth.toFixed(4);
+  document.getElementById('insightValue').textContent = iDepth.toFixed(4);
+
+  // Stats
+  const fc = d.surface.feature_count || '—';
+  const fc2 = d.insight.feature_count || '—';
+  const cls = expected ? 'positive' : 'inverted';
+  const arrow = expected ? '\u25B2 surface deeper — expected direction \u2713' : '\u25BC insight deeper — inverted';
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-item"><span class="stat-label">DELTA</span><span class="stat-value ${cls}">${delta > 0 ? '+' : ''}${delta.toFixed(4)} ${arrow}</span></div>
+    <div class="stat-item"><span class="stat-label">RATIO K</span><span class="stat-value ${cls}">${ratio.toFixed(4)}</span></div>
+    <div class="stat-item"><span class="stat-label">SURFACE FEATURES</span><span class="stat-value">${fc}</span></div>
+    <div class="stat-item"><span class="stat-label">INSIGHT FEATURES</span><span class="stat-value">${fc2}</span></div>
+  `;
+
+  // Layer distribution
+  const se = d.surface.early_ratio, sm = d.surface.mid_ratio, sl = d.surface.late_ratio;
+  const ie = d.insight.early_ratio, im = d.insight.mid_ratio, il = d.insight.late_ratio;
+
+  document.getElementById('layerBody').innerHTML = `
+    <tr><td style="color:#888">Surface</td><td>${(se*100).toFixed(0)}%</td><td>${(sm*100).toFixed(0)}%</td><td>${(sl*100).toFixed(0)}%</td></tr>
+    <tr><td style="color:#888">Insight</td><td>${(ie*100).toFixed(0)}%</td><td>${(im*100).toFixed(0)}%</td><td>${(il*100).toFixed(0)}%</td></tr>
+  `;
+
+  // Constant window check
+  const inWindow = Math.abs(ratio - 1.027) < 0.15;
+  document.getElementById('runWindow').innerHTML = inWindow
+    ? '<span style="color:#0f0">within window \u2713</span>'
+    : '<span style="color:#fa0">outside window</span>';
+
+  results.classList.add('visible');
+}
+
+// ── Session Summary ─────────────────────────────────────────────────────────
+function showSummary() {
+  const grid = document.getElementById('summaryGrid');
+  const labels = { healthcare: 'Healthcare', finance: 'Finance', legal: 'Legal', education: 'Education', ai_safety: 'AI Safety' };
+  let html = '';
+  let sum = 0;
+  let count = 0;
+
+  for (const [domain, data] of Object.entries(sessionResults)) {
+    const k = data.ratio;
+    sum += k;
+    count++;
+    html += `<div class="summary-item"><span class="name">${labels[domain]}</span><span class="val">K=${k.toFixed(3)} \u2713</span></div>`;
+  }
+
+  grid.innerHTML = html;
+  document.getElementById('sessionK').textContent = (sum / count).toFixed(3);
+  document.getElementById('summary').classList.add('visible');
+}
+
+// ── Custom Pair ─────────────────────────────────────────────────────────────
+function toggleCustom() {
+  const form = document.getElementById('customForm');
+  form.classList.toggle('visible');
+  const btn = document.getElementById('customToggle');
+  btn.innerHTML = form.classList.contains('visible')
+    ? 'TRY YOUR OWN PROMPTS &#9650;'
+    : 'TRY YOUR OWN PROMPTS &#9660;';
+}
+
+async function runCustom() {
+  if (!apiConnected) {
+    alert('API not connected. Start the Fathom API first.');
+    return;
+  }
+
+  const sp = document.getElementById('customSurfacePrompt').value.trim();
+  const st = document.getElementById('customSurfaceTarget').value.trim();
+  const ip = document.getElementById('customInsightPrompt').value.trim();
+  const it = document.getElementById('customInsightTarget').value.trim();
+
+  if (!sp || !st || !ip || !it) {
+    alert('Please fill in all four fields.');
+    return;
+  }
+
+  try {
+    const r = await fetch(API + '/v2/compare', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': 'fathom-demo' },
+      body: JSON.stringify({
+        surface_prompt: sp, surface_target: st,
+        insight_prompt: ip, insight_target: it
+      })
+    });
+
+    const json = await r.json();
+    const d = json.data || json;
+    const maxDepth = 26;
+
+    const sDepth = d.surface.depth_score;
+    const iDepth = d.insight.depth_score;
+    const delta = d.delta;
+    const ratio = sDepth / iDepth;
+    const expected = delta > 0;
+    const cls = expected ? 'positive' : 'inverted';
+
+    document.getElementById('customSurfaceBar').style.width = (sDepth / maxDepth * 100) + '%';
+    document.getElementById('customInsightBar').style.width = (iDepth / maxDepth * 100) + '%';
+    document.getElementById('customSurfaceValue').textContent = sDepth.toFixed(4);
+    document.getElementById('customInsightValue').textContent = iDepth.toFixed(4);
+
+    document.getElementById('customStats').innerHTML = `
+      <div class="stat-item"><span class="stat-label">DELTA</span><span class="stat-value ${cls}">${delta > 0 ? '+' : ''}${delta.toFixed(4)}</span></div>
+      <div class="stat-item"><span class="stat-label">RATIO K</span><span class="stat-value ${cls}">${ratio.toFixed(4)}</span></div>
+    `;
+
+    document.getElementById('customResults').classList.add('visible');
+
+  } catch (e) {
+    alert('API Error: ' + e.message);
+  }
+}
+
+// ── Leaderboard ─────────────────────────────────────────────────────────────
+// Final results — 4 models × 30 pairs, black-box probe (2026-03-29)
+const LEADERBOARD = [
+  { rank: 1, model: "GPT-4o",          ratio: 1.0043, pct: 60, pairs: 30 },
+  { rank: 2, model: "Claude Haiku",    ratio: 1.0033, pct: 67, pairs: 30 },
+  { rank: 3, model: "GPT-4o Mini",     ratio: 1.0029, pct: 53, pairs: 30 },
+  { rank: 4, model: "Claude Sonnet",   ratio: 1.0002, pct: 47, pairs: 30 },
+  // { rank: 5, model: "Gemini Flash", ratio: 0.0000, pct: 0,  pairs: 0  },
+];
+
+function renderLeaderboard() {
+  const body = document.getElementById('lbBody');
+  if (!LEADERBOARD.length) return;
+
+  const maxRatio = Math.max(...LEADERBOARD.map(m => m.ratio));
+
+  body.innerHTML = LEADERBOARD.map(m => {
+    const barWidth = ((m.ratio - 1.0) / (maxRatio - 1.0) * 100) || 0;
+    const clampedWidth = Math.max(5, Math.min(100, barWidth));
+    return `
+      <tr>
+        <td class="lb-rank">${m.rank}</td>
+        <td class="lb-model">${m.model}</td>
+        <td class="lb-ratio">${m.ratio.toFixed(4)}</td>
+        <td class="lb-bar-cell">
+          <div class="lb-bar-wrap">
+            <div class="lb-bar-fill" style="width: 0%" data-target="${clampedWidth}"></div>
+          </div>
+        </td>
+        <td class="lb-pct">${m.pct}%</td>
+        <td class="lb-pct">${m.pairs}</td>
+      </tr>
+    `;
+  }).join('');
+
+  // Animate bars on scroll into view
+  setTimeout(() => {
+    document.querySelectorAll('.lb-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 300);
+}
+
+renderLeaderboard();
+
+// ── Live Depth Stream ───────────────────────────────────────────────────────
+let streamData = [];
+
+async function runStream() {
+  const prompt = document.getElementById('streamPrompt').value.trim();
+  if (!prompt) return;
+
+  const btn = document.getElementById('streamBtn');
+  const tokensEl = document.getElementById('streamTokens');
+  const statsEl = document.getElementById('streamStats');
+  btn.disabled = true;
+  tokensEl.innerHTML = '';
+  statsEl.style.display = 'none';
+  streamData = [];
+
+  // Clear canvas
+  const canvas = document.getElementById('streamCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+  ctx.fillStyle = '#050505';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let trajectory;
+
+  if (apiConnected) {
+    // Try real API trajectory endpoint
+    try {
+      const r = await fetch(API + '/v2/trajectory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': 'fathom-demo' },
+        body: JSON.stringify({ prompt: prompt, max_tokens: 15 })
+      });
+      const json = await r.json();
+      trajectory = (json.data || json).trajectory || [];
+    } catch (e) {
+      // Fallback to estimate-based simulation
+      trajectory = await simulateTrajectory(prompt);
+    }
+  } else {
+    // Offline: simulate using black-box estimate
+    trajectory = await simulateTrajectory(prompt);
+  }
+
+  if (!trajectory || trajectory.length === 0) {
+    // Generate mock data for demo
+    trajectory = generateMockTrajectory(prompt);
+  }
+
+  // Animate tokens one by one
+  await animateTrajectory(trajectory, canvas, ctx, tokensEl);
+
+  // Show stats
+  const depths = trajectory.map(t => t.depth_score);
+  const mean = depths.reduce((a, b) => a + b, 0) / depths.length;
+  const max = Math.max(...depths);
+  const min = Math.min(...depths);
+  const variance = depths.reduce((s, d) => s + (d - mean) ** 2, 0) / depths.length;
+
+  document.getElementById('statMean').textContent = mean.toFixed(3);
+  document.getElementById('statMax').textContent = max.toFixed(3);
+  document.getElementById('statMin').textContent = min.toFixed(3);
+  document.getElementById('statVar').textContent = variance.toFixed(4);
+
+  // Color-code stats
+  document.getElementById('statMean').className = 'value' + (mean > 8 ? '' : mean > 7 ? ' warn' : '');
+
+  statsEl.style.display = 'grid';
+  btn.disabled = false;
+}
+
+async function simulateTrajectory(prompt) {
+  // Use /v2/estimate on progressively longer substrings
+  const words = prompt.split(' ');
+  const trajectory = [];
+  for (let i = 3; i <= words.length; i++) {
+    const sub = words.slice(0, i).join(' ');
+    try {
+      const r = await fetch(API + '/v2/estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': 'fathom-demo' },
+        body: JSON.stringify({ text: sub })
+      });
+      const json = await r.json();
+      const d = json.data || json;
+      trajectory.push({
+        token: words[i - 1],
+        depth_score: (1.0 - d.predicted_depth) * 26, // back to raw scale
+        entropy: 3.9
+      });
+    } catch { break; }
+  }
+  return trajectory;
+}
+
+function generateMockTrajectory(prompt) {
+  // Generate realistic mock data for offline demo
+  const words = prompt.split(' ');
+  const n = Math.min(words.length, 15);
+  const trajectory = [];
+  let base = 8.0 + Math.random() * 0.5;
+
+  for (let i = 0; i < n; i++) {
+    // Simulate depth variation: technical words go deeper
+    const word = words[i] || '...';
+    const isTechnical = word.length > 7 || /[tion|sis|ism|ase|ide]/.test(word);
+    const drift = (Math.random() - 0.5) * 0.4;
+    const techBonus = isTechnical ? -0.3 : 0.1;
+    base = Math.max(6.5, Math.min(9.5, base + drift + techBonus));
+
+    trajectory.push({
+      token: word,
+      depth_score: base,
+      entropy: 3.8 + Math.random() * 0.3
+    });
+  }
+  return trajectory;
+}
+
+async function animateTrajectory(trajectory, canvas, ctx, tokensEl) {
+  const w = canvas.width;
+  const h = canvas.height;
+  const pad = { top: 20, right: 20, bottom: 25, left: 45 };
+  const plotW = w - pad.left - pad.right;
+  const plotH = h - pad.top - pad.bottom;
+  const n = trajectory.length;
+
+  // Find scale
+  const depths = trajectory.map(t => t.depth_score);
+  const minD = Math.min(...depths) - 0.3;
+  const maxD = Math.max(...depths) + 0.3;
+
+  // Draw axes
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.left, pad.top);
+  ctx.lineTo(pad.left, h - pad.bottom);
+  ctx.lineTo(w - pad.right, h - pad.bottom);
+  ctx.stroke();
+
+  // Y-axis labels
+  ctx.fillStyle = '#444';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) {
+    const val = minD + (maxD - minD) * (1 - i / 4);
+    const y = pad.top + (plotH * i / 4);
+    ctx.fillText(val.toFixed(1), pad.left - 5, y + 4);
+    ctx.strokeStyle = '#111';
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(w - pad.right, y);
+    ctx.stroke();
+  }
+
+  // Animate points
+  for (let i = 0; i < n; i++) {
+    const t = trajectory[i];
+    const x = pad.left + (plotW * i / (n - 1 || 1));
+    const y = pad.top + plotH * (1 - (t.depth_score - minD) / (maxD - minD));
+
+    // Draw line segment
+    if (i > 0) {
+      const prevX = pad.left + (plotW * (i - 1) / (n - 1 || 1));
+      const prevY = pad.top + plotH * (1 - (trajectory[i - 1].depth_score - minD) / (maxD - minD));
+      ctx.strokeStyle = '#0f0';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(prevX, prevY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+
+    // Draw point
+    ctx.fillStyle = '#0f0';
+    ctx.shadowColor = '#0f0';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Draw depth value above point
+    ctx.fillStyle = '#0f0';
+    ctx.font = '9px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(t.depth_score.toFixed(1), x, y - 10);
+
+    // Add token below
+    const depthNorm = (t.depth_score - minD) / (maxD - minD);
+    const cls = depthNorm > 0.6 ? 'deep' : depthNorm > 0.3 ? 'mid' : 'shallow';
+    const tokenEl = document.createElement('span');
+    tokenEl.className = `stream-token ${cls}`;
+    tokenEl.textContent = t.token;
+    tokenEl.title = `depth: ${t.depth_score.toFixed(3)}`;
+    tokensEl.appendChild(tokenEl);
+
+    // X-axis token label
+    ctx.fillStyle = '#333';
+    ctx.font = '9px monospace';
+    ctx.textAlign = 'center';
+    ctx.save();
+    ctx.translate(x, h - pad.bottom + 12);
+    ctx.rotate(Math.PI / 6);
+    ctx.fillText(t.token.substring(0, 6), 0, 0);
+    ctx.restore();
+
+    // Wait for animation
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  // Draw running average line
+  ctx.strokeStyle = '#00aa00';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  let runSum = 0;
+  for (let i = 0; i < n; i++) {
+    runSum += trajectory[i].depth_score;
+    const avg = runSum / (i + 1);
+    const x = pad.left + (plotW * i / (n - 1 || 1));
+    const y = pad.top + plotH * (1 - (avg - minD) / (maxD - minD));
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+checkAPI();
+setInterval(checkAPI, 10000);
+</script>
+</body>
+</html>

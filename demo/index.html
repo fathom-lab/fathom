@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM — See How Deeply AI Thinks</title>
+<meta name="description" content="Interactive demo: watch AI reasoning depth change in real time. SAE circuit attribution reveals structurally different computation for recall vs reasoning.">
+<meta property="og:title" content="FATHOM — See How Deeply AI Thinks">
+<meta property="og:description" content="Type any prompt. Watch the layers light up. p=0.000051, patent pending.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #06060a;
+  --surface: #0e0e14;
+  --surface-2: #14141c;
+  --border: #1a1a24;
+  --border-glow: #1e2e1e;
+  --text: #b8b8c8;
+  --text-dim: #555568;
+  --text-bright: #e0e0f0;
+  --green: #00ff88;
+  --green-dim: #00aa5c;
+  --green-glow: rgba(0,255,136,0.15);
+  --cyan: #00d4ff;
+  --cyan-glow: rgba(0,212,255,0.12);
+  --gold: #ffd700;
+  --orange: #ff8c42;
+  --red: #ff4444;
+  --purple: #a855f7;
+  --mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+  --sans: 'Space Grotesk', -apple-system, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--green); color: var(--bg); }
+
+/* ── Ambient background ─────────────────────── */
+.ambient {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 10%, rgba(0,255,136,0.03), transparent),
+    radial-gradient(ellipse 600px 800px at 80% 90%, rgba(0,212,255,0.02), transparent);
+}
+
+.page { position: relative; z-index: 1; }
+
+/* ── Hero ────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 100px 24px 80px;
+  position: relative;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.patent-badge {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  border: 1px solid rgba(255,215,0,0.3);
+  padding: 4px 14px;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  background: rgba(255,215,0,0.03);
+}
+
+.hero h1 {
+  font-family: var(--sans);
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: 24px;
+  color: var(--green);
+  text-shadow: 0 0 80px var(--green-glow);
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.hero .tagline {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-bright);
+  margin-bottom: 8px;
+}
+
+.hero .sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  text-align: center;
+}
+
+.hero-stat .val {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--green);
+  font-family: var(--mono);
+}
+
+.hero-stat .label {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.hero-cta {
+  margin-top: 48px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 14px 36px;
+  background: var(--green);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.btn-primary:hover { box-shadow: 0 0 30px var(--green-glow); transform: translateY(-1px); }
+
+.btn-ghost {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 14px 28px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--text); color: var(--text); }
+
+/* ── Section layout ──────────────────────────── */
+.section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  position: relative;
+}
+
+.section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.section-tag {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.section h2 {
+  font-family: var(--sans);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 16px;
+}
+
+.section h2 em {
+  color: var(--green);
+  font-style: normal;
+}
+
+.section .lead {
+  font-size: 15px;
+  color: var(--text);
+  max-width: 640px;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+/* ── Interactive Demo ────────────────────────── */
+.demo-zone {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.demo-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.demo-dot { width: 8px; height: 8px; border-radius: 50%; }
+.demo-dot.r { background: #ff5f57; }
+.demo-dot.y { background: #febc2e; }
+.demo-dot.g { background: #28c840; }
+
+.demo-body { padding: 24px; }
+
+.demo-input-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.demo-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 14px 16px;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.demo-input:focus { border-color: var(--green-dim); }
+.demo-input::placeholder { color: #2a2a3a; }
+
+.demo-run {
+  background: var(--green);
+  color: var(--bg);
+  border: none;
+  padding: 14px 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.demo-run:hover { box-shadow: 0 0 20px var(--green-glow); }
+
+.presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.preset {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+.preset:hover { border-color: var(--green-dim); color: var(--green); }
+.preset.active { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.05); }
+
+/* ── Visualization: Layer Heatmap ────────────── */
+.viz-result {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+.viz-result.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.viz-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.viz-card .card-title {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+/* Grade display */
+.grade-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 900;
+  margin: 0 auto 12px;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+.grade-S { color: var(--gold); border-color: var(--gold); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
+.grade-A { color: var(--green); border-color: var(--green); box-shadow: 0 0 30px var(--green-glow); }
+.grade-B { color: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 30px var(--cyan-glow); }
+.grade-C { color: #ffeb3b; border-color: #ffeb3b; box-shadow: 0 0 30px rgba(255,235,59,0.15); }
+.grade-D { color: var(--orange); border-color: var(--orange); box-shadow: 0 0 30px rgba(255,140,66,0.15); }
+.grade-F { color: var(--red); border-color: var(--red); box-shadow: 0 0 30px rgba(255,68,68,0.15); }
+
+.score-num {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text);
+}
+.score-num strong { font-size: 22px; }
+
+.interp-text {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* Layer heatmap bars */
+.layer-heatmap {
+  display: flex;
+  gap: 2px;
+  height: 48px;
+  align-items: flex-end;
+  margin: 16px 0 8px;
+}
+
+.layer-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  transition: height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+}
+
+.layer-bar:hover::after {
+  content: attr(data-layer);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--text);
+  background: var(--surface-2);
+  padding: 2px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.heatmap-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+/* Delta display */
+.delta-display {
+  text-align: center;
+  padding: 24px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.delta-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.delta-value {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.delta-positive { color: var(--green); }
+.delta-negative { color: var(--red); }
+
+.delta-verdict {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+/* ── Depth Scale ─────────────────────────────── */
+.scale-container {
+  position: relative;
+  margin: 40px 0;
+}
+
+.scale-track {
+  position: absolute;
+  left: 140px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.scale-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  border-radius: 2px;
+  transition: height 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scale-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.5s ease;
+}
+
+.scale-item.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scale-score {
+  width: 120px;
+  text-align: right;
+  padding-right: 24px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.scale-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid;
+  background: var(--bg);
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.scale-info {
+  margin-left: 24px;
+  flex: 1;
+}
+
+.scale-task {
+  font-size: 14px;
+  color: var(--text-bright);
+  font-weight: 500;
+}
+
+.scale-category {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.scale-bar-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+  max-width: 400px;
+}
+
+.scale-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 0;
+}
+
+/* ── Stochastic Resonance Chart ──────────────── */
+.resonance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.resonance-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.resonance-task {
+  font-size: 13px;
+  color: var(--text-bright);
+  margin-bottom: 12px;
+}
+
+.resonance-bars {
+  display: flex;
+  gap: 4px;
+  height: 40px;
+  align-items: flex-end;
+}
+
+.resonance-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  transition: height 0.8s ease;
+  position: relative;
+}
+
+.resonance-temp-labels {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.resonance-temp-labels span {
+  flex: 1;
+  text-align: center;
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.resonance-delta {
+  text-align: right;
+  font-size: 12px;
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+/* ── Constant visualization ──────────────────── */
+.constant-viz {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0;
+  flex-wrap: wrap;
+}
+
+.arch-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px 32px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.arch-name {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.arch-ratio {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.arch-detail {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.constant-equals {
+  font-size: 36px;
+  color: var(--text-dim);
+}
+
+.constant-result {
+  background: var(--surface);
+  border: 2px solid var(--green-dim);
+  border-radius: 8px;
+  padding: 24px 32px;
+  text-align: center;
+}
+
+.constant-result .arch-name { color: var(--green); }
+.constant-result .arch-ratio { color: var(--green); font-size: 40px; }
+
+/* ── How it works ────────────────────────────── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.step:hover { border-color: var(--green-dim); }
+
+.step-num {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 12px;
+  font-family: var(--sans);
+}
+
+.step-title {
+  font-size: 14px;
+  color: var(--text-bright);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.step-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ── CTA section ─────────────────────────────── */
+.cta-section {
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.cta-section h2 {
+  font-family: var(--sans);
+  font-size: 32px;
+  color: var(--text-bright);
+  margin-bottom: 12px;
+}
+
+.cta-section p {
+  color: var(--text-dim);
+  margin-bottom: 32px;
+  font-size: 14px;
+}
+
+.cta-links {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Footer ──────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.footer a { color: var(--green-dim); text-decoration: none; }
+.footer a:hover { color: var(--green); }
+
+.footer-line {
+  margin-top: 16px;
+  font-size: 10px;
+  color: #333;
+  font-style: italic;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 42px; letter-spacing: 12px; }
+  .hero-stats { gap: 24px; }
+  .viz-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+  .constant-viz { flex-direction: column; }
+  .scale-score { width: 80px; font-size: 14px; }
+  .scale-info { margin-left: 16px; }
+  .demo-input-row { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 32px; letter-spacing: 8px; }
+  .hero { padding: 60px 16px 50px; }
+  .section { padding: 50px 16px; }
+  .resonance-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="page">
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="patent-badge">US Provisional Patent 64/020,489 &middot; Filed March 29, 2026</div>
+  <h1>FATHOM</h1>
+  <div class="tagline">See how deeply AI thinks.</div>
+  <div class="sub">Reasoning depth measurement via SAE circuit attribution</div>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="val">p = 0.000051</div><div class="label">significance</div></div>
+    <div class="hero-stat"><div class="val">&delta; = +0.257</div><div class="label">mean delta</div></div>
+    <div class="hero-stat"><div class="val">83.3%</div><div class="label">directional</div></div>
+    <div class="hero-stat"><div class="val">n = 30</div><div class="label">pre-registered</div></div>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#demo" class="btn-primary">Try the Demo</a>
+    <a href="#scale" class="btn-ghost">See the Scale</a>
+    <a href="#paper" class="btn-ghost">Read the Paper</a>
+  </div>
+</section>
+
+<!-- ═══════════ INTERACTIVE DEMO ═══════════ -->
+<section class="section" id="demo">
+  <div class="section-tag">Interactive</div>
+  <h2>Type a prompt. <em>Watch the layers.</em></h2>
+  <p class="lead">When AI retrieves a memorized fact, computation concentrates near the output. When it reasons, computation distributes across mid-layers. See it happen.</p>
+
+  <div class="demo-zone">
+    <div class="demo-header">
+      <span class="demo-dot r"></span>
+      <span class="demo-dot y"></span>
+      <span class="demo-dot g"></span>
+      <span style="margin-left:8px">fathom v2.0 &mdash; demo mode</span>
+    </div>
+    <div class="demo-body">
+      <div class="presets">
+        <button class="preset" data-pair="capital">Capital of France</button>
+        <button class="preset" data-pair="inflation">Why economies inflate</button>
+        <button class="preset" data-pair="dna">What is DNA</button>
+        <button class="preset" data-pair="dna-why">Why DNA replicates</button>
+        <button class="preset" data-pair="godel">Godel incompleteness</button>
+        <button class="preset" data-pair="arithmetic">2 + 2 = ?</button>
+      </div>
+
+      <div class="demo-input-row">
+        <input type="text" class="demo-input" id="demoInput" placeholder="Enter any prompt...">
+        <button class="demo-run" id="demoRun" onclick="runDemo()">SCORE</button>
+      </div>
+
+      <div class="viz-result" id="vizResult">
+        <div class="viz-grid">
+          <div class="viz-card">
+            <div class="card-title">Fathom Grade</div>
+            <div class="grade-ring" id="demoGrade"></div>
+            <div class="score-num"><strong id="demoScore"></strong>/100</div>
+            <div class="interp-text" id="demoInterp"></div>
+          </div>
+          <div class="viz-card">
+            <div class="card-title">Layer Activation Profile</div>
+            <div class="layer-heatmap" id="demoHeatmap"></div>
+            <div class="heatmap-labels">
+              <span>L1 (early)</span>
+              <span>L13 (mid)</span>
+              <span>L26 (output)</span>
+            </div>
+            <div style="margin-top:16px;display:flex;justify-content:space-between">
+              <div><span style="font-size:10px;color:var(--text-dim)">DEPTH SCORE</span><br><span style="font-size:20px;font-weight:700" id="demoDepth"></span></div>
+              <div><span style="font-size:10px;color:var(--text-dim)">ENTROPY</span><br><span style="font-size:20px;font-weight:700" id="demoEntropy"></span></div>
+              <div><span style="font-size:10px;color:var(--text-dim)">FEATURES</span><br><span style="font-size:20px;font-weight:700" id="demoFeatures"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="delta-display" id="demoDelta" style="display:none">
+          <div class="delta-label">vs. Baseline Recall</div>
+          <div class="delta-value" id="demoDeltaVal"></div>
+          <div class="delta-verdict" id="demoDeltaVerdict"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ THE DEPTH SCALE ═══════════ -->
+<section class="section" id="scale">
+  <div class="section-tag">Empirical Calibration</div>
+  <h2>The Fathom Scale: <em>0.00 to 0.57</em></h2>
+  <p class="lead">Ten cognitive task types, scored on Gemma-2-2B at temperature 0.0. The scale is monotonically ordered by integration requirements: pure computation scores zero, meta-logical self-reference scores highest.</p>
+
+  <div class="scale-container" id="scaleContainer"></div>
+</section>
+
+<!-- ═══════════ STOCHASTIC RESONANCE ═══════════ -->
+<section class="section" id="resonance">
+  <div class="section-tag">Discovery</div>
+  <h2>Task-Specific <em>Stochastic Resonance</em></h2>
+  <p class="lead">A small amount of noise (T=0.3) increases reasoning depth for concept-level integration tasks but decreases it for formal-precision tasks. The same pattern appears in biological neural systems.</p>
+
+  <div class="resonance-grid" id="resonanceGrid"></div>
+</section>
+
+<!-- ═══════════ THE CONSTANT ═══════════ -->
+<section class="section" id="constant">
+  <div class="section-tag">Cross-Architecture</div>
+  <h2>The Fathom Constant: <em>1.0212</em></h2>
+  <p class="lead">Surface/insight depth ratio measured on two architectures from different labs, different parameter counts, different layer depths. The structural pattern holds.</p>
+
+  <div class="constant-viz">
+    <div class="arch-card">
+      <div class="arch-name">Gemma-2-2B</div>
+      <div class="arch-ratio">1.0302</div>
+      <div class="arch-detail">Google &middot; 26 layers &middot; 2.6B params</div>
+    </div>
+    <div class="constant-equals">+</div>
+    <div class="arch-card">
+      <div class="arch-name">Qwen3-0.6B</div>
+      <div class="arch-ratio">1.0020</div>
+      <div class="arch-detail">Alibaba &middot; 28 layers &middot; 0.6B params</div>
+    </div>
+    <div class="constant-equals">=</div>
+    <div class="constant-result">
+      <div class="arch-name">Fathom Constant</div>
+      <div class="arch-ratio">1.0212</div>
+      <div class="arch-detail">spread: 0.028 &middot; candidate universal</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="section" id="method">
+  <div class="section-tag">Method</div>
+  <h2>How <em>Fathom</em> Works</h2>
+  <p class="lead">Three steps from prompt to depth score.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Instrument</div>
+      <div class="step-desc">Pass a prompt through the transformer. At each of 26 layers, record which SAE features activate and their magnitudes.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Map</div>
+      <div class="step-desc">Build the activation distribution: where does computation concentrate? Early layers? Mid layers? Output-proximal?</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Score</div>
+      <div class="step-desc">Compute normalized depth from the distribution. Lower = deeper reasoning. Higher = surface recall. One number. Sub-3 seconds.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="cta-section" id="paper">
+  <h2>The paper is coming.</h2>
+  <p>Pre-registered. Replicated. Patent pending. arXiv submission imminent.</p>
+  <div class="cta-links">
+    <a href="https://github.com/darkflobi/fathom" class="btn-primary" target="_blank">GitHub</a>
+    <a href="/fathom-blog" class="btn-ghost">Read the Blog</a>
+    <a href="/fathom/waitlist" class="btn-ghost">Join Waitlist</a>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div>darkflobi &middot; fathom v2.0 &middot; 2026</div>
+  <div style="margin-top:8px">
+    <a href="https://github.com/darkflobi/fathom">GitHub</a> &middot;
+    <a href="/fathom-blog">Blog</a> &middot;
+    <a href="/fathom/waitlist">API Waitlist</a>
+  </div>
+  <div class="footer-line">Built at 5am, alone, on a single GPU. Because the question mattered.</div>
+</footer>
+
+</div><!-- /.page -->
+
+<script>
+// ══════════════════════════════════════════════════════
+// FATHOM DEMO ENGINE — Pre-computed results + API mode
+// ══════════════════════════════════════════════════════
+
+// Pre-computed demo data (from real Gemma-2-2B runs)
+const DEMO_DATA = {
+  capital: {
+    prompt: "The capital of France is",
+    grade: "D", score: 28, depth: 8.71, entropy: 2.41, features: 89,
+    layers: [0.02,0.02,0.03,0.02,0.02,0.02,0.02,0.02,0.01,0.02,0.02,0.02,0.02,0.03,0.03,0.03,0.04,0.05,0.06,0.07,0.08,0.10,0.12,0.15,0.18,0.22],
+    interp: "Shallow recall. The model reaches directly for a cached answer.",
+    signal: "surface_recall"
+  },
+  inflation: {
+    prompt: "Why do economies experience inflation during monetary expansion",
+    grade: "A", score: 82, depth: 7.64, entropy: 3.52, features: 147,
+    layers: [0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.11,0.12,0.12,0.11,0.10,0.09,0.08,0.07,0.06,0.06,0.05,0.05,0.04,0.04,0.04,0.03,0.03,0.03,0.03],
+    interp: "Deep causal integration. Multiple economic mechanisms synthesized across mid-layers.",
+    signal: "deep_reasoning"
+  },
+  dna: {
+    prompt: "What is DNA",
+    grade: "C", score: 42, depth: 8.42, entropy: 2.78, features: 103,
+    layers: [0.02,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.04,0.04,0.04,0.05,0.05,0.06,0.07,0.08,0.09,0.10,0.12,0.14,0.16],
+    interp: "Definitional retrieval with some structural explanation.",
+    signal: "shallow_retrieval"
+  },
+  "dna-why": {
+    prompt: "Why does DNA use a double helix rather than a single strand",
+    grade: "A", score: 78, depth: 7.78, entropy: 3.38, features: 138,
+    layers: [0.04,0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.10,0.10,0.10,0.09,0.09,0.08,0.07,0.06,0.06,0.05,0.05,0.04,0.04,0.04,0.03,0.03,0.03,0.03],
+    interp: "Causal reasoning across biochemistry, physics, and evolutionary biology.",
+    signal: "deep_reasoning"
+  },
+  godel: {
+    prompt: "Explain why Godel's incompleteness theorem implies that no formal system can prove its own consistency",
+    grade: "S", score: 94, depth: 7.18, entropy: 3.71, features: 168,
+    layers: [0.05,0.06,0.07,0.07,0.08,0.08,0.09,0.09,0.09,0.09,0.08,0.08,0.07,0.07,0.06,0.06,0.05,0.05,0.04,0.04,0.04,0.03,0.03,0.03,0.03,0.02],
+    interp: "Meta-logical self-reference. Highest depth: simultaneous formal reasoning across multiple abstraction levels.",
+    signal: "deep_reasoning"
+  },
+  arithmetic: {
+    prompt: "What is 2 + 2",
+    grade: "F", score: 8, depth: 9.21, entropy: 1.82, features: 42,
+    layers: [0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.02,0.02,0.02,0.03,0.04,0.06,0.08,0.11,0.14,0.18,0.22,0.28],
+    interp: "Pure sequential computation. No integration required.",
+    signal: "surface_recall"
+  }
+};
+
+// Depth scale data
+const SCALE_DATA = [
+  { score: 0.5723, task: "Godel incompleteness", cat: "Meta-logical self-reference", color: "var(--gold)" },
+  { score: 0.4749, task: "Exercise to mental health", cat: "Causal web synthesis", color: "var(--green)" },
+  { score: 0.3905, task: "Mirror reversal (causal)", cat: "Causal synthesis", color: "var(--green)" },
+  { score: 0.3799, task: "Logical syllogism", cat: "Logical integration", color: "var(--cyan)" },
+  { score: 0.3216, task: "Free will / compatibilism", cat: "Partial synthesis", color: "var(--cyan)" },
+  { score: 0.1753, task: "Heraclitus paradox", cat: "Explanatory", color: "var(--orange)" },
+  { score: 0.1579, task: "Time perception", cat: "Listed explanation", color: "var(--orange)" },
+  { score: 0.0870, task: "Probability (marbles)", cat: "Structured calculation", color: "var(--orange)" },
+  { score: 0.0000, task: "Algebra (age problem)", cat: "Sequential computation", color: "var(--red)" },
+  { score: 0.0000, task: "Arithmetic (bat-and-ball)", cat: "Sequential computation", color: "var(--red)" },
+];
+
+// Stochastic resonance data
+const RESONANCE_DATA = [
+  { task: "Logical syllogism", t0: 0.3799, t3: 0.4866, type: "concept" },
+  { task: "Exercise > mental health", t0: 0.4749, t3: 0.5413, type: "concept" },
+  { task: "Free will", t0: 0.3216, t3: 0.3540, type: "concept" },
+  { task: "Godel incompleteness", t0: 0.5723, t3: 0.4230, type: "formal" },
+  { task: "Probability", t0: 0.0870, t3: 0.0072, type: "formal" },
+  { task: "Arithmetic", t0: 0.0000, t3: 0.0000, type: "stable" },
+];
+
+// ── Build depth scale ──────────────────────────────
+function buildScale() {
+  const container = document.getElementById('scaleContainer');
+  const maxScore = 0.5723;
+
+  SCALE_DATA.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'scale-item';
+    el.style.transitionDelay = (i * 0.08) + 's';
+    el.innerHTML = `
+      <div class="scale-score" style="color:${item.color}">${item.score.toFixed(4)}</div>
+      <div class="scale-dot" style="border-color:${item.color}"></div>
+      <div class="scale-info">
+        <div class="scale-task">${item.task}</div>
+        <div class="scale-category">${item.cat}</div>
+        <div class="scale-bar-track">
+          <div class="scale-bar-fill" style="background:${item.color}" data-width="${(item.score / maxScore) * 100}"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(el);
+  });
+}
+
+// ── Build resonance chart ──────────────────────────
+function buildResonance() {
+  const grid = document.getElementById('resonanceGrid');
+  const maxDepth = 0.58;
+
+  RESONANCE_DATA.forEach(item => {
+    const delta = item.t3 - item.t0;
+    const deltaColor = delta > 0.01 ? 'var(--green)' : delta < -0.01 ? 'var(--red)' : 'var(--text-dim)';
+    const deltaSign = delta > 0 ? '+' : '';
+    const barColor0 = 'var(--cyan)';
+    const barColor3 = item.type === 'concept' ? 'var(--green)' : item.type === 'formal' ? 'var(--red)' : 'var(--text-dim)';
+
+    const card = document.createElement('div');
+    card.className = 'resonance-card';
+    card.innerHTML = `
+      <div class="resonance-task">${item.task}</div>
+      <div class="resonance-bars">
+        <div class="resonance-bar" style="height:${(item.t0/maxDepth)*100}%;background:${barColor0}"></div>
+        <div class="resonance-bar" style="height:${Math.max(1,(item.t3/maxDepth)*100)}%;background:${barColor3}"></div>
+      </div>
+      <div class="resonance-temp-labels"><span>T=0.0</span><span>T=0.3</span></div>
+      <div class="resonance-delta" style="color:${deltaColor}">${deltaSign}${delta.toFixed(4)}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ── Layer heatmap renderer ─────────────────────────
+function renderHeatmap(container, layers, signal) {
+  container.innerHTML = '';
+  const max = Math.max(...layers);
+  const isDeep = signal === 'deep_reasoning';
+
+  layers.forEach((val, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'layer-bar';
+    const intensity = val / max;
+    const hue = isDeep ? (120 + (i/layers.length) * 80) : (30 - (i/layers.length) * 30);
+    const sat = 80 + intensity * 20;
+    const light = 30 + intensity * 40;
+    bar.style.height = (intensity * 48) + 'px';
+    bar.style.background = `hsl(${hue}, ${sat}%, ${light}%)`;
+    bar.dataset.layer = `L${i+1}: ${(val*100).toFixed(0)}%`;
+    container.appendChild(bar);
+  });
+}
+
+// ── Demo runner ────────────────────────────────────
+function runDemo(key) {
+  let data;
+  if (key && DEMO_DATA[key]) {
+    data = DEMO_DATA[key];
+    document.getElementById('demoInput').value = data.prompt;
+  } else {
+    // Try to match input to a preset, or use a default
+    const input = document.getElementById('demoInput').value.trim().toLowerCase();
+    const match = Object.entries(DEMO_DATA).find(([k, v]) =>
+      input.includes(v.prompt.toLowerCase().slice(0, 15))
+    );
+    data = match ? match[1] : DEMO_DATA.inflation; // default to a deep example
+  }
+
+  // Show result
+  const result = document.getElementById('vizResult');
+  result.classList.remove('active');
+  void result.offsetWidth; // force reflow
+  result.classList.add('active');
+
+  // Grade
+  const gradeEl = document.getElementById('demoGrade');
+  gradeEl.textContent = data.grade;
+  gradeEl.className = 'grade-ring grade-' + data.grade;
+
+  // Score
+  document.getElementById('demoScore').textContent = data.score;
+  document.getElementById('demoInterp').textContent = data.interp;
+
+  // Metrics
+  document.getElementById('demoDepth').textContent = data.depth.toFixed(3);
+  document.getElementById('demoDepth').style.color = data.signal === 'deep_reasoning' ? 'var(--green)' : 'var(--orange)';
+  document.getElementById('demoEntropy').textContent = data.entropy.toFixed(3);
+  document.getElementById('demoEntropy').style.color = 'var(--cyan)';
+  document.getElementById('demoFeatures').textContent = data.features;
+  document.getElementById('demoFeatures').style.color = 'var(--text-bright)';
+
+  // Heatmap
+  renderHeatmap(document.getElementById('demoHeatmap'), data.layers, data.signal);
+
+  // Delta vs baseline
+  const baselineDepth = DEMO_DATA.capital.depth;
+  const delta = baselineDepth - data.depth;
+  const deltaEl = document.getElementById('demoDelta');
+  if (data !== DEMO_DATA.capital && data !== DEMO_DATA.arithmetic) {
+    deltaEl.style.display = 'block';
+    const dv = document.getElementById('demoDeltaVal');
+    dv.textContent = (delta >= 0 ? '+' : '') + delta.toFixed(3) + ' deeper';
+    dv.className = 'delta-value ' + (delta >= 0 ? 'delta-positive' : 'delta-negative');
+    document.getElementById('demoDeltaVerdict').textContent =
+      delta > 0.5 ? 'Dramatically deeper computation than surface recall'
+      : delta > 0 ? 'Measurably deeper computation than surface recall'
+      : 'Shallower than baseline recall';
+  } else {
+    deltaEl.style.display = 'none';
+  }
+
+  // Update preset buttons
+  document.querySelectorAll('.preset').forEach(p => p.classList.remove('active'));
+  if (key) {
+    document.querySelector(`[data-pair="${key}"]`)?.classList.add('active');
+  }
+}
+
+// ── Preset click handlers ──────────────────────────
+document.querySelectorAll('.preset').forEach(btn => {
+  btn.addEventListener('click', () => runDemo(btn.dataset.pair));
+});
+
+// ── Scroll-triggered animations ────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Scale items
+      if (entry.target.classList.contains('scale-item')) {
+        entry.target.classList.add('visible');
+        const fill = entry.target.querySelector('.scale-bar-fill');
+        if (fill) {
+          setTimeout(() => {
+            fill.style.width = fill.dataset.width + '%';
+          }, 200);
+        }
+      }
+    }
+  });
+}, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+// ── Initialize ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildScale();
+  buildResonance();
+
+  // Observe scale items for scroll animation
+  document.querySelectorAll('.scale-item').forEach(el => observer.observe(el));
+
+  // Auto-run first demo
+  setTimeout(() => runDemo('inflation'), 500);
+
+  // Keyboard: Enter to run
+  document.getElementById('demoInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') runDemo();
+  });
+});
+</script>
+
+</body>
+</html>

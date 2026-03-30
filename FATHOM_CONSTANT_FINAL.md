@@ -1,7 +1,7 @@
 # FATHOM CONSTANT — Cross-Architecture Universality Test
 
-**Date:** 2026-03-26 09:50:13
-**Duration:** 480.7s
+**Date:** 2026-03-28 17:49:18
+**Duration:** 810.7s
 **Pairs:** 30 (paper power replication set, p=0.000051)
 
 ## Hypothesis
@@ -52,106 +52,5 @@ provides SAEs, not transcoders. These are incompatible with circuit-tracer's
 
 ### meta-llama/Llama-3.2-1B
 
-**Error:** You are trying to access a gated repo.
-Make sure to have access to it at https://huggingface.co/meta-llama/Llama-3.2-1B.
-403 Client Error. (Request ID: Root=1-69c53b78-3030699327fb43553a7c5722;5f01e889-0f40-47cd-a4bc-eb57656fb3a0)
-
-Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.2-1B/resolve/main/config.json.
-Your request to access model meta-llama/Llama-3.2-1B is awaiting a review from the repo authors.
-
-```
-Traceback (most recent call last):
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\utils\_http.py", line 403, in hf_raise_for_status
-    response.raise_for_status()
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 1026, in raise_for_status
-    raise HTTPError(http_error_msg, response=self)
-requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://huggingface.co/meta-llama/Llama-3.2-1B/resolve/main/config.json
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\utils\hub.py", line 479, in cached_files
-    hf_hub_download(
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\utils\_validators.py", line 114, in _inner_fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py", line 1014, in hf_hub_download
-    return _hf_hub_download_to_cache_dir(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py", line 1121, in _hf_hub_download_to_cache_dir
-    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py", line 1662, in _raise_on_head_call_error
-    raise head_call_error
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py", line 1550, in _get_metadata_or_catch_error
-    metadata = get_hf_file_metadata(
-               ^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\utils\_validators.py", line 114, in _inner_fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py", line 1467, in get_hf_file_metadata
-    r = _request_wrapper(
-        ^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py", line 283, in _request_wrapper
-    response = _request_wrapper(
-               ^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py", line 307, in _request_wrapper
-    hf_raise_for_status(response)
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\utils\_http.py", line 420, in hf_raise_for_status
-    raise _format(GatedRepoError, message, response) from e
-huggingface_hub.errors.GatedRepoError: 403 Client Error. (Request ID: Root=1-69c53b78-3030699327fb43553a7c5722;5f01e889-0f40-47cd-a4bc-eb57656fb3a0)
-
-Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.2-1B/resolve/main/config.json.
-Your request to access model meta-llama/Llama-3.2-1B is awaiting a review from the repo authors.
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "C:\Users\heyzo\clawd\sae-reasoning-depth\fathom_constant_final.py", line 347, in test_model
-    scorer = DepthScorer(
-             ^^^^^^^^^^^^
-  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 206, in __init__
-    self._load_model(model_name, model_type, dtype)
-  File "C:\Users\heyzo\clawd\sae-reasoning-depth\depth_scorer.py", line 218, in _load_model
-    self._model = ReplacementModel.from_pretrained(
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model.py", line 62, in from_pretrained
-    return cls.from_pretrained_and_transcoders(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model.py", line 114, in from_pretrained_and_transcoders
-    return TransformerLensReplacementModel.from_pretrained_and_transcoders(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\clawd\research\circuit-tracer\circuit_tracer\replacement_model\replacement_model_transformerlens.py", line 111, in from_pretrained_and_transcoders
-    model = super().from_pretrained(
-            ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformer_lens\HookedTransformer.py", line 1376, in from_pretrained
-    state_dict = loading.get_pretrained_state_dict(
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformer_lens\loading_from_pretrained.py", line 2344, in get_pretrained_state_dict
-    hf_model = AutoModelForCausalLM.from_pretrained(
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\models\auto\auto_factory.py", line 549, in from_pretrained
-    config, kwargs = AutoConfig.from_pretrained(
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\models\auto\configuration_auto.py", line 1332, in from_pretrained
-    config_dict, unused_kwargs = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\configuration_utils.py", line 662, in get_config_dict
-    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\configuration_utils.py", line 721, in _get_config_dict
-    resolved_config_file = cached_file(
-                           ^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\utils\hub.py", line 322, in cached_file
-    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\utils\hub.py", line 543, in cached_files
-    raise OSError(
-OSError: You are trying to access a gated repo.
-Make sure to have access to it at https://huggingface.co/meta-llama/Llama-3.2-1B.
-403 Client Error. (Request ID: Root=1-69c53b78-3030699327fb43553a7c5722;5f01e889-0f40-47cd-a4bc-eb57656fb3a0)
-
-Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.2-1B/resolve/main/config.json.
-Your request to access model meta-llama/Llama-3.2-1B is awaiting a review from the repo authors.
-
-```
+**Error:** No valid pairs
 

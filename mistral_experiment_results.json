@@ -1,0 +1,18 @@
+[
+  {
+    "pair_id": "earthquakes",
+    "pair_index": 0,
+    "surface_depth": 23.583453701895326,
+    "surface_early": 0.045303762063600844,
+    "surface_mid": 0.262628802324972,
+    "surface_late": 0.6920674356114271,
+    "insight_depth": 23.756343025984215,
+    "insight_early": 0.04438328059897664,
+    "insight_mid": 0.25631662649845816,
+    "insight_late": 0.6993000929025652,
+    "delta": -0.17288932408888869,
+    "direction": "insight_deeper",
+    "time_surface_s": 120.0,
+    "time_insight_s": 177.7
+  }
+]
