@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#040407"/>
+  <circle cx="16" cy="16" r="10" fill="none" stroke="#00ffa8" stroke-width="0.5" opacity="0.3"/>
+  <circle cx="16" cy="16" r="6" fill="none" stroke="#00ffa8" stroke-width="0.5" opacity="0.5"/>
+  <circle cx="16" cy="16" r="2" fill="#00ffa8" opacity="0.8"/>
+  <text x="16" y="18" text-anchor="middle" font-family="serif" font-size="10" font-weight="400" fill="#00ffa8" letter-spacing="1">F</text>
+</svg>

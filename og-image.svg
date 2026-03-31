@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#040407"/>
+  <!-- Rings -->
+  <circle cx="600" cy="300" r="200" fill="none" stroke="rgba(0,255,168,0.06)" stroke-width="1"/>
+  <circle cx="600" cy="300" r="130" fill="none" stroke="rgba(0,255,168,0.04)" stroke-width="1"/>
+  <circle cx="600" cy="300" r="60" fill="none" stroke="rgba(0,255,168,0.03)" stroke-width="1"/>
+  <!-- Center dot -->
+  <circle cx="600" cy="300" r="3" fill="#00ffa8" opacity="0.6"/>
+  <!-- Title -->
+  <text x="600" y="280" text-anchor="middle" font-family="'Times New Roman', serif" font-size="88" font-weight="400" fill="#00ffa8" letter-spacing="36" opacity="0.95">FATHOM</text>
+  <!-- Subtitle -->
+  <text x="600" y="330" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="300" fill="#a8a8c8" font-style="italic" letter-spacing="2">Measure how deeply AI reasons.</text>
+  <!-- Stats -->
+  <text x="360" y="410" text-anchor="middle" font-family="monospace" font-size="16" fill="#00ffa8">p &lt; 0.0001</text>
+  <text x="360" y="430" text-anchor="middle" font-family="monospace" font-size="9" fill="#36365a" letter-spacing="2">SIGNIFICANCE</text>
+  <text x="600" y="410" text-anchor="middle" font-family="monospace" font-size="16" fill="#00ffa8">K = 1.0212</text>
+  <text x="600" y="430" text-anchor="middle" font-family="monospace" font-size="9" fill="#36365a" letter-spacing="2">UNIVERSAL CONSTANT</text>
+  <text x="840" y="410" text-anchor="middle" font-family="monospace" font-size="16" fill="#00ffa8">Patent Pending</text>
+  <text x="840" y="430" text-anchor="middle" font-family="monospace" font-size="9" fill="#36365a" letter-spacing="2">US 64/020,489</text>
+  <!-- Brand -->
+  <text x="600" y="590" text-anchor="middle" font-family="monospace" font-size="10" fill="#36365a" letter-spacing="4">DARKFLOBI</text>
+</svg>

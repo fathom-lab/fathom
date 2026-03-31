@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
 <title>FATHOM LEADERBOARD — Who Thinks Deepest?</title>
 
 <!-- Social Meta Tags -->
@@ -14,19 +16,119 @@
 <meta name="twitter:title" content="FATHOM — Who Thinks Deepest?">
 <meta name="twitter:description" content="Claude's smallest model outperforms its flagship on reasoning depth. Measured independently.">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+  :root {
+    --void: #040407;
+    --abyss: #07070c;
+    --deep: #0b0b14;
+    --border: #14142a;
+    --border-subtle: #0f0f1e;
+    --text: #7878a0;
+    --text-bright: #a8a8c8;
+    --text-dim: #36365a;
+    --glow: #00ffa8;
+    --glow-mid: #00cc88;
+    --glow-dim: #007a52;
+    --glow-ghost: rgba(0, 255, 168, 0.03);
+    --cyan: #00c8ee;
+    --white: #cccce0;
+    --orange: #ff9800;
+
+    --font-display: 'Cinzel', 'Times New Roman', serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+
+    /* aliases for legacy references */
+    --bg: var(--void);
+    --surface: var(--abyss);
+    --green: var(--glow);
+    --green-dim: var(--glow-dim);
+    --mono: var(--font-mono);
+  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #000;
-    color: #fff;
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.6;
+    background: var(--void);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
     min-height: 100vh;
+    cursor: crosshair;
   }
+
+  ::selection {
+    background: rgba(0, 255, 168, 0.12);
+    color: var(--white);
+  }
+
+  a, button, input { cursor: crosshair; }
+  a:hover, button:hover { cursor: crosshair; }
+
+  /* ── Scanline ──────────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent 0px, transparent 3px,
+      rgba(0, 255, 168, 0.004) 3px, rgba(0, 255, 168, 0.004) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── Nav ───────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(4, 4, 7, 0.92);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    padding: 0 40px;
+  }
+  .nav-brand {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 10px;
+    color: var(--glow);
+    text-decoration: none;
+    text-shadow: 0 0 40px rgba(0, 255, 168, 0.15);
+    transition: text-shadow 0.6s;
+  }
+  .nav-brand:hover { text-shadow: 0 0 60px rgba(0, 255, 168, 0.3); }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.5s;
+  }
+  .nav-links a:hover { color: var(--glow-dim); }
 
   .page { max-width: 900px; margin: 0 auto; padding: 0 24px; }
 
@@ -34,21 +136,22 @@
   .header {
     text-align: center;
     padding: 48px 0 32px;
-    border-bottom: 2px solid #0f0;
+    border-bottom: 2px solid var(--green);
   }
   .header h1 {
-    color: #0f0;
+    font-family: var(--font-display);
+    color: var(--green);
     font-size: 36px;
     letter-spacing: 8px;
     margin-bottom: 8px;
   }
   .header .sub {
-    color: #666;
+    color: var(--text-dim);
     font-size: 13px;
     margin-bottom: 4px;
   }
   .header .patent {
-    color: #333;
+    color: var(--text-dim);
     font-size: 10px;
     letter-spacing: 2px;
   }
@@ -57,23 +160,23 @@
   .surprise {
     margin: 32px 0;
     padding: 20px 24px;
-    background: #050505;
-    border: 1px solid #0f0;
-    border-left: 4px solid #0f0;
+    background: var(--surface);
+    border: 1px solid var(--green);
+    border-left: 4px solid var(--green);
   }
   .surprise .tag {
-    color: #0f0;
+    color: var(--green);
     font-size: 10px;
     letter-spacing: 3px;
     margin-bottom: 8px;
   }
   .surprise .headline {
-    color: #fff;
+    color: var(--text-bright);
     font-size: 16px;
     line-height: 1.5;
   }
   .surprise .headline em {
-    color: #0f0;
+    color: var(--green);
     font-style: normal;
     font-weight: 700;
   }
@@ -81,7 +184,7 @@
   /* ── Leaderboard Table ───────────── */
   .board { margin: 32px 0; }
   .board-title {
-    color: #666;
+    color: var(--text-dim);
     font-size: 11px;
     letter-spacing: 3px;
     margin-bottom: 12px;
@@ -92,42 +195,42 @@
     border-collapse: collapse;
   }
   .lb th {
-    color: #0f0;
+    color: var(--green);
     text-align: left;
     padding: 12px 16px;
-    border-bottom: 2px solid #0f0;
+    border-bottom: 2px solid var(--green);
     font-size: 10px;
     letter-spacing: 3px;
   }
   .lb td {
     padding: 16px;
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid var(--surface);
     vertical-align: middle;
   }
-  .lb tr:hover { background: #0a0a0a; }
+  .lb tr:hover { background: var(--surface); }
 
   .rank {
     font-size: 24px;
     font-weight: 700;
     width: 50px;
   }
-  .rank-1 { color: #0f0; text-shadow: 0 0 10px rgba(0,255,0,0.5); }
-  .rank-2 { color: #0f0; }
-  .rank-3 { color: #0a0; }
-  .rank-4 { color: #060; }
+  .rank-1 { color: var(--green); text-shadow: 0 0 10px rgba(0,255,168,0.5); }
+  .rank-2 { color: var(--green); }
+  .rank-3 { color: var(--green-dim); }
+  .rank-4 { color: var(--text-dim); }
 
   .model-name {
     font-weight: 700;
     font-size: 15px;
   }
   .model-provider {
-    color: #444;
+    color: var(--text-dim);
     font-size: 10px;
     letter-spacing: 1px;
   }
 
   .ratio-val {
-    color: #0f0;
+    color: var(--green);
     font-weight: 700;
     font-size: 18px;
   }
@@ -135,14 +238,14 @@
   .delta-val {
     font-size: 13px;
   }
-  .delta-positive { color: #0f0; }
-  .delta-flat { color: #fa0; }
+  .delta-positive { color: var(--green); }
+  .delta-flat { color: var(--orange); }
 
   .bar-cell { width: 220px; }
   .bar-wrap {
     height: 20px;
-    background: #111;
-    border: 1px solid #1a1a1a;
+    background: var(--surface);
+    border: 1px solid var(--border);
     position: relative;
     overflow: hidden;
   }
@@ -150,26 +253,26 @@
     height: 100%;
     transition: width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-  .bar-fill.tier1 { background: linear-gradient(90deg, #0f0, #0a0); }
-  .bar-fill.tier2 { background: linear-gradient(90deg, #0a0, #060); }
-  .bar-fill.tier3 { background: linear-gradient(90deg, #080, #040); }
-  .bar-fill.tier4 { background: linear-gradient(90deg, #050, #030); }
+  .bar-fill.tier1 { background: linear-gradient(90deg, var(--green), var(--green-dim)); }
+  .bar-fill.tier2 { background: linear-gradient(90deg, var(--green-dim), #006644); }
+  .bar-fill.tier3 { background: linear-gradient(90deg, #006644, #004433); }
+  .bar-fill.tier4 { background: linear-gradient(90deg, #004433, #003322); }
 
   .pct-val {
-    color: #888;
+    color: var(--text);
     font-size: 13px;
   }
-  .pct-high { color: #0f0; font-weight: 700; }
+  .pct-high { color: var(--green); font-weight: 700; }
 
   /* ── Reference Section ───────────── */
   .reference {
     margin: 32px 0;
     padding: 20px;
-    background: #050505;
-    border: 1px solid #1a1a1a;
+    background: var(--surface);
+    border: 1px solid var(--border);
   }
   .reference h3 {
-    color: #666;
+    color: var(--text-dim);
     font-size: 11px;
     letter-spacing: 3px;
     margin-bottom: 12px;
@@ -181,18 +284,18 @@
   }
   .ref-item {
     padding: 12px;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
   }
-  .ref-model { color: #888; font-size: 11px; margin-bottom: 4px; }
-  .ref-val { color: #0f0; font-size: 14px; font-weight: 700; }
-  .ref-p { color: #444; font-size: 10px; }
-  .ref-method { color: #333; font-size: 10px; }
+  .ref-model { color: var(--text); font-size: 11px; margin-bottom: 4px; }
+  .ref-val { color: var(--green); font-size: 14px; font-weight: 700; }
+  .ref-p { color: var(--text-dim); font-size: 10px; }
+  .ref-method { color: var(--text-dim); font-size: 10px; }
 
   /* ── Methodology ─────────────────── */
   .method-toggle {
     background: none;
-    border: 1px solid #222;
-    color: #555;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
     padding: 10px 20px;
     font-family: inherit;
     font-size: 11px;
@@ -202,42 +305,87 @@
     text-align: left;
     margin: 24px 0;
   }
-  .method-toggle:hover { color: #0f0; border-color: #0f0; }
+  .method-toggle:hover { color: var(--green); border-color: var(--green); }
   .method-body {
     display: none;
     padding: 16px;
-    background: #050505;
-    border: 1px solid #1a1a1a;
+    background: var(--surface);
+    border: 1px solid var(--border);
     margin-bottom: 24px;
-    color: #666;
+    color: var(--text);
     font-size: 12px;
     line-height: 1.8;
   }
   .method-body.visible { display: block; }
-  .method-body strong { color: #888; }
+  .method-body strong { color: var(--text-bright); }
 
   /* ── Footer ──────────────────────── */
-  .footer {
+  footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 56px 40px;
     text-align: center;
-    padding: 32px 0;
-    border-top: 1px solid #111;
-    margin-top: 32px;
   }
-  .footer .links { color: #333; font-size: 11px; }
-  .footer .links a { color: #0a0; text-decoration: none; }
-  .footer .links a:hover { color: #0f0; }
-  .footer .ts {
-    color: #222;
+  .footer-ip {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    opacity: 0.6;
+    margin-bottom: 20px;
+  }
+  .footer-brand {
+    font-family: var(--font-display);
     font-size: 10px;
-    margin-top: 8px;
+    letter-spacing: 6px;
+    color: var(--text-dim);
+    opacity: 0.35;
+    margin-bottom: 12px;
   }
+  .footer-epitaph {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text-dim);
+    opacity: 0.25;
+    margin-bottom: 28px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    opacity: 0.35;
+    transition: opacity 0.4s, color 0.4s;
+  }
+  .footer-links a:hover { opacity: 0.7; color: var(--glow-dim); }
 </style>
 </head>
 <body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/fathom" class="nav-brand">FATHOM</a>
+    <ul class="nav-links">
+      <li><a href="/fathom/blog">Research</a></li>
+      <li><a href="/fathom/demo">Try It</a></li>
+      <li><a href="#access">Access</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="page">
 
   <!-- ── Header ── -->
-  <div class="header">
+  <div class="header" style="padding-top: 108px;">
     <h1>FATHOM</h1>
     <div class="sub">Who Thinks Deepest?</div>
     <div class="sub">Cross-model reasoning depth comparison via independent probe</div>
@@ -320,16 +468,21 @@
   </div>
 
   <!-- ── Footer ── -->
-  <div class="footer">
-    <div class="links">
-      <a href="https://darkflobi.com/fathom">darkflobi.com/fathom</a>
-      &nbsp;|&nbsp; US Provisional Patent 64/020,489
-      &nbsp;|&nbsp; Patent Pending
-    </div>
-    <div class="ts">Last updated: March 29, 2026 &mdash; 4 models, 30 pairs each, 120 API calls</div>
-  </div>
 
 </div>
+
+<footer>
+  <div class="footer-ip">Patent Pending US 64/020,489 &middot; 15 claims &middot; Priority March 29, 2026</div>
+  <div class="footer-brand">DARKFLOBI</div>
+  <div class="footer-epitaph">Built in the dark. Measured in the light.</div>
+  <div class="footer-links">
+    <a href="/fathom/blog">Research</a>
+    <a href="/fathom/demo">Demo</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/fathom/leaderboard">Leaderboard</a>
+    <a href="/fathom/investors">Investors</a>
+  </div>
+</footer>
 
 <script>
 const DATA = [

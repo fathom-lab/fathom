@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
 <title>FATHOM — See How Deeply AI Thinks</title>
 <meta name="description" content="Interactive demo: watch AI reasoning depth change in real time. SAE circuit attribution reveals structurally different computation for recall vs reasoning.">
 <meta property="og:title" content="FATHOM — See How Deeply AI Thinks">
@@ -10,44 +12,125 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #06060a;
-  --surface: #0e0e14;
-  --surface-2: #14141c;
-  --border: #1a1a24;
-  --border-glow: #1e2e1e;
-  --text: #b8b8c8;
-  --text-dim: #555568;
-  --text-bright: #e0e0f0;
-  --green: #00ff88;
-  --green-dim: #00aa5c;
-  --green-glow: rgba(0,255,136,0.15);
-  --cyan: #00d4ff;
-  --cyan-glow: rgba(0,212,255,0.12);
+  --void: #040407;
+  --abyss: #07070c;
+  --deep: #0b0b14;
+  --border: #14142a;
+  --border-subtle: #0f0f1e;
+  --text: #7878a0;
+  --text-bright: #a8a8c8;
+  --text-dim: #36365a;
+  --glow: #00ffa8;
+  --glow-mid: #00cc88;
+  --glow-dim: #007a52;
+  --glow-ghost: rgba(0, 255, 168, 0.03);
+  --cyan: #00c8ee;
+  --white: #cccce0;
   --gold: #ffd700;
   --orange: #ff8c42;
   --red: #ff4444;
-  --purple: #a855f7;
-  --mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
-  --sans: 'Space Grotesk', -apple-system, sans-serif;
+
+  --font-display: 'Cinzel', 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+
+  /* aliases for legacy references in this page */
+  --bg: var(--void);
+  --surface: var(--abyss);
+  --surface-2: var(--deep);
+  --green: var(--glow);
+  --green-dim: var(--glow-dim);
+  --green-glow: rgba(0,255,168,0.15);
+  --cyan-glow: rgba(0,212,255,0.12);
+  --mono: var(--font-mono);
+  --sans: var(--font-body);
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  background: var(--void);
   color: var(--text);
-  font-family: var(--mono);
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: 16px;
   line-height: 1.7;
   overflow-x: hidden;
+  cursor: crosshair;
 }
 
-::selection { background: var(--green); color: var(--bg); }
+::selection {
+  background: rgba(0, 255, 168, 0.12);
+  color: var(--white);
+}
+
+a, button, input { cursor: crosshair; }
+a:hover, button:hover { cursor: crosshair; }
+
+/* ── Scanline ──────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent 0px, transparent 3px,
+    rgba(0, 255, 168, 0.004) 3px, rgba(0, 255, 168, 0.004) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Nav ───────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(4, 4, 7, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 40px;
+}
+.nav-brand {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 10px;
+  color: var(--glow);
+  text-decoration: none;
+  text-shadow: 0 0 40px rgba(0, 255, 168, 0.15);
+  transition: text-shadow 0.6s;
+}
+.nav-brand:hover { text-shadow: 0 0 60px rgba(0, 255, 168, 0.3); }
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.5s;
+}
+.nav-links a:hover { color: var(--glow-dim); }
 
 /* ── Ambient background ─────────────────────── */
 .ambient {
@@ -90,7 +173,7 @@ body {
 }
 
 .hero h1 {
-  font-family: var(--sans);
+  font-family: var(--font-display);
   font-size: 72px;
   font-weight: 700;
   letter-spacing: 24px;
@@ -101,7 +184,7 @@ body {
 }
 
 .hero .tagline {
-  font-family: var(--sans);
+  font-family: var(--font-body);
   font-size: 20px;
   font-weight: 400;
   color: var(--text-bright);
@@ -206,7 +289,7 @@ body {
 }
 
 .section h2 {
-  font-family: var(--sans);
+  font-family: var(--font-display);
   font-size: 28px;
   font-weight: 600;
   color: var(--text-bright);
@@ -271,7 +354,7 @@ body {
   transition: border-color 0.2s;
 }
 .demo-input:focus { border-color: var(--green-dim); }
-.demo-input::placeholder { color: #2a2a3a; }
+.demo-input::placeholder { color: var(--text-dim); }
 
 .demo-run {
   background: var(--green);
@@ -676,7 +759,7 @@ body {
   font-weight: 700;
   color: var(--green);
   margin-bottom: 12px;
-  font-family: var(--sans);
+  font-family: var(--font-display);
 }
 
 .step-title {
@@ -699,7 +782,7 @@ body {
 }
 
 .cta-section h2 {
-  font-family: var(--sans);
+  font-family: var(--font-display);
   font-size: 32px;
   color: var(--text-bright);
   margin-bottom: 12px;
@@ -719,23 +802,53 @@ body {
 }
 
 /* ── Footer ──────────────────────────────────── */
-.footer {
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 56px 40px;
   text-align: center;
-  padding: 40px 24px;
-  border-top: 1px solid var(--border);
-  font-size: 11px;
+}
+.footer-ip {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
   color: var(--text-dim);
+  opacity: 0.6;
+  margin-bottom: 20px;
 }
-
-.footer a { color: var(--green-dim); text-decoration: none; }
-.footer a:hover { color: var(--green); }
-
-.footer-line {
-  margin-top: 16px;
+.footer-brand {
+  font-family: var(--font-display);
   font-size: 10px;
-  color: #333;
-  font-style: italic;
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  opacity: 0.35;
+  margin-bottom: 12px;
 }
+.footer-epitaph {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text-dim);
+  opacity: 0.25;
+  margin-bottom: 28px;
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  opacity: 0.35;
+  transition: opacity 0.4s, color 0.4s;
+}
+.footer-links a:hover { opacity: 0.7; color: var(--glow-dim); }
 
 /* ── Responsive ──────────────────────────────── */
 @media (max-width: 768px) {
@@ -747,6 +860,7 @@ body {
   .scale-score { width: 80px; font-size: 14px; }
   .scale-info { margin-left: 16px; }
   .demo-input-row { flex-direction: column; }
+  .nav-links { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -758,6 +872,17 @@ body {
 </style>
 </head>
 <body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/fathom" class="nav-brand">FATHOM</a>
+    <ul class="nav-links">
+      <li><a href="/fathom/blog">Research</a></li>
+      <li><a href="/fathom/demo">Try It</a></li>
+      <li><a href="#access">Access</a></li>
+    </ul>
+  </div>
+</nav>
 
 <div class="ambient"></div>
 
@@ -922,20 +1047,23 @@ body {
   <p>Pre-registered. Replicated. Patent pending. arXiv submission imminent.</p>
   <div class="cta-links">
     <a href="https://github.com/darkflobi/fathom" class="btn-primary" target="_blank">GitHub</a>
-    <a href="/fathom-blog" class="btn-ghost">Read the Blog</a>
-    <a href="/fathom/waitlist" class="btn-ghost">Join Waitlist</a>
+    <a href="/fathom/blog" class="btn-ghost">Read the Research</a>
+    <a href="/fathom#access" class="btn-ghost">Request Access</a>
   </div>
 </section>
 
 <!-- ═══════════ FOOTER ═══════════ -->
-<footer class="footer">
-  <div>darkflobi &middot; fathom v2.0 &middot; 2026</div>
-  <div style="margin-top:8px">
-    <a href="https://github.com/darkflobi/fathom">GitHub</a> &middot;
-    <a href="/fathom-blog">Blog</a> &middot;
-    <a href="/fathom/waitlist">API Waitlist</a>
+<footer>
+  <div class="footer-ip">Patent Pending US 64/020,489 &middot; 15 claims &middot; Priority March 29, 2026</div>
+  <div class="footer-brand">DARKFLOBI</div>
+  <div class="footer-epitaph">Built in the dark. Measured in the light.</div>
+  <div class="footer-links">
+    <a href="/fathom/blog">Research</a>
+    <a href="/fathom/demo">Demo</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/fathom/leaderboard">Leaderboard</a>
+    <a href="/fathom/investors">Investors</a>
   </div>
-  <div class="footer-line">Built at 5am, alone, on a single GPU. Because the question mattered.</div>
 </footer>
 
 </div><!-- /.page -->

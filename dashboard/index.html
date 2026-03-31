@@ -3,34 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
 <title>FATHOM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #141414;
-  --border: #1e1e1e;
-  --text: #c0c0c0;
-  --text-dim: #666;
-  --green: #00ff00;
-  --green-dim: #00aa00;
+  --void: #040407;
+  --abyss: #07070c;
+  --deep: #0b0b14;
+  --border: #14142a;
+  --border-subtle: #0f0f1e;
+  --text: #7878a0;
+  --text-bright: #a8a8c8;
+  --text-dim: #36365a;
+  --glow: #00ffa8;
+  --glow-mid: #00cc88;
+  --glow-dim: #007a52;
+  --glow-ghost: rgba(0, 255, 168, 0.03);
+  --cyan: #00c8ee;
+  --white: #cccce0;
   --gold: #ffd700;
-  --cyan: #00e5ff;
   --yellow: #ffeb3b;
   --orange: #ff9800;
   --red: #ff3d00;
-  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+
+  --font-display: 'Cinzel', 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+
+  /* aliases for legacy references */
+  --bg: var(--void);
+  --surface: var(--abyss);
+  --green: var(--glow);
+  --green-dim: var(--glow-dim);
+  --mono: var(--font-mono);
 }
 
 body {
-  background: var(--bg);
+  background: var(--void);
   color: var(--text);
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.6;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
   min-height: 100vh;
+  cursor: crosshair;
 }
+
+::selection {
+  background: rgba(0, 255, 168, 0.12);
+  color: var(--white);
+}
+
+a, button, input { cursor: crosshair; }
+a:hover, button:hover { cursor: crosshair; }
+
+/* ── Scanline ──────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent 0px, transparent 3px,
+    rgba(0, 255, 168, 0.004) 3px, rgba(0, 255, 168, 0.004) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Nav ───────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(4, 4, 7, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 40px;
+}
+.nav-brand {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 10px;
+  color: var(--glow);
+  text-decoration: none;
+  text-shadow: 0 0 40px rgba(0, 255, 168, 0.15);
+  transition: text-shadow 0.6s;
+}
+.nav-brand:hover { text-shadow: 0 0 60px rgba(0, 255, 168, 0.3); }
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.5s;
+}
+.nav-links a:hover { color: var(--glow-dim); }
 
 /* ── Header ────────────────────────────────────── */
 .header {
@@ -39,10 +130,11 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .header h1 {
+  font-family: var(--font-display);
   font-size: 42px;
   letter-spacing: 16px;
   color: var(--green);
-  text-shadow: 0 0 20px rgba(0,255,0,0.3);
+  text-shadow: 0 0 20px rgba(0,255,168,0.3);
   margin-bottom: 6px;
 }
 .header .subtitle {
@@ -118,12 +210,12 @@ body {
   border-color: var(--green-dim);
 }
 .input-area textarea::placeholder {
-  color: #333;
+  color: var(--text-dim);
 }
 
 .btn {
   background: var(--green);
-  color: #000;
+  color: var(--void);
   border: none;
   padding: 10px 28px;
   font-family: var(--mono);
@@ -136,8 +228,8 @@ body {
   transition: all 0.15s;
   margin-top: 10px;
 }
-.btn:hover { background: #33ff33; box-shadow: 0 0 15px rgba(0,255,0,0.3); }
-.btn:disabled { background: #333; color: #666; cursor: not-allowed; box-shadow: none; }
+.btn:hover { background: var(--glow-mid); box-shadow: 0 0 15px rgba(0,255,168,0.3); }
+.btn:disabled { background: var(--deep); color: var(--text-dim); cursor: not-allowed; box-shadow: none; }
 
 /* ── Compare layout ────────────────────────────── */
 .compare-row {
@@ -235,7 +327,7 @@ body {
 .depth-bar-container {
   position: relative;
   height: 28px;
-  background: #1a1a1a;
+  background: var(--deep);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -335,14 +427,53 @@ body {
 .delta-negative { color: var(--red); }
 
 /* ── Footer ────────────────────────────────────── */
-.footer {
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 56px 40px;
   text-align: center;
-  padding: 30px;
-  color: #333;
-  font-size: 11px;
-  border-top: 1px solid var(--border);
-  margin-top: 40px;
 }
+.footer-ip {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  margin-bottom: 20px;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  opacity: 0.35;
+  margin-bottom: 12px;
+}
+.footer-epitaph {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text-dim);
+  opacity: 0.25;
+  margin-bottom: 28px;
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  opacity: 0.35;
+  transition: opacity 0.4s, color 0.4s;
+}
+.footer-links a:hover { opacity: 0.7; color: var(--glow-dim); }
 
 /* ── Compare results side by side ──────────────── */
 .compare-results {
@@ -377,14 +508,25 @@ body {
 .compute-time {
   text-align: right;
   font-size: 11px;
-  color: #333;
+  color: var(--text-dim);
   margin-top: 12px;
 }
 </style>
 </head>
 <body>
 
-<div class="header">
+<nav>
+  <div class="nav-inner">
+    <a href="/fathom" class="nav-brand">FATHOM</a>
+    <ul class="nav-links">
+      <li><a href="/fathom/blog">Research</a></li>
+      <li><a href="/fathom/demo">Try It</a></li>
+      <li><a href="#access">Access</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="header" style="padding-top: 80px;">
   <h1>FATHOM</h1>
   <div class="subtitle">reasoning depth analysis</div>
   <div class="version">v2.0</div>
@@ -415,7 +557,7 @@ body {
     </div>
 
     <div class="metric-section">
-      <div class="metric-label">Depth Score <span style="font-size:10px;color:#444">(lower = deeper reasoning)</span></div>
+      <div class="metric-label">Depth Score <span style="font-size:10px;color:var(--text-dim)">(lower = deeper reasoning)</span></div>
       <div class="depth-bar-container">
         <div class="depth-bar-fill" id="depth-bar"></div>
       </div>
@@ -510,7 +652,18 @@ body {
   </div>
 </div>
 
-<div class="footer">FATHOM v2.0 &mdash; local only &mdash; nothing leaves this machine</div>
+<footer>
+  <div class="footer-ip">Patent Pending US 64/020,489 &middot; 15 claims &middot; Priority March 29, 2026</div>
+  <div class="footer-brand">DARKFLOBI</div>
+  <div class="footer-epitaph">Built in the dark. Measured in the light.</div>
+  <div class="footer-links">
+    <a href="/fathom/blog">Research</a>
+    <a href="/fathom/demo">Demo</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/fathom/leaderboard">Leaderboard</a>
+    <a href="/fathom/investors">Investors</a>
+  </div>
+</footer>
 
 <script src="/static/app.js"></script>
 </body>

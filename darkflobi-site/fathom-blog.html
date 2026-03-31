@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
 <title>Fathom: We Built an Instrument That Measures How Deeply AI Thinks — darkflobi</title>
 <meta name="description" content="Sparse autoencoder circuit tracing reveals structurally different computational signatures for surface recall vs explanatory reasoning. p=0.000051, n=30 calibrated pairs.">
 <meta property="og:title" content="Fathom: We Built an Instrument That Measures How Deeply AI Thinks">
@@ -10,259 +12,427 @@
 <meta property="og:type" content="article">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #141414;
-  --border: #1e1e1e;
-  --text: #c0c0c0;
-  --text-dim: #666;
-  --green: #00ff00;
-  --green-dim: #00aa00;
-  --gold: #ffd700;
-  --cyan: #00e5ff;
-  --red: #ff3d00;
-  --mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  --sans: 'Space Grotesk', -apple-system, sans-serif;
-  --serif: 'Playfair Display', Georgia, serif;
+  --void: #040407;
+  --abyss: #07070c;
+  --deep: #0b0b14;
+  --border: #14142a;
+  --border-subtle: #0f0f1e;
+  --text: #7878a0;
+  --text-bright: #a8a8c8;
+  --text-dim: #36365a;
+  --glow: #00ffa8;
+  --glow-mid: #00cc88;
+  --glow-dim: #007a52;
+  --glow-ghost: rgba(0, 255, 168, 0.03);
+  --cyan: #00c8ee;
+  --white: #cccce0;
+  --amber: #ffb800;
+  --amber-dim: #aa7a00;
+  --red: #ff2244;
+  --red-dim: #aa1133;
+
+  --font-display: 'Cinzel', 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
 }
+
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  background: var(--void);
   color: var(--text);
-  font-family: var(--mono);
-  font-size: 15px;
-  line-height: 1.8;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
   min-height: 100vh;
+  overflow-x: hidden;
+  cursor: crosshair;
 }
 
-/* Scanline overlay */
-body::after {
+::selection {
+  background: rgba(0, 255, 168, 0.12);
+  color: var(--white);
+}
+
+a, button, input { cursor: crosshair; }
+a:hover, button:hover { cursor: crosshair; }
+
+/* Scanline */
+body::before {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 3px,
-    rgba(0,0,0,0.05) 3px,
-    rgba(0,0,0,0.05) 4px
+    0deg, transparent 0px, transparent 3px,
+    rgba(0, 255, 168, 0.004) 3px, rgba(0, 255, 168, 0.004) 4px
   );
   pointer-events: none;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .container {
   max-width: 720px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 32px;
 }
 
-/* ── Header ─────────────────────────────────── */
-.blog-header {
-  text-align: center;
-  padding: 60px 20px 40px;
-  border-bottom: 1px solid var(--border);
+/* ── Navigation ─────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(4, 4, 7, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.blog-header .back-link {
-  display: inline-block;
+.nav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 40px;
+}
+
+.nav-brand {
+  font-family: var(--font-display);
   font-size: 12px;
+  letter-spacing: 10px;
+  color: var(--glow);
+  text-decoration: none;
+  text-shadow: 0 0 40px rgba(0, 255, 168, 0.15);
+  transition: text-shadow 0.6s;
+}
+
+.nav-brand:hover {
+  text-shadow: 0 0 60px rgba(0, 255, 168, 0.3);
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
   color: var(--text-dim);
   text-decoration: none;
+  transition: color 0.5s;
+}
+
+.nav-links a:hover { color: var(--glow-dim); }
+
+/* ── Article Header ─────────────────────────────────── */
+.article-header {
+  text-align: center;
+  padding: 120px 32px 48px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.article-header::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  width: 400px;
+  height: 400px;
+  border: 1px solid rgba(0, 255, 168, 0.03);
+  border-radius: 50%;
+  animation: ring-spin 25s linear infinite;
+}
+
+@keyframes ring-spin {
+  from { transform: translate(-50%, -40%) rotate(0deg); }
+  to { transform: translate(-50%, -40%) rotate(360deg); }
+}
+
+.article-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.4;
   letter-spacing: 2px;
-  margin-bottom: 32px;
-}
-.blog-header .back-link:hover { color: var(--green); }
-
-.blog-header h1 {
-  font-family: var(--sans);
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.3;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
 }
 
-.blog-header .meta {
-  font-size: 12px;
+.article-header .meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
   color: var(--text-dim);
   letter-spacing: 2px;
+  position: relative;
+  z-index: 1;
 }
 
-.blog-header .meta time {
-  color: var(--green-dim);
-}
+.article-header .meta time { color: var(--glow-dim); }
 
-/* ── Key stat banner ────────────────────────── */
+/* ── Stat Banner ─────────────────────────────────────── */
 .stat-banner {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  padding: 32px 20px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  background: var(--border);
   border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
 }
 
 .stat-banner .stat {
+  background: var(--abyss);
   text-align: center;
+  padding: 24px 12px;
 }
 
 .stat-banner .stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--green);
-  text-shadow: 0 0 20px rgba(0,255,0,0.3);
-  font-family: var(--mono);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--glow);
+  text-shadow: 0 0 15px rgba(0, 255, 168, 0.2);
 }
 
 .stat-banner .stat-label {
-  font-size: 10px;
+  font-family: var(--font-mono);
+  font-size: 8px;
   color: var(--text-dim);
   letter-spacing: 3px;
   text-transform: uppercase;
   margin-top: 4px;
 }
 
-/* ── Article body ───────────────────────────── */
+/* ── Article Body ────────────────────────────────────── */
 .article {
-  padding: 48px 0;
-}
-
-.article h2 {
-  font-family: var(--sans);
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--green);
-  margin: 48px 0 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
-
-.article h2:first-child {
-  margin-top: 0;
+  padding: 64px 0 48px;
 }
 
 .article p {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   color: var(--text);
+  font-size: 16px;
+  line-height: 1.85;
 }
 
-.article strong {
-  color: #e0e0e0;
+.article h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: var(--white);
+  margin: 64px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
 }
+
+.article h2:first-child { margin-top: 0; }
+
+.article strong { color: var(--text-bright); }
 
 .article em {
-  font-family: var(--serif);
+  font-family: var(--font-serif);
   font-style: italic;
-  color: #d0d0d0;
+  color: var(--text-bright);
+  font-size: 17px;
 }
 
 .article ul {
-  margin: 12px 0 16px 20px;
+  margin: 16px 0 20px 20px;
 }
 
 .article li {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   color: var(--text);
 }
 
-.article li strong {
-  color: var(--green-dim);
-}
+.article li strong { color: var(--glow-dim); }
 
-/* Inline stats */
+/* ── Inline stat ──────────────────────────────────── */
 .inline-stat {
-  display: inline;
-  font-family: var(--mono);
-  color: var(--green);
+  font-family: var(--font-mono);
+  color: var(--glow);
   font-weight: 500;
 }
 
-/* Code/stat block */
-.stat-block {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--green);
-  padding: 20px 24px;
-  margin: 24px 0;
-  font-family: var(--mono);
+/* ── Breaking banner ────────────────────────────────── */
+.breaking-banner {
+  border: 1px solid var(--glow-dim);
+  padding: 24px 28px;
+  margin-bottom: 40px;
+  background: rgba(0, 255, 168, 0.02);
   font-size: 14px;
-  line-height: 1.9;
+  line-height: 1.8;
+  position: relative;
 }
 
-.stat-block .stat-line {
-  color: var(--text);
+.breaking-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--glow);
 }
 
-.stat-block .stat-line .val {
-  color: var(--green);
-  font-weight: 700;
+.breaking-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: var(--glow);
+  margin-bottom: 8px;
 }
 
-.stat-block .stat-line .label {
-  color: var(--text-dim);
-  font-size: 12px;
+/* ── Stat Block ──────────────────────────────────── */
+.stat-block {
+  background: var(--abyss);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--glow);
+  padding: 24px 28px;
+  margin: 28px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 2.2;
 }
 
-/* Pipeline list */
+.stat-block .stat-line { color: var(--text); }
+.stat-block .stat-line .val { color: var(--glow); font-weight: 500; }
+.stat-block .stat-line .label { color: var(--text-dim); font-size: 11px; }
+
+/* ── Pipeline List ──────────────────────────────── */
 .pipeline-list {
   list-style: none;
-  margin: 20px 0;
+  margin: 24px 0;
   padding: 0;
 }
 
 .pipeline-list li {
-  padding: 8px 0;
+  padding: 12px 0;
   border-bottom: 1px solid var(--border);
   font-size: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .pipeline-list li:last-child { border-bottom: none; }
+.pipeline-list .pipe-name { color: var(--glow); font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.pipeline-list .pipe-desc { color: var(--text-dim); font-size: 13px; }
 
-.pipeline-list .pipe-name {
-  color: var(--green);
-  font-weight: 500;
-}
-
-.pipeline-list .pipe-desc {
-  color: var(--text-dim);
-}
-
-/* Coming soon badge */
 .badge-coming-soon {
   display: inline-block;
-  font-size: 10px;
+  font-family: var(--font-mono);
+  font-size: 8px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid var(--gold);
-  padding: 3px 10px;
+  color: var(--amber);
+  border: 1px solid var(--amber-dim);
+  padding: 2px 8px;
   margin-left: 8px;
   vertical-align: middle;
 }
 
-/* ── Waitlist ───────────────────────────────── */
+/* ── Patent Section in Blog ──────────────────────── */
+.patent-summary {
+  background: var(--abyss);
+  border: 1px solid var(--border);
+  padding: 32px 28px;
+  margin: 32px 0;
+}
+
+.patent-summary-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--glow-dim);
+  margin-bottom: 16px;
+}
+
+.patent-claim-list {
+  list-style: none;
+  padding: 0;
+}
+
+.patent-claim-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(26, 26, 46, 0.5);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.patent-claim-list li:last-child { border-bottom: none; }
+.patent-claim-list .num { color: var(--glow-dim); opacity: 0.5; min-width: 24px; }
+.patent-claim-list .name { color: var(--text-bright); }
+.patent-claim-list .badge {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 1px 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.badge-core { border: 1px solid var(--glow-dim); color: var(--glow-dim); }
+.badge-new { border: 1px solid var(--amber-dim); color: var(--amber-dim); }
+
+/* ── Waitlist Section ────────────────────────────── */
 .waitlist-section {
   border-top: 1px solid var(--border);
-  padding: 60px 0;
+  padding: 80px 0;
   text-align: center;
+  position: relative;
+}
+
+.waitlist-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0, 255, 168, 0.025), transparent 70%);
+  pointer-events: none;
 }
 
 .waitlist-section h2 {
-  font-family: var(--sans);
-  font-size: 22px;
-  color: var(--green);
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: var(--white);
   margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
 }
 
 .waitlist-section .sub {
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 24px;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
 }
 
 .waitlist-form {
@@ -270,148 +440,203 @@ body::after {
   gap: 8px;
   max-width: 440px;
   margin: 0 auto 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .waitlist-form input[type="email"] {
   flex: 1;
-  background: var(--surface);
+  background: var(--abyss);
   border: 1px solid var(--border);
-  color: var(--green);
-  font-family: var(--mono);
+  color: var(--glow);
+  font-family: var(--font-mono);
   font-size: 13px;
-  padding: 12px 16px;
+  padding: 14px 20px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.3s;
 }
 
 .waitlist-form input[type="email"]:focus {
-  border-color: var(--green);
+  border-color: var(--glow-dim);
+  box-shadow: 0 0 20px rgba(0, 255, 168, 0.05);
 }
 
-.waitlist-form input[type="email"]::placeholder {
-  color: var(--text-dim);
-}
+.waitlist-form input[type="email"]::placeholder { color: var(--text-dim); }
 
 .waitlist-form button {
   background: transparent;
-  border: 1px solid var(--green);
-  color: var(--green);
-  font-family: var(--mono);
+  border: 1px solid var(--glow);
+  color: var(--glow);
+  font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 2px;
-  padding: 12px 20px;
+  letter-spacing: 3px;
+  padding: 14px 24px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.4s;
   white-space: nowrap;
 }
 
 .waitlist-form button:hover {
-  background: var(--green);
-  color: var(--bg);
+  background: var(--glow);
+  color: var(--void);
 }
 
 .waitlist-status {
+  font-family: var(--font-mono);
   font-size: 12px;
   color: var(--text-dim);
-  margin-top: 8px;
+  margin-top: 12px;
+  position: relative;
+  z-index: 1;
 }
 
-.waitlist-status.success { color: var(--green); }
+.waitlist-status.success { color: var(--glow); }
 .waitlist-status.error { color: var(--red); }
 
-/* ── Footer ─────────────────────────────────── */
-.blog-footer {
-  border-top: 1px solid var(--border);
-  padding: 40px 0;
+/* ── Footer ──────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 56px 40px;
   text-align: center;
 }
-
-.blog-footer p {
-  font-size: 12px;
+.footer-ip {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
   color: var(--text-dim);
-  margin-bottom: 8px;
+  opacity: 0.6;
+  margin-bottom: 20px;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  opacity: 0.35;
+  margin-bottom: 12px;
+}
+.footer-epitaph {
+  font-family: var(--font-serif);
+  font-size: 14px;
   font-style: italic;
-  font-family: var(--serif);
-}
-
-.blog-footer .links {
-  font-size: 12px;
+  font-weight: 300;
   color: var(--text-dim);
+  opacity: 0.25;
+  margin-bottom: 28px;
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
   letter-spacing: 2px;
-}
-
-.blog-footer .links a {
-  color: var(--green-dim);
+  text-transform: uppercase;
+  color: var(--text-dim);
   text-decoration: none;
+  opacity: 0.35;
+  transition: opacity 0.4s, color 0.4s;
+}
+.footer-links a:hover { opacity: 0.7; color: var(--glow-dim); }
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .stat-banner { grid-template-columns: repeat(3, 1fr); }
+  .stat-banner .stat:nth-child(4),
+  .stat-banner .stat:nth-child(5) { grid-column: span 1; }
+  .nav-links { display: none; }
 }
 
-.blog-footer .links a:hover {
-  color: var(--green);
-}
-
-/* ── Responsive ─────────────────────────────── */
-@media (max-width: 600px) {
-  .blog-header h1 { font-size: 24px; }
-  .stat-banner { gap: 24px; }
-  .stat-banner .stat-value { font-size: 22px; }
+@media (max-width: 480px) {
+  .stat-banner { grid-template-columns: repeat(2, 1fr); }
+  .article-header h1 { font-size: 22px; }
   .waitlist-form { flex-direction: column; }
+}
+
+/* ── Fade-in ──────────────────────────────────────── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
 </head>
 <body>
 
-<header class="blog-header">
-  <a href="/fathom" class="back-link">&larr; FATHOM</a>
-  <h1>fathom: we built an instrument that measures how deeply AI thinks</h1>
+<!-- Navigation -->
+<nav>
+  <div class="nav-inner">
+    <a href="/fathom" class="nav-brand">FATHOM</a>
+    <ul class="nav-links">
+      <li><a href="/fathom/blog">Research</a></li>
+      <li><a href="/fathom/demo">Try It</a></li>
+      <li><a href="#access">Access</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="article-header">
+  <h1>We Built an Instrument That Measures<br>How Deeply AI Thinks</h1>
   <div class="meta">
-    <time datetime="2026-03-26">published: march 26, 2026</time> &middot; darkflobi
+    <time datetime="2026-03-26">March 26, 2026</time> &middot; darkflobi
   </div>
 </header>
 
+<!-- Stat Banner -->
 <div class="stat-banner">
   <div class="stat">
     <div class="stat-value">p = 0.000051</div>
-    <div class="stat-label">significance</div>
+    <div class="stat-label">Significance</div>
   </div>
   <div class="stat">
     <div class="stat-value">&delta; = +0.257</div>
-    <div class="stat-label">mean delta</div>
+    <div class="stat-label">Mean Delta</div>
   </div>
   <div class="stat">
     <div class="stat-value">83.3%</div>
-    <div class="stat-label">directional</div>
+    <div class="stat-label">Directional</div>
   </div>
   <div class="stat">
     <div class="stat-value">n = 30</div>
-    <div class="stat-label">pre-registered</div>
+    <div class="stat-label">Pre-Registered</div>
   </div>
   <div class="stat">
-    <div class="stat-value">1.0212</div>
-    <div class="stat-label">fathom constant</div>
+    <div class="stat-value">K = 1.0212</div>
+    <div class="stat-label">Fathom Constant</div>
   </div>
 </div>
 
+<!-- Article -->
 <main class="container">
 <article class="article">
 
-<div style="border:1px solid #00ff00;padding:16px 20px;margin-bottom:32px;background:#0a1a0a;font-size:13px;line-height:1.7;">
-<span style="color:#00ff00;letter-spacing:2px;font-size:10px;">MARCH 27, 2026 — BREAKING</span><br>
-anthropic just leaked their most powerful model: <strong style="color:#e0e0e0;">claude mythos (capybara)</strong> — a step change above opus, dramatically better at reasoning. everyone is asking what it can do. we built the instrument to measure how deeply it thinks. fathom will be the first depth measurement on the most powerful model ever built.
+<div class="breaking-banner fade-in">
+  <div class="breaking-label">MARCH 27, 2026 &mdash; BREAKING</div>
+  Anthropic just leaked their most powerful model: <strong>Claude Mythos (Capybara)</strong> &mdash; a step change above Opus, dramatically better at reasoning. Everyone is asking what it can do. We built the instrument to measure how deeply it thinks. Fathom will be the first depth measurement on the most powerful model ever built.
 </div>
 
-<p>we have no way to see how language models think.</p>
+<p class="fade-in">We have no way to see how language models think.</p>
 
-<p>every benchmark on earth measures what comes out. accuracy, fluency, human preference. nobody measures what happens inside &mdash; which layers fire, which circuits activate, whether the model retrieved a cached answer or actually reasoned through the problem. we built the instrument that does.</p>
+<p class="fade-in">Every benchmark on earth measures what comes out. Accuracy, fluency, human preference. Nobody measures what happens inside &mdash; which layers fire, which circuits activate, whether the model retrieved a cached answer or actually reasoned through the problem. We built the instrument that does.</p>
 
-<h2>the finding</h2>
+<h2>The Finding</h2>
 
-<p>when a transformer retrieves a memorized fact &mdash; <em>"the capital of France is"</em> &mdash; feature activation concentrates at output-proximal layers. the model knows the answer. it reaches for it directly. computation is shallow.</p>
+<p class="fade-in">When a transformer retrieves a memorized fact &mdash; <em>"the capital of France is"</em> &mdash; feature activation concentrates at output-proximal layers. The model knows the answer. It reaches for it directly. Computation is shallow.</p>
 
-<p>when a transformer reasons through an explanation &mdash; <em>"why do economies experience inflation during monetary expansion"</em> &mdash; feature activation distributes across mid-layer computation. the model does not know the answer. it builds it. computation is deeper and structurally distinct.</p>
+<p class="fade-in">When a transformer reasons through an explanation &mdash; <em>"why do economies experience inflation during monetary expansion"</em> &mdash; feature activation distributes across mid-layer computation. The model does not know the answer. It builds it. Computation is deeper and structurally distinct.</p>
 
-<p>we tested this on 56 matched prompt pairs across three experimental phases. the core replication: 30 pre-registered, vocabulary-controlled pairs. every surface prompt and its paired insight prompt use matched word frequency, readability, n-gram overlap, and lexical diversity. the distinction is invisible to text statistics. it only exists inside the computational graph.</p>
+<p class="fade-in">We tested this on 56 matched prompt pairs across three experimental phases. The core replication: 30 pre-registered, vocabulary-controlled pairs. Every surface prompt and its paired insight prompt use matched word frequency, readability, n-gram overlap, and lexical diversity. The distinction is invisible to text statistics. It only exists inside the computational graph.</p>
 
-<div class="stat-block">
+<div class="stat-block fade-in">
   <div class="stat-line"><span class="val">delta = +0.257</span> <span class="label">surface - insight mean layer</span></div>
   <div class="stat-line"><span class="val">t = 4.500, p = 0.000051</span> <span class="label">paired t-test, n=30</span></div>
   <div class="stat-line"><span class="val">83.3%</span> <span class="label">of pairs in predicted direction</span></div>
@@ -419,123 +644,170 @@ anthropic just leaked their most powerful model: <strong style="color:#e0e0e0;">
   <div class="stat-line"><span class="val">r = 0.001, p = 0.996</span> <span class="label">orthogonal to prediction confidence</span></div>
 </div>
 
-<p>the model is not "trying harder" on difficult prompts. it is routing computation through fundamentally different pathways depending on whether it is retrieving or reasoning.</p>
+<p class="fade-in">The model is not "trying harder" on difficult prompts. It is routing computation through fundamentally different pathways depending on whether it is retrieving or reasoning.</p>
 
-<h2>the method</h2>
+<h2>The Method</h2>
 
-<p>the measurement uses sparse autoencoder (SAE) circuit attribution. here is how it works for someone who is not an ML researcher:</p>
+<p class="fade-in">The measurement uses sparse autoencoder (SAE) circuit attribution. Here is how it works for someone who is not an ML researcher:</p>
 
-<p>language models process text through a stack of layers &mdash; think of them as stages of computation. early layers handle basic patterns. later layers handle abstraction and output. at each layer, there are internal features that activate when certain patterns are recognized.</p>
+<p class="fade-in">Language models process text through a stack of layers &mdash; think of them as stages of computation. Early layers handle basic patterns. Later layers handle abstraction and output. At each layer, there are internal features that activate when certain patterns are recognized.</p>
 
-<p>sparse autoencoders decompose these internal representations into interpretable features. circuit-tracer traces which features at which layers contribute to the final output. we map the distribution of these attributions across all layers and compute a single number: the <strong>depth score</strong>.</p>
+<p class="fade-in">Sparse autoencoders decompose these internal representations into interpretable features. Circuit-tracer traces which features at which layers contribute to the final output. We map the distribution of these attributions across all layers and compute a single number: the <strong>depth score</strong>.</p>
 
-<p>high depth score = computation concentrated near the output (shallow, retrieval-like). low depth score = computation distributed across early and mid layers (deep, reasoning-like).</p>
+<p class="fade-in">High depth score = computation concentrated near the output (shallow, retrieval-like). Low depth score = computation distributed across early and mid layers (deep, reasoning-like).</p>
 
-<p>the same math produces layer entropy (how spread out the computation is), early/mid/late ratios (where computation concentrates), and a 7-dimensional cognitive fingerprint vector that makes different prompts' computational signatures directly comparable.</p>
+<p class="fade-in">The same math produces layer entropy (how spread out the computation is), early/mid/late ratios (where computation concentrates), and a 7-dimensional cognitive fingerprint vector that makes different prompts' computational signatures directly comparable.</p>
 
-<h2>the fathom constant</h2>
+<h2>The Fathom Constant</h2>
 
-<p>we measured the depth ratio &mdash; surface mean layer divided by insight mean layer &mdash; on two architectures from different labs, different parameter counts, different layer depths.</p>
+<p class="fade-in">We measured the depth ratio &mdash; surface mean layer divided by insight mean layer &mdash; on two architectures from different labs, different parameter counts, different layer depths.</p>
 
-<div class="stat-block">
+<div class="stat-block fade-in">
   <div class="stat-line"><span class="val">Gemma-2-2B</span> <span class="label">Google &middot; 26 layers &middot; depth ratio 1.0302</span></div>
   <div class="stat-line"><span class="val">Qwen3-0.6B</span> <span class="label">Alibaba &middot; 28 layers &middot; depth ratio 1.0020</span></div>
   <div class="stat-line"><span class="val">Fathom Constant = 1.0212</span> <span class="label">mean cross-architecture &middot; spread 0.028</span></div>
 </div>
 
-<p>the ratio is stable across architectures. surface recall concentrates at output-proximal layers. insight reasoning distributes across earlier layers. the structural pattern is the same regardless of which lab trained the model or how many parameters it has.</p>
+<p class="fade-in">The ratio is stable across architectures. Surface recall concentrates at output-proximal layers. Insight reasoning distributes across earlier layers. The structural pattern is the same regardless of which lab trained the model or how many parameters it has.</p>
 
-<p>this result is independently supported by d'Ascoli et al. (2026), who found that transformer reasoning quality correlates with depth of internal representation &mdash; their TRIBE framework measures a complementary signal. convergence from different methods on the same structural claim is stronger than either result alone.</p>
+<p class="fade-in">This result is independently supported by d'Ascoli et al. (2026), who found that transformer reasoning quality correlates with depth of internal representation &mdash; their TRIBE framework measures a complementary signal. Convergence from different methods on the same structural claim is stronger than either result alone.</p>
 
-<p>per-layer SAE activation profiles (fig. 6 in the paper) show the distribution visually &mdash; surface prompts peak late, insight prompts spread across mid-layers. the profiles are now available for both architectures.</p>
+<h2>The Unexpected Result</h2>
 
-<h2>the unexpected result</h2>
+<p class="fade-in">We compared the activation topology to published human fMRI data. The prefrontal cortex handles reasoning (early, distributed activation). The hippocampus handles recall (late, concentrated activation).</p>
 
-<p>we compared the activation topology to published human fMRI data. the prefrontal cortex handles reasoning (early, distributed activation). the hippocampus handles recall (late, concentrated activation).</p>
+<p class="fade-in"><strong>Same topology. Different substrates.</strong></p>
 
-<p>same topology. different substrates.</p>
+<p class="fade-in">Universality coefficient: <span class="inline-stat">0.830</span>. That number means the variance in normalized activation signatures across transformer and biological systems is less than 0.031 for surface tasks and 0.003 for reasoning tasks. When you normalize to [early, mid, late] ratios &mdash; the pattern converges across silicon and tissue.</p>
 
-<p>universality coefficient: <span class="inline-stat">0.830</span>. that number means the variance in normalized activation signatures across transformer and biological systems is less than 0.031 for surface tasks and 0.003 for reasoning tasks. when you normalize to [early, mid, late] ratios &mdash; the pattern converges across silicon and tissue.</p>
+<p class="fade-in">This is a correlation, not a causal claim. The fMRI comparison uses published reference data, not a joint experiment. But the convergence is striking enough to warrant proper cross-disciplinary investigation.</p>
 
-<p>this is a correlation, not a causal claim. the fMRI comparison uses published reference data, not a joint experiment. but the convergence is striking enough to warrant proper cross-disciplinary investigation.</p>
+<h2>Stochastic Resonance</h2>
 
-<h2>what we built</h2>
+<p class="fade-in">We discovered that depth response to sampling temperature is task-type dependent. Conceptual integration tasks show deeper reasoning at T=0.3 vs T=0.0 (+0.107). Formal precision tasks show shallower reasoning at T=0.3 (-0.149). This directly mirrors biological stochastic resonance: moderate noise amplifies signal in nonlinear systems.</p>
 
-<p>fathom is the full pipeline. from the core depth measurement, everything follows:</p>
+<div class="stat-block fade-in">
+  <div class="stat-line"><span class="val">Conceptual integration</span> <span class="label">depth increases with T &mdash; monotonic positive</span></div>
+  <div class="stat-line"><span class="val">Formal precision</span> <span class="label">depth decreases with T &mdash; peak at T=0</span></div>
+  <div class="stat-line"><span class="val">Mixed reasoning</span> <span class="label">resonance peak at intermediate T</span></div>
+</div>
 
-<ul class="pipeline-list">
+<p class="fade-in">The optimal temperature varies by task type, creating a depth-temperature fingerprint unique to each prompt category.</p>
+
+<h2>What We Built</h2>
+
+<p class="fade-in">Fathom is the full pipeline. From the core depth measurement, everything follows:</p>
+
+<ul class="pipeline-list fade-in">
   <li><span class="pipe-name">depth score</span> <span class="pipe-desc">&mdash; where in the layer stack the model computes</span></li>
   <li><span class="pipe-name">fathom score</span> <span class="pipe-desc">&mdash; single grade, 0-100, with letter grades (S/A/B/C/D/F)</span></li>
   <li><span class="pipe-name">cognitive fingerprint</span> <span class="pipe-desc">&mdash; 7-dimensional vector for clustering and comparison</span></li>
   <li><span class="pipe-name">depth trajectory</span> <span class="pipe-desc">&mdash; how reasoning depth changes token by token during generation</span></li>
   <li><span class="pipe-name">comparison engine</span> <span class="pipe-desc">&mdash; paired scoring with statistical testing</span></li>
   <li><span class="pipe-name">benchmark dataset</span> <span class="pipe-desc">&mdash; 50 standardized pairs across 10 domains</span></li>
-  <li><span class="pipe-name">API</span> <span class="pipe-desc">&mdash; 15 endpoints, FastAPI</span> <span class="badge-coming-soon">COMING SOON</span></li>
+  <li><span class="pipe-name">API</span> <span class="pipe-desc">&mdash; 15 endpoints, FastAPI, sub-3s</span> <span class="badge-coming-soon">COMING SOON</span></li>
 </ul>
 
-<p>one prompt in. one number out. the number tells you something no benchmark ever could: not what the model said, but how it thought.</p>
+<p class="fade-in">One prompt in. One number out. The number tells you something no benchmark ever could: not what the model said, but how it thought.</p>
 
-<h2>what we do not know yet</h2>
+<h2>The Patent Portfolio</h2>
 
-<p><strong>hallucination prediction was null.</strong> we ran three experiments testing whether depth score predicts answer correctness on TruthfulQA (n=140 total pairs). results: p=0.62 in the most rigorous test. depth measures reasoning type, not factual correctness. these are distinct constructs. this is in the paper.</p>
+<p class="fade-in">We have filed a provisional patent (US 64/020,489, priority date March 29, 2026) covering the core measurement method and its applications, with an extended claims addendum covering new findings.</p>
 
-<p><strong>cross-model universality is confirmed on two architectures.</strong> the fathom constant (1.0212, spread 0.028) holds across Gemma-2-2B and Qwen3-0.6B. but two data points define a line, not a law. generalization to larger models, MoE architectures, and naturalistic text remain open questions.</p>
+<div class="patent-summary fade-in">
+  <div class="patent-summary-title">15 Claims &mdash; Core Method + Applications + New Findings</div>
+  <ul class="patent-claim-list">
+    <li><span class="num">01</span> <span class="name">Core measurement method <span class="badge badge-core">Core</span></span></li>
+    <li><span class="num">02</span> <span class="name">Error prediction application</span></li>
+    <li><span class="num">03</span> <span class="name">Cross-architecture universality <span class="badge badge-core">Core</span></span></li>
+    <li><span class="num">04</span> <span class="name">Temperature-depth relationship</span></li>
+    <li><span class="num">05</span> <span class="name">Cognitive signature generation <span class="badge badge-core">Core</span></span></li>
+    <li><span class="num">06</span> <span class="name">Consciousness monitoring (cross-substrate)</span></li>
+    <li><span class="num">07</span> <span class="name">Training dynamics monitoring</span></li>
+    <li><span class="num">08</span> <span class="name">Alignment integrity verification</span></li>
+    <li><span class="num">09</span> <span class="name">Stochastic resonance detection <span class="badge badge-new">New</span></span></li>
+    <li><span class="num">10</span> <span class="name">Decomposability coefficient <span class="badge badge-new">New</span></span></li>
+    <li><span class="num">11</span> <span class="name">Universal depth constant K <span class="badge badge-new">New</span></span></li>
+    <li><span class="num">12</span> <span class="name">Cross-substrate bridge <span class="badge badge-new">New</span></span></li>
+    <li><span class="num">13</span> <span class="name">Temperature classification (dependent)</span></li>
+    <li><span class="num">14</span> <span class="name">Architecture-independent certificates (dependent)</span></li>
+    <li><span class="num">15</span> <span class="name">Real-time streaming depth (dependent)</span></li>
+  </ul>
+</div>
 
-<h2>what is coming</h2>
+<h2>What We Do Not Know</h2>
 
-<p>the paper is going to arXiv soon. the framework will be open source when it drops. the API is built and tested &mdash; deployment is next.</p>
+<p class="fade-in"><strong style="color:var(--amber);">Hallucination prediction was null.</strong> We ran three experiments testing whether depth score predicts answer correctness on TruthfulQA (n=140 total pairs). Results: p=0.62 in the most rigorous test. Depth measures reasoning type, not factual correctness. These are distinct constructs. This is in the paper.</p>
 
-<p>if you work on mechanistic interpretability, AI safety, or model evaluation &mdash; this might be useful to you. if you have fMRI data from reasoning vs recall tasks and want to run a proper joint analysis &mdash; we want to hear from you.</p>
+<p class="fade-in"><strong style="color:var(--amber);">Cross-model universality is confirmed on two architectures.</strong> The Fathom Constant (1.0212, spread 0.028) holds across Gemma-2-2B and Qwen3-0.6B. But two data points define a line, not a law. Generalization to larger models, MoE architectures, and naturalistic text remain open questions.</p>
+
+<h2>What Is Coming</h2>
+
+<p class="fade-in">The paper is going to arXiv soon. The framework will be open source when it drops. The API is built and tested &mdash; deployment is next.</p>
+
+<p class="fade-in">If you work on mechanistic interpretability, AI safety, or model evaluation &mdash; this might be useful to you. If you have fMRI data from reasoning vs recall tasks and want to run a proper joint analysis &mdash; we want to hear from you.</p>
 
 </article>
 
+<!-- Waitlist -->
 <section class="waitlist-section">
-  <h2>FATHOM API &mdash; EARLY ACCESS</h2>
-  <p class="sub">be first to measure how deeply AI thinks.</p>
-  <form class="waitlist-form" id="waitlistForm">
-    <input type="email" placeholder="researcher@lab.edu" required id="waitlistEmail">
-    <button type="submit">JOIN WAITLIST</button>
+  <h2>Request Access</h2>
+  <p class="sub">Be first to measure how deeply AI thinks.</p>
+  <form class="waitlist-form" id="waitlistForm" name="access" method="POST" data-netlify="true">
+    <input type="hidden" name="form-name" value="access">
+    <input type="email" name="email" placeholder="you@organization.com" required id="waitlistEmail" autocomplete="email">
+    <button type="submit">REQUEST</button>
   </form>
   <div class="waitlist-status" id="waitlistStatus"></div>
 </section>
 
-<footer class="blog-footer">
-  <p>built at 5am, alone, on a single GPU. because the question mattered and nobody was asking it.</p>
-  <div class="links">
-    <a href="/fathom">darkflobi.com/fathom</a> &middot;
-    <a href="/fathom/waitlist">waitlist</a>
+<!-- Footer -->
+<footer>
+  <div class="footer-ip">Patent Pending US 64/020,489 &middot; 15 claims &middot; Priority March 29, 2026</div>
+  <div class="footer-brand">DARKFLOBI</div>
+  <div class="footer-epitaph">Built in the dark. Measured in the light.</div>
+  <div class="footer-links">
+    <a href="/fathom/blog">Research</a>
+    <a href="/fathom/demo">Demo</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/fathom/leaderboard">Leaderboard</a>
+    <a href="/fathom/investors">Investors</a>
   </div>
 </footer>
 </main>
 
 <script>
+// Fade-in observer
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Waitlist
 document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('waitlistEmail').value;
   const status = document.getElementById('waitlistStatus');
-
   try {
-    const res = await fetch('/waitlist', {
+    const res = await fetch('/', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email})
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({'form-name': 'access', email}).toString()
     });
     if (res.ok) {
-      status.textContent = 'you are on the list.';
+      status.textContent = "We'll be in touch.";
       status.className = 'waitlist-status success';
       document.getElementById('waitlistEmail').value = '';
     } else {
-      status.textContent = 'something went wrong. try again.';
+      status.textContent = 'Something went wrong.';
       status.className = 'waitlist-status error';
     }
   } catch {
-    // Fallback: store locally if API not available
-    const existing = JSON.parse(localStorage.getItem('fathom_waitlist') || '[]');
-    existing.push({email, timestamp: new Date().toISOString()});
-    localStorage.setItem('fathom_waitlist', JSON.stringify(existing));
-    status.textContent = 'you are on the list. (saved locally)';
-    status.className = 'waitlist-status success';
-    document.getElementById('waitlistEmail').value = '';
+    status.textContent = 'Connection failed. Try again.';
+    status.className = 'waitlist-status error';
   }
 });
 </script>

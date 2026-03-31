@@ -1,0 +1,11 @@
+# Pretty URLs → actual files
+/fathom                /fathom.html                    200
+/fathom/blog           /darkflobi-site/fathom-blog.html 200
+/fathom/demo           /demo/index.html                200
+/fathom/waitlist       /waitlist.html                  200
+/fathom/leaderboard    /fathom_leaderboard.html        200
+/fathom/investors      /fathom_investor_demo.html      200
+/dashboard             /dashboard/index.html           200
+
+# Root serves landing page directly
+/                      /fathom.html                    200

@@ -3,279 +3,401 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FATHOM — Early Access</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
+<title>FATHOM — Request Access</title>
+<meta name="description" content="Request early access to Fathom. Measure how deeply AI reasons.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #141414;
-  --border: #1e1e1e;
-  --text: #c0c0c0;
-  --text-dim: #666;
-  --green: #00ff00;
-  --green-dim: #00aa00;
-  --red: #ff3d00;
-  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+  --void: #040407;
+  --abyss: #07070c;
+  --deep: #0b0b14;
+  --border: #14142a;
+  --border-subtle: #0f0f1e;
+  --text: #7878a0;
+  --text-bright: #a8a8c8;
+  --text-dim: #36365a;
+  --glow: #00ffa8;
+  --glow-mid: #00cc88;
+  --glow-dim: #007a52;
+  --glow-ghost: rgba(0, 255, 168, 0.03);
+  --cyan: #00c8ee;
+  --white: #cccce0;
+  --red: #ff3355;
+
+  --font-display: 'Cinzel', 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
 }
 
 body {
-  background: var(--bg);
+  background: var(--void);
   color: var(--text);
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.6;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
   min-height: 100vh;
+  cursor: crosshair;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 40px 24px;
+  overflow: hidden;
+}
+
+::selection {
+  background: rgba(0, 255, 168, 0.12);
+  color: var(--white);
+}
+
+a, button, input { cursor: crosshair; }
+a:hover, button:hover { cursor: crosshair; }
+
+/* Scanline */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent 0px, transparent 3px,
+    rgba(0, 255, 168, 0.004) 3px, rgba(0, 255, 168, 0.004) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Rings */
+.ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 1px solid;
+  pointer-events: none;
+}
+
+.ring-1 {
+  width: 500px; height: 500px;
+  transform: translate(-50%, -50%);
+  border-color: rgba(0, 255, 168, 0.02);
+  animation: ring 35s linear infinite;
+}
+
+.ring-2 {
+  width: 320px; height: 320px;
+  transform: translate(-50%, -50%);
+  border-color: rgba(0, 200, 238, 0.015);
+  animation: ring 24s linear infinite reverse;
+}
+
+@keyframes ring {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .container {
-  max-width: 560px;
+  max-width: 480px;
   width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 56px;
 }
 
 .header h1 {
-  font-size: 48px;
-  letter-spacing: 16px;
-  color: var(--green);
-  text-shadow: 0 0 30px rgba(0,255,0,0.3);
-  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 8vw, 64px);
+  font-weight: 400;
+  letter-spacing: clamp(10px, 3vw, 24px);
+  color: var(--glow);
+  text-shadow: 0 0 60px rgba(0, 255, 168, 0.12), 0 0 140px rgba(0, 255, 168, 0.04);
+  margin-bottom: 10px;
+  animation: breathe 7s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { text-shadow: 0 0 60px rgba(0, 255, 168, 0.12), 0 0 140px rgba(0, 255, 168, 0.04); }
+  50% { text-shadow: 0 0 80px rgba(0, 255, 168, 0.18), 0 0 180px rgba(0, 255, 168, 0.06); }
 }
 
 .header .label {
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: 9px;
   letter-spacing: 6px;
   color: var(--text-dim);
   text-transform: uppercase;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .header .tagline {
-  font-size: 16px;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 300;
+  font-style: italic;
   color: var(--text);
-  margin-top: 24px;
-  line-height: 1.5;
 }
 
+/* Form */
 .form-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 32px;
-  margin-bottom: 24px;
+  background: var(--abyss);
+  border: 1px solid var(--border-subtle);
+  padding: 36px 32px;
+  margin-bottom: 20px;
 }
 
 .form-section label {
   display: block;
-  font-size: 11px;
-  letter-spacing: 2px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
   color: var(--text-dim);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .input-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .input-row input {
   flex: 1;
-  background: var(--bg);
+  background: var(--void);
   border: 1px solid var(--border);
-  color: var(--green);
-  font-family: var(--mono);
+  color: var(--glow);
+  font-family: var(--font-mono);
   font-size: 14px;
-  padding: 12px 16px;
+  padding: 15px 18px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.4s;
 }
 
 .input-row input:focus {
-  border-color: var(--green-dim);
+  border-color: var(--glow-dim);
+  box-shadow: 0 0 30px rgba(0, 255, 168, 0.04);
 }
 
-.input-row input::placeholder {
-  color: var(--text-dim);
-}
+.input-row input::placeholder { color: var(--text-dim); }
 
 .input-row button {
   background: transparent;
-  border: 1px solid var(--green);
-  color: var(--green);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 2px;
-  padding: 12px 24px;
+  border: 1px solid var(--glow);
+  color: var(--glow);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  padding: 15px 28px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.5s;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
 }
 
-.input-row button:hover {
-  background: var(--green);
-  color: var(--bg);
-  text-shadow: none;
+.input-row button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--glow);
+  opacity: 0;
+  transition: opacity 0.5s;
 }
 
-.input-row button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.counter {
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-dim);
-  margin-bottom: 48px;
-}
-
-.counter .number {
-  color: var(--green);
-  font-size: 14px;
-}
+.input-row button:hover::before { opacity: 1; }
+.input-row button:hover { color: var(--void); }
+.input-row button span { position: relative; z-index: 1; }
+.input-row button:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .status {
   text-align: center;
+  font-family: var(--font-mono);
   font-size: 12px;
   margin-top: 16px;
   min-height: 20px;
 }
 
-.status.success { color: var(--green); }
+.status.success { color: var(--glow); }
 .status.error { color: var(--red); }
 
-.features {
-  margin-top: 48px;
-  border-top: 1px solid var(--border);
-  padding-top: 32px;
-}
-
-.features h3 {
-  font-size: 11px;
-  letter-spacing: 4px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  margin-bottom: 20px;
+.counter {
   text-align: center;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.feature {
-  padding: 16px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.feature .label {
+  font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--green-dim);
+  color: var(--text-dim);
   letter-spacing: 1px;
-  margin-bottom: 4px;
 }
 
-.feature .desc {
+.counter .number { color: var(--glow-dim); }
+
+
+/* ── Nav ───────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(4, 4, 7, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 40px;
+}
+.nav-brand {
+  font-family: var(--font-display);
   font-size: 12px;
-  color: var(--text-dim);
-}
-
-.footer {
-  text-align: center;
-  margin-top: 48px;
-  font-size: 11px;
-  color: var(--text-dim);
-}
-
-.footer a {
-  color: var(--green-dim);
+  letter-spacing: 10px;
+  color: var(--glow);
   text-decoration: none;
+  text-shadow: 0 0 40px rgba(0, 255, 168, 0.15);
+  transition: text-shadow 0.6s;
 }
+.nav-brand:hover { text-shadow: 0 0 60px rgba(0, 255, 168, 0.3); }
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.5s;
+}
+.nav-links a:hover { color: var(--glow-dim); }
 
-@media (max-width: 560px) {
+/* ── Standard Footer ──────────────────────────── */
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 56px 40px;
+  text-align: center;
+}
+.footer-ip {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  margin-bottom: 20px;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  opacity: 0.35;
+  margin-bottom: 12px;
+}
+.footer-epitaph {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text-dim);
+  opacity: 0.25;
+  margin-bottom: 28px;
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  opacity: 0.35;
+  transition: opacity 0.4s, color 0.4s;
+}
+.footer-links a:hover { opacity: 0.7; color: var(--glow-dim); }
+
+@media (max-width: 480px) {
   .input-row { flex-direction: column; }
-  .feature-grid { grid-template-columns: 1fr; }
-  .header h1 { font-size: 36px; letter-spacing: 10px; }
+  .nav-links { display: none; }
 }
 </style>
 </head>
 <body>
 
+<nav>
+  <div class="nav-inner">
+    <a href="/fathom" class="nav-brand">FATHOM</a>
+    <ul class="nav-links">
+      <li><a href="/fathom/blog">Research</a></li>
+      <li><a href="/fathom/demo">Try It</a></li>
+      <li><a href="#access">Access</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="ring ring-1"></div>
+<div class="ring ring-2"></div>
+
 <div class="container">
   <div class="header">
     <h1>FATHOM</h1>
-    <div class="label">API &mdash; Early Access</div>
-    <div class="tagline">Be first to measure how deeply AI thinks.</div>
+    <div class="label">Request Access</div>
+    <div class="tagline">Measure how deeply AI reasons.</div>
   </div>
 
-  <div class="form-section">
-    <label>Email address</label>
+  <form class="form-section" id="accessForm" name="access" method="POST" data-netlify="true">
+    <input type="hidden" name="form-name" value="access">
+    <label>Email Address</label>
     <div class="input-row">
-      <input type="email" id="email" placeholder="you@research.lab" autocomplete="email">
-      <button id="submit-btn" onclick="joinWaitlist()">JOIN WAITLIST</button>
+      <input type="email" id="email" name="email" placeholder="you@organization.com" autocomplete="email">
+      <button type="submit" id="submit-btn"><span>REQUEST</span></button>
     </div>
     <div class="status" id="status"></div>
-  </div>
+  </form>
 
   <div class="counter">
-    <span class="number" id="count">—</span> researchers already waiting
+    <span class="number" id="count">&mdash;</span> on the list
   </div>
 
-  <div class="features">
-    <h3>What you get</h3>
-    <div class="feature-grid">
-      <div class="feature">
-        <div class="label">/v2/score</div>
-        <div class="desc">Measure reasoning depth of any prompt</div>
-      </div>
-      <div class="feature">
-        <div class="label">/v2/compare</div>
-        <div class="desc">Surface vs insight analysis</div>
-      </div>
-      <div class="feature">
-        <div class="label">/v2/fingerprint</div>
-        <div class="desc">Cognitive signature vectors</div>
-      </div>
-      <div class="feature">
-        <div class="label">/v2/fathom_score</div>
-        <div class="desc">Single-number depth grade (0-100)</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <a href="/">darkflobi</a> &mdash; fathom v2.0
   </div>
 </div>
 
+<footer>
+  <div class="footer-ip">Patent Pending US 64/020,489 &middot; 15 claims &middot; Priority March 29, 2026</div>
+  <div class="footer-brand">DARKFLOBI</div>
+  <div class="footer-epitaph">Built in the dark. Measured in the light.</div>
+  <div class="footer-links">
+    <a href="/fathom/blog">Research</a>
+    <a href="/fathom/demo">Demo</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/fathom/leaderboard">Leaderboard</a>
+    <a href="/fathom/investors">Investors</a>
+  </div>
+</footer>
+
 <script>
-const API_BASE = window.location.origin;
-
-async function loadCount() {
-  try {
-    const res = await fetch(API_BASE + '/waitlist/count');
-    if (res.ok) {
-      const data = await res.json();
-      document.getElementById('count').textContent = data.count;
-    }
-  } catch (e) {
-    // silent — counter just shows dash
-  }
-}
-
-async function joinWaitlist() {
+document.getElementById('accessForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
   const email = document.getElementById('email').value.trim();
   const btn = document.getElementById('submit-btn');
   const status = document.getElementById('status');
@@ -287,25 +409,21 @@ async function joinWaitlist() {
   }
 
   btn.disabled = true;
-  btn.textContent = '...';
+  btn.querySelector('span').textContent = '...';
   status.textContent = '';
 
   try {
-    const res = await fetch(API_BASE + '/waitlist', {
+    const res = await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({'form-name': 'access', email}).toString()
     });
-
-    const data = await res.json();
-
     if (res.ok) {
-      status.textContent = data.message || "You're on the list.";
+      status.textContent = "We'll be in touch.";
       status.className = 'status success';
       document.getElementById('email').value = '';
-      loadCount();
     } else {
-      status.textContent = data.detail || 'Something went wrong.';
+      status.textContent = 'Something went wrong.';
       status.className = 'status error';
     }
   } catch (e) {
@@ -314,16 +432,8 @@ async function joinWaitlist() {
   }
 
   btn.disabled = false;
-  btn.textContent = 'JOIN WAITLIST';
-}
-
-// Enter key submits
-document.getElementById('email').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') joinWaitlist();
+  btn.querySelector('span').textContent = 'REQUEST';
 });
-
-// Load count on page load
-loadCount();
 </script>
 
 </body>
