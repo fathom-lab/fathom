@@ -148,6 +148,9 @@ class DepthResult:
     depth_score_ci_low: Optional[float] = None
     depth_score_ci_high: Optional[float] = None
     depth_score_std: Optional[float] = None
+    # ── Coherence (C axis) ──
+    coherence_score: Optional[float] = None  # mean pairwise cosine sim of top-k feature decoders
+    feature_indices: Optional[list] = None   # (layer, feature_idx) pairs for analysis
 
     def to_dict(self):
         d = asdict(self)
@@ -309,16 +312,26 @@ class DepthScorer:
         )
         compute_time = time.time() - t0
 
-        # Extract layers and magnitudes from active_features tensor
+        # Extract layers, feature indices, and magnitudes from active_features tensor
         active_features = []
+        feature_indices_raw = []
         magnitudes = None
         af = graph.active_features
         if af is not None and hasattr(af, "shape") and af.shape[0] > 0:
             layers_np = af[:, 0].float().cpu().numpy()
-            active_features = [(float(l), 0, 0) for l in layers_np]
+            # Column layout: [layer, position, feature_index]
+            # Column 2 is the actual feature index within the transcoder/SAE
+            feat_idx_np = af[:, 2].long().cpu().numpy() if af.shape[1] > 2 else (
+                af[:, 1].long().cpu().numpy() if af.shape[1] > 1 else np.zeros(len(layers_np), dtype=np.int64)
+            )
+            active_features = [(float(l), int(f), 0) for l, f in zip(layers_np, feat_idx_np)]
+            feature_indices_raw = [(int(l), int(f)) for l, f in zip(layers_np, feat_idx_np)]
 
             # Extract attribution magnitudes from graph nodes
             magnitudes = self._extract_magnitudes(graph, len(layers_np))
+
+        # Extract SAE decoder vectors for coherence before cleaning up graph
+        decoder_vectors = self._extract_decoder_vectors(feature_indices_raw, magnitudes)
 
         # Clean up GPU memory
         del graph
@@ -327,7 +340,9 @@ class DepthScorer:
 
         return {
             "active_features": active_features,
+            "feature_indices": feature_indices_raw,
             "magnitudes": magnitudes,
+            "decoder_vectors": decoder_vectors,
             "compute_time": compute_time,
             "target": target,
         }
@@ -383,6 +398,132 @@ class DepthScorer:
                 pass
 
         return None
+
+    def _extract_decoder_vectors(
+        self, feature_indices: list, magnitudes: Optional[np.ndarray], top_k: int = 20
+    ) -> Optional[np.ndarray]:
+        """Extract SAE decoder direction vectors for the top-k features (by magnitude).
+
+        Returns array of shape (n, d_model) or None if SAE decoders are not accessible.
+        These vectors represent the semantic directions each feature encodes.
+        """
+        if not feature_indices:
+            return None
+
+        # Select top-k features by magnitude, or stratified sample across layers
+        if magnitudes is not None and len(magnitudes) == len(feature_indices):
+            top_indices = np.argsort(magnitudes)[::-1][:top_k]
+            selected = [feature_indices[i] for i in top_indices]
+        else:
+            # No magnitudes available — stratified sampling across layers
+            # to avoid biasing toward early layers (which appear first in the tensor)
+            by_layer = {}
+            for lyr, fid in feature_indices:
+                by_layer.setdefault(lyr, []).append((lyr, fid))
+            selected = []
+            n_layers_present = len(by_layer)
+            per_layer = max(1, top_k // max(n_layers_present, 1))
+            rng = np.random.RandomState(hash(str(feature_indices[:3])) % (2**31))
+            for lyr in sorted(by_layer.keys()):
+                feats = by_layer[lyr]
+                if len(feats) <= per_layer:
+                    selected.extend(feats)
+                else:
+                    idx = rng.choice(len(feats), size=per_layer, replace=False)
+                    selected.extend([feats[i] for i in idx])
+                if len(selected) >= top_k:
+                    break
+            selected = selected[:top_k]
+
+        # Try multiple paths to access SAE/transcoder decoder weights
+        vectors = []
+        feature_modules = None
+
+        # Strategy 1: Transcoders (circuit-tracer with gemma-scope-transcoders)
+        if hasattr(self._model, "transcoders") and self._model.transcoders is not None:
+            tc = self._model.transcoders
+            if hasattr(tc, "transcoders"):
+                feature_modules = tc.transcoders  # ModuleList, indexed by layer
+        # Strategy 2: model.saes dict
+        if feature_modules is None and hasattr(self._model, "saes") and self._model.saes is not None:
+            feature_modules = self._model.saes
+        # Strategy 3: model.replacement_saes
+        if feature_modules is None and hasattr(self._model, "replacement_saes") and self._model.replacement_saes is not None:
+            feature_modules = self._model.replacement_saes
+        # Strategy 4: model.replacements
+        if feature_modules is None and hasattr(self._model, "replacements") and self._model.replacements is not None:
+            feature_modules = self._model.replacements
+
+        if feature_modules is None:
+            return None
+
+        for layer_idx, feat_idx in selected:
+            try:
+                # Access module for this layer
+                module = None
+                if isinstance(feature_modules, dict):
+                    module = feature_modules.get(layer_idx) or feature_modules.get(str(layer_idx))
+                elif hasattr(feature_modules, "__getitem__"):
+                    if layer_idx < len(feature_modules):
+                        module = feature_modules[layer_idx]
+
+                if module is None:
+                    continue
+
+                # Get decoder weight vector for this feature
+                # Try W_dec first (decoder direction), then W_enc (encoder direction)
+                dec_vec = None
+                for attr in ["W_dec", "W_enc", "decoder", "weight_dec"]:
+                    w = getattr(module, attr, None)
+                    if w is not None and isinstance(w, torch.Tensor):
+                        # Shape: (n_features, d_model)
+                        if feat_idx < w.shape[0]:
+                            dec_vec = w[feat_idx].float().cpu().numpy()
+                        break
+
+                if dec_vec is not None:
+                    vectors.append(dec_vec)
+            except Exception:
+                continue
+
+        if len(vectors) < 2:
+            return None
+
+        return np.array(vectors, dtype=np.float32)
+
+    def _compute_coherence(self, decoder_vectors: Optional[np.ndarray]) -> Optional[float]:
+        """Compute feature coherence score (C) as mean pairwise cosine similarity.
+
+        Higher C = more semantically coherent feature activation.
+        C near 1.0 = all features point in same direction (tight cluster).
+        C near 0.0 = features are orthogonal (scattered, no semantic theme).
+        C negative = features oppose each other (rare).
+
+        This is the second axis of the Fathom cognitive geometry:
+            K (depth) = WHERE computation happens
+            C (coherence) = WHAT concepts activate together
+        """
+        if decoder_vectors is None or len(decoder_vectors) < 2:
+            return None
+
+        # Normalize vectors to unit length
+        norms = np.linalg.norm(decoder_vectors, axis=1, keepdims=True)
+        norms = np.maximum(norms, 1e-8)  # avoid division by zero
+        normed = decoder_vectors / norms
+
+        # Compute pairwise cosine similarity via dot product of normalized vectors
+        # sim_matrix[i,j] = cos(v_i, v_j)
+        sim_matrix = normed @ normed.T
+
+        # Extract upper triangle (exclude diagonal = self-similarity of 1.0)
+        n = len(decoder_vectors)
+        upper_mask = np.triu_indices(n, k=1)
+        pairwise_sims = sim_matrix[upper_mask]
+
+        if len(pairwise_sims) == 0:
+            return None
+
+        return float(np.mean(pairwise_sims))
 
     def _compute_layer_entropy(self, layer_profile: dict, total: int) -> float:
         """Shannon entropy of the layer distribution (bits).
@@ -455,6 +596,8 @@ class DepthScorer:
         """Build a DepthResult from raw extraction output."""
         features = extraction["active_features"]
         magnitudes = extraction["magnitudes"]
+        decoder_vectors = extraction.get("decoder_vectors")
+        feature_indices = extraction.get("feature_indices", [])
         compute_time = extraction["compute_time"]
 
         early_bound, mid_bound = self._bands
@@ -478,6 +621,8 @@ class DepthScorer:
                 model_id=self.model_name,
                 is_anomalous=is_anom,
                 anomaly_reasons=anom_reasons if anom_reasons else None,
+                coherence_score=None,
+                feature_indices=None,
             )
 
         layers = [f[0] for f in features if isinstance(f[0], (int, float))]
@@ -509,6 +654,9 @@ class DepthScorer:
         # Layer entropy (§2)
         entropy = self._compute_layer_entropy(layer_profile, total)
 
+        # Coherence score (C axis — second dimension of cognitive geometry)
+        coherence = self._compute_coherence(decoder_vectors)
+
         # Anomaly detection (§7)
         is_anom, anom_reasons = self._detect_anomalies(total, layer_profile, compute_time)
         self._compute_times.append(compute_time)
@@ -529,6 +677,8 @@ class DepthScorer:
             model_id=self.model_name,
             is_anomalous=is_anom,
             anomaly_reasons=anom_reasons if anom_reasons else None,
+            coherence_score=coherence,
+            feature_indices=feature_indices if feature_indices else None,
         )
 
     def _compute_weighted_depth(
@@ -777,18 +927,21 @@ class DepthScorer:
     def fingerprint(self, result: DepthResult) -> np.ndarray:
         """Compute a fixed-length cognitive fingerprint vector.
 
-        Returns a 7-element numpy array:
-            [0] weighted_depth_score  — attribution-weighted mean layer
-            [1] layer_entropy         — distributional spread
-            [2] early_ratio           — early-band feature fraction
-            [3] mid_ratio             — mid-band feature fraction
-            [4] late_ratio            — late-band feature fraction
-            [5] feature_count_norm    — feature count / max_feature_nodes (0-1)
-            [6] compute_efficiency    — features per second of compute
+        Returns an 8-element numpy array:
+            [0] weighted_depth_score  — attribution-weighted mean layer (K axis)
+            [1] coherence_score       — mean pairwise cosine sim of feature decoders (C axis)
+            [2] layer_entropy         — distributional spread
+            [3] early_ratio           — early-band feature fraction
+            [4] mid_ratio             — mid-band feature fraction
+            [5] late_ratio            — late-band feature fraction
+            [6] feature_count_norm    — feature count / max_feature_nodes (0-1)
+            [7] compute_efficiency    — features per second of compute
 
         Enables clustering, similarity comparison, and downstream ML tasks.
+        The first two elements (K, C) form the two-axis cognitive geometry.
         """
         weighted = result.weighted_depth_score if result.weighted_depth_score is not None else result.depth_score
+        coherence = result.coherence_score if result.coherence_score is not None else 0.0
         entropy = result.layer_entropy if result.layer_entropy is not None else 0.0
 
         # Normalize feature count against the configured max
@@ -805,6 +958,7 @@ class DepthScorer:
 
         return np.array([
             weighted if not math.isnan(weighted) else 0.0,
+            coherence,
             entropy,
             result.early_ratio,
             result.mid_ratio,
