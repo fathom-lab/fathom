@@ -65,6 +65,8 @@ import numpy as np
 
 # ── Model Registry ─────────────────────────────────────────────────────
 
+FATHOM_CONSTANT = 1.0343  # Weighted mean K across architectures (2026-04-01)
+
 MODEL_REGISTRY = {
     "google/gemma-2-2b": {
         "model_type": "gemma",
@@ -77,6 +79,23 @@ MODEL_REGISTRY = {
             "delta_mean": 0.257,
             "p_value": 0.000051,
             "n_pairs": 30,
+            "k_ratio": 1.0302,
+            "directional_accuracy": 0.767,
+        },
+    },
+    "google/gemma-2-2b-it": {
+        "model_type": "gemma",
+        "n_layers": 26,
+        "bands": (8, 16),
+        "norm_range": (7.5, 9.0),
+        "calibration": {
+            "surface_mean": 8.070,
+            "insight_mean": 7.771,
+            "delta_mean": 0.298,
+            "p_value": 0.000051,
+            "n_pairs": 30,
+            "k_ratio": 1.0384,
+            "directional_accuracy": 0.867,
         },
     },
     "mistralai/Mistral-7B-v0.1": {

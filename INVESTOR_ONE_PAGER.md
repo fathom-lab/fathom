@@ -73,7 +73,7 @@ Target verticals: enterprise AI deployments in healthcare, legal, finance, and g
 
 | Signal | Status |
 |---|---|
-| USPTO Provisional Patent | Filed 03/29/2026 — #64/020,489 |
+| USPTO Provisional Patent | Filed 03/29/2026 — #64/020,489 & 64/021,113 |
 | arXiv Paper | Submitted — ID 7407675 (endorsement pending) |
 | Cross-architecture replication | ✅ Gemma-2-2B + Llama-3.2-1B |
 | Domain validation | ✅ 5 industries |
@@ -103,4 +103,4 @@ SAE-based interpretability only became tractable in the last 18 months. The tool
 
 **Alexander Rodabaugh** — @darkflobi
 **darkflobi.com/fathom**
-Patent Pending | USPTO 64/020,489
+Patent Pending | USPTO 64/020,489 & 64/021,113

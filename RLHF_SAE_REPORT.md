@@ -27,4 +27,4 @@ on Gemma-2-2B base, now run on google/gemma-2-2b-it.
 ---
 
 *Generated at 2026-03-29T22:59:47*
-*Fathom -- US Patent Pending 64/020,489*
+*Fathom -- US Patent Pending 64/020,489 & 64/021,113*

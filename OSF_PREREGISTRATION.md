@@ -163,7 +163,7 @@ The 30 vocabulary-controlled prompt pairs are fixed and published in `results_po
 ---
 
 ## Conflict of Interest
-The principal investigator has filed a provisional patent (US 64/020,489) covering the Fathom measurement method. This pre-registration is filed to ensure scientific transparency despite commercial interest.
+The principal investigator has filed a provisional patent (US 64/020,489 & 64/021,113) covering the Fathom measurement method. This pre-registration is filed to ensure scientific transparency despite commercial interest.
 
 ## Funding
 Self-funded. No external grants or corporate sponsorship.

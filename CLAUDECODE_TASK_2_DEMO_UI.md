@@ -157,4 +157,4 @@ Save to: C:\Users\heyzo\clawd\sae-reasoning-depth\fathom_investor_demo.html
 - No build step, no node_modules, pure HTML/JS/CSS
 - Should look impressive on a laptop screen in a pitch meeting
 - Terminal/hacker aesthetic — not corporate
-- Patent notice in footer: "US Provisional Patent 64/020,489 | Patent Pending"
+- Patent notice in footer: "US Provisional Patent 64/020,489 & 64/021,113 | Patent Pending"

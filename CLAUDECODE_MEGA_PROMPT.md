@@ -8,7 +8,7 @@
 You are building for **Fathom** — an AI depth measurement tool that has:
 - Discovered the **Fathom Constant K = 1.027** (ratio of surface-to-insight processing depth across AI architectures)
 - Validated on Gemma-2-2B (K=1.0302, p=0.000051) and Llama-3.2-1B (K=1.0242, p=0.00266)
-- Filed USPTO Provisional Patent #64/020,489
+- Filed USPTO Provisional Patent #64/020,489 & 64/021,113
 - A live depth API running at localhost:8400 (FastAPI, Gemma-2-2B)
 
 Working directory: `C:\Users\heyzo\clawd\sae-reasoning-depth\`
@@ -108,7 +108,7 @@ Single HTML file that connects to the Fathom API and lets investors see depth sc
 ```
 FATHOM                          [● API CONNECTED]
 measuring reasoning depth in artificial intelligence
-US Patent Pending 64/020,489
+US Patent Pending 64/020,489 & 64/021,113
 ```
 Auto-checks `GET localhost:8400/v2/health` on load. Shows green dot if connected, red if not.
 
@@ -215,7 +215,7 @@ const PAIRS = {
 
 ### Footer
 ```
-darkflobi.com/fathom  |  US Provisional Patent 64/020,489  |  Patent Pending
+darkflobi.com/fathom  |  US Provisional Patent 64/020,489 & 64/021,113  |  Patent Pending
 ```
 
 ---

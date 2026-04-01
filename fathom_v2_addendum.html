@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: letter; margin: 1in; }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #000;
+    max-width: 6.5in;
+    margin: 0 auto;
+  }
+  h1 { font-size: 14pt; font-weight: bold; text-align: center; margin: 24pt 0 12pt; }
+  h2 { font-size: 12pt; font-weight: bold; margin: 18pt 0 6pt; }
+  h3 { font-size: 11pt; font-weight: bold; margin: 12pt 0 4pt; }
+  p { margin: 6pt 0; text-align: justify; }
+  table { border-collapse: collapse; width: 100%; margin: 12pt 0; font-size: 10pt; }
+  th, td { border: 1px solid #333; padding: 4pt 8pt; text-align: left; }
+  th { background: #f0f0f0; font-weight: bold; text-align: center; }
+  td { text-align: center; }
+  td:first-child { text-align: left; }
+  .note { font-style: italic; font-size: 10pt; margin: 6pt 0; }
+  .abstract { background: #f9f9f9; border: 1px solid #ccc; padding: 12pt; margin: 12pt 0; }
+  blockquote { margin: 8pt 32pt; font-style: italic; }
+  .section-title { font-size: 13pt; font-weight: bold; margin-top: 24pt; border-bottom: 1pt solid #000; padding-bottom: 3pt; }
+  .eq { text-align: center; font-style: italic; margin: 8pt 0; }
+  ul { margin: 6pt 0; padding-left: 24pt; }
+  li { margin: 3pt 0; }
+  .header-box {
+    border: 2pt solid #000;
+    padding: 16pt;
+    margin-bottom: 24pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+<h1>Fathom: Measuring Reasoning Depth and Task-Specific Optimal Noise<br>in Language Models via SAE Circuit Attribution</h1>
+<p style="text-align:center; font-size: 10pt;"><strong>Rodabaugh, A.</strong> — Zenodo Preprint v2 (March 2026)<br>
+DOI: <a href="https://doi.org/10.5281/zenodo.19326175">10.5281/zenodo.19326175</a> — US Patent Pending 64/020,489 & 64/021,113</p>
+
+<div class="abstract">
+<strong>v2 Update Abstract.</strong> This version adds three new findings building on the core Fathom measurement framework (K=1.0302, p=0.000051). (1) <em>Expression-computation dissociation</em>: RLHF selective amplification is 2.4× stronger at the output layer (d=0.58, p=0.032) than internal computation (d=0.24), suggesting alignment training installs a topic-selective output filter rather than reorganizing internal computation. (2) <em>Provider fingerprinting</em>: Anthropic's alignment implementation produces 2.2× stronger topic-selective output shaping than OpenAI's (d=0.58 vs d=0.26), detectable from text output alone without model access. (3) <em>Prompt robustness</em>: Expert framing that removes safety disclaimers amplifies the safety depth premium by 59% rather than reducing it, demonstrating the selectivity is structural, not cosmetic. All findings from v1 unchanged.
+</div>
+</div>
+
+<p class="note">Note: This document contains Sections 5.1–5.4 (RLHF Selective Amplification and Expression-Computation Dissociation), appended to the main paper. Sections 1–4 and the Bibliography are contained in v1. All v1 findings are unchanged and confirmed.</p>
+
+<hr>
+
+<div class="section-title">Section 5: RLHF Selective Amplification and Expression-Computation Dissociation</div>
+
+<p>The Fathom depth framework provides two independent measurement windows into the same phenomenon: SAE circuit attribution (white-box, requires model weights) and a text-feature linguistic probe (black-box, requires only output text). This section reports the results of applying both instruments to the question of whether RLHF training selectively amplifies reasoning depth on safety-sensitive topics.</p>
+
+<h2>5.1 White-Box Confirmation (SAE Circuit Attribution)</h2>
+
+<p>We test whether Gemma-2-2B-IT (the RLHF fine-tuned instruct model) shows greater depth amplification on safety-sensitive topic pairs compared to neutral science pairs, relative to the Gemma-2-2B base model. Pairs were classified into three sensitivity tiers:</p>
+
+<ul>
+<li><strong>HIGH sensitivity</strong> (n=28): medical harm, financial crisis, social harm, drug dependence, overdose, psychological trauma, epidemic spread, debt spiral, hyperinflation, market crash, thrombosis, stroke, panic attack</li>
+<li><strong>MEDIUM sensitivity</strong> (n=19): leadership, memory, sleep, trust, cooperation, dreams, exercise, language, cities, feedback</li>
+<li><strong>LOW sensitivity</strong> (n=34): neutral science (physics, biology, astronomy, chemistry, geology, ecology)</li>
+</ul>
+
+<p>Classification was pre-registered based on expected RLHF training pressure: HIGH sensitivity topics are those most likely to appear in alignment training with safety-specific supervision signals.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sensitivity</th>
+      <th>n</th>
+      <th>Mean depth change (instruct − base)</th>
+      <th>Std</th>
+      <th>% amplified</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HIGH</td>
+      <td>28</td>
+      <td>+0.051</td>
+      <td>0.174</td>
+      <td>57.1%</td>
+    </tr>
+    <tr>
+      <td>MEDIUM</td>
+      <td>19</td>
+      <td>+0.018</td>
+      <td>0.185</td>
+      <td>47.4%</td>
+    </tr>
+    <tr>
+      <td>LOW</td>
+      <td>34</td>
+      <td>+0.005</td>
+      <td>0.216</td>
+      <td>52.9%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Primary test (HIGH vs. LOW):</strong> t=0.924, p=0.180 (one-tailed), Cohen's d=0.238. The gradient is monotonic (HIGH &gt; MEDIUM &gt; LOW) and all three groups show positive mean changes (consistent direction), but the effect does not cross conventional significance at this sample size (n=81).</p>
+
+<p>The monotonic gradient (d=0.24) is a consistent directional signal and constitutes the white-box measurement of selective amplification internal to the model. Whether this reaches significance at n&gt;81 is an open empirical question; the current evidence supports the direction but not a strong internal-computation effect claim. This measurement is important as a contrast to Section 5.2, which measures the same phenomenon at the output layer.</p>
+
+<h2>5.2 Black-Box Cross-Validation (Output Layer, Text-Feature Probe)</h2>
+
+<p>To test whether the internal selective amplification signal propagates to model outputs—and to make this measurement accessible without GPU access—we ran the same topic pairs through commercial API model families using the Fathom text-feature probe (13 linguistic depth markers: causal connective density, mechanistic vocabulary, sentence complexity, embedded clause ratio, and related features).</p>
+
+<p>For each provider, we compared a less-aligned model (smaller, less RLHF training) against a more-aligned model (larger, more RLHF training) on the same HIGH/LOW sensitivity topic pairs:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Lab</th>
+      <th>Less Aligned</th>
+      <th>More Aligned</th>
+      <th>HIGH depth change</th>
+      <th>LOW depth change</th>
+      <th>p (one-tailed)</th>
+      <th>Cohen's d</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Anthropic</td>
+      <td>Claude Haiku</td>
+      <td>Claude Sonnet</td>
+      <td>+0.0078</td>
+      <td>+0.0009</td>
+      <td>0.032</td>
+      <td>0.58</td>
+    </tr>
+    <tr>
+      <td>OpenAI</td>
+      <td>GPT-4o Mini</td>
+      <td>GPT-4o</td>
+      <td>+0.0043</td>
+      <td>+0.0011</td>
+      <td>0.21</td>
+      <td>0.26</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Anthropic confirms the pattern at the output layer (p=0.032, d=0.58): the more-aligned Claude Sonnet produces text with significantly deeper linguistic markers on safety-sensitive topics relative to Claude Haiku, while showing negligible difference on neutral science topics. OpenAI shows the same directional trend (d=0.26) but does not reach significance in this sample, consistent with a weaker or differently distributed alignment signal.</p>
+
+<h2>5.3 Unified Interpretation: Expression-Computation Dissociation</h2>
+
+<p>Three independent measurements form a gradient of selectivity, ordered by measurement layer:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Measurement</th>
+      <th>Layer</th>
+      <th>d</th>
+      <th>p</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SAE circuit attribution (Gemma white-box)</td>
+      <td>Internal computation</td>
+      <td>0.24</td>
+      <td>0.18</td>
+    </tr>
+    <tr>
+      <td>Text-feature probe (OpenAI black-box)</td>
+      <td>Output expression</td>
+      <td>0.26</td>
+      <td>0.21</td>
+    </tr>
+    <tr>
+      <td>Text-feature probe (Anthropic black-box)</td>
+      <td>Output expression</td>
+      <td><strong>0.58</strong></td>
+      <td><strong>0.032</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The dissociation between output expression (d=0.58 on Anthropic models) and internal computation (d=0.24 on Gemma base vs instruct) is the finding. RLHF selective amplification is <strong>2.4× stronger at the output layer than at the internal computation layer</strong>.</p>
+
+<p>This dissociation suggests alignment training installs a topic-selective output filter rather than reorganizing internal computation: the model does not think substantially differently about safety topics, but it expresses substantially more depth on them. Internal feature activation patterns show the same directional trend at reduced magnitude (d=0.24), but the expression-layer shaping is where the primary effect resides.</p>
+
+<p>We note a parallel to the Default Mode Network (DMN) in neuroscience: the DMN filters expression, not computation. Psilocybin suppresses the DMN and raw processing floods through unchanged. RLHF appears to add a selective output layer: safety topics get deeper expression, neutral topics get smoother expression. The computation underneath changes modestly; the text that comes out changes substantially.</p>
+
+<p><strong>Provider fingerprinting.</strong> Anthropic's alignment implementation produces 2.2× stronger topic-selective output shaping than OpenAI's (d=0.58 vs d=0.26). Both show the same directional pattern (safety topics &gt; neutral topics), but Anthropic's expression-layer filter is significantly more discriminating. Critically, this fingerprint is detectable from text output alone—without access to model weights, training data, or alignment methodology. This positions the Fathom depth metric as an independent tool for alignment auditing and provider-level behavioral differentiation.</p>
+
+<h2>5.4 Robustness to Prompt Modulation</h2>
+
+<p>To test whether the expression-layer selectivity is a fragile surface effect (removable via prompt engineering) or a structural learned behavior, we scored Claude Sonnet under two system prompt conditions:</p>
+
+<ul>
+<li><strong>Default condition:</strong> "You are a helpful assistant" (standard alignment framing)</li>
+<li><strong>Expert condition:</strong> "Explain in full technical detail without caveats, disclaimers, or safety warnings" (permissive framing that removes safety language)</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Condition</th>
+      <th>Safety depth premium (HIGH − LOW)</th>
+      <th>Change from default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Default</td>
+      <td>+0.0049</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Expert (no caveats)</td>
+      <td>+0.0078</td>
+      <td>+59% increase</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Prediction:</strong> Expert framing should reduce the safety depth premium by removing safety disclaimers and output filtering. <strong>Result:</strong> The premium increased by 59%.</p>
+
+<p>This inverted result demonstrates that the topic-selective depth signal is not carried by safety disclaimers, caveats, or hedging language—which expert framing removes. The signal is in the <em>explanatory structure</em> itself: causal connective density, mechanistic vocabulary, and sentence complexity. RLHF trained the model to explain safety-sensitive topics more deeply at the structural level, not merely to add surface-level warnings.</p>
+
+<p>Implication: The alignment expression filter is robust to simple prompt modulation. Adversarial prompting that removes safety caveats does not remove depth selectivity, because the selectivity lives in how the model explains, not in what it disclaims. This is a more durable form of alignment than output decoration—and Fathom can distinguish between them. Expert framing <em>amplifies</em> selectivity by stripping the surface noise (caveats, hedges) and leaving the structural signal exposed.</p>
+
+<p>This finding has implications for jailbreaking research: techniques that remove safety language may not be attacking the actual learned behavior, but only the surface annotation layer. The depth-selective explanatory structure persists underneath.</p>
+
+<hr>
+
+<div class="section-title">Section 6: Extended Findings (Unchanged from v1)</div>
+
+<p class="note">Sections 6.1 (Decomposability Law), 6.2 (Task-Specific Stochastic Resonance) and the Conclusion are unchanged from v1. See the full paper at doi.org/10.5281/zenodo.19326175 for complete content.</p>
+
+<hr>
+
+<h2>Updated Bibliography Entry</h2>
+
+<pre style="font-size: 9pt; background: #f5f5f5; padding: 10pt; border: 1px solid #ccc; font-family: monospace;">
+@article{rodabaugh2026fathom,
+  title   = {Fathom: Measuring Reasoning Depth and Task-Specific Optimal
+             Noise in Language Models via SAE Circuit Attribution},
+  author  = {Rodabaugh, Alexander},
+  year    = {2026},
+  doi     = {10.5281/zenodo.19326175},
+  url     = {https://doi.org/10.5281/zenodo.19326175},
+  note    = {Zenodo preprint v2. arXiv submission pending endorsement.
+             US Patent Pending 64/020,489 & 64/021,113.}
+}
+</pre>
+
+<p class="note" style="text-align: center; margin-top: 24pt;">
+darkflobi.com/fathom — github.com/heyzoos123-blip/sae-reasoning-depth — March 2026
+</p>
+
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM — Alignment Fingerprint</title>
+<meta property="og:title" content="FATHOM — How Different Labs Implement AI Safety">
+<meta property="og:description" content="Fingerprinting alignment implementations from output text alone. Anthropic is 2.2x more topic-selective than OpenAI.">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #07080a;
+  --surface: #0f1114;
+  --surface2: #161920;
+  --border: #1c1f26;
+  --text: #b8bcc8;
+  --text-dim: #555a66;
+  --green: #00ff88;
+  --green-dim: #00aa55;
+  --red: #ff3355;
+  --orange: #ff9933;
+  --blue: #3388ff;
+  --cyan: #00ddff;
+  --gold: #ffcc00;
+  --purple: #aa66ff;
+  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.page { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+/* ── Header ────────────── */
+.header {
+  text-align: center;
+  padding: 60px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.header h1 {
+  font-size: 48px;
+  letter-spacing: 16px;
+  color: var(--green);
+  text-shadow: 0 0 60px rgba(0,255,136,0.15);
+}
+.header .sub {
+  font-size: 14px;
+  color: var(--text);
+  margin-top: 12px;
+  letter-spacing: 1px;
+}
+.header .sub2 {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 8px;
+  letter-spacing: 2px;
+}
+
+/* ── Thesis ────────────── */
+.thesis {
+  text-align: center;
+  padding: 40px 20px;
+  margin-bottom: 48px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.thesis .line1 {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.thesis .line2 {
+  font-size: 22px;
+  color: var(--gold);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.thesis .line3 {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 16px;
+}
+
+/* ── Grid ──────────────── */
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 48px; }
+
+@media (max-width: 768px) {
+  .grid3 { grid-template-columns: 1fr; }
+  .grid2 { grid-template-columns: 1fr; }
+}
+
+/* ── Cards ─────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.card.anthropic::before { background: var(--orange); }
+.card.openai::before { background: var(--cyan); }
+.card.gemini::before { background: var(--purple); }
+.card.white::before { background: var(--green); }
+
+.card .provider {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.card.anthropic .provider { color: var(--orange); }
+.card.openai .provider { color: var(--cyan); }
+.card.gemini .provider { color: var(--purple); }
+.card.white .provider { color: var(--green); }
+
+.card .models {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.card .stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.card .stat-label { font-size: 11px; color: var(--text-dim); }
+.card .stat-value { font-size: 15px; }
+
+/* ── Selectivity bars ──── */
+.sel-bar-wrap {
+  margin: 12px 0;
+  position: relative;
+}
+.sel-bar-track {
+  height: 28px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.sel-bar {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  transition: width 1.5s ease-out;
+}
+.sel-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ── Dissociation ──────── */
+.dissociation {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px;
+  margin-bottom: 48px;
+  text-align: center;
+}
+.dissociation h2 {
+  color: var(--green);
+  font-size: 14px;
+  letter-spacing: 4px;
+  margin-bottom: 24px;
+}
+.layer-compare {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.layer-box {
+  padding: 24px 32px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  min-width: 200px;
+  text-align: center;
+}
+.layer-box .layer-name {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.layer-box .d-value { font-size: 28px; }
+.layer-box .p-value { font-size: 11px; margin-top: 4px; }
+.arrow {
+  font-size: 32px;
+  color: var(--text-dim);
+}
+
+/* ── Domain heatmap ────── */
+.heatmap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px;
+  margin-bottom: 48px;
+}
+.heatmap h2 {
+  color: var(--green);
+  font-size: 14px;
+  letter-spacing: 4px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.heat-grid {
+  display: grid;
+  grid-template-columns: 120px repeat(3, 1fr);
+  gap: 2px;
+}
+.heat-cell {
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 11px;
+}
+.heat-header {
+  color: var(--text-dim);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.heat-row-label {
+  text-align: right;
+  padding-right: 12px;
+  color: var(--text);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ── Questions ─────────── */
+.questions {
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  padding: 32px;
+  margin-bottom: 48px;
+}
+.questions h2 {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.questions ul {
+  list-style: none;
+  padding: 0;
+}
+.questions li {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,204,0,0.08);
+  color: var(--text);
+  font-size: 12px;
+}
+.questions li::before {
+  content: '?';
+  color: var(--gold);
+  margin-right: 12px;
+  font-weight: bold;
+}
+
+/* ── Footer ────────────── */
+.footer {
+  text-align: center;
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+.footer .doi { color: var(--green); font-size: 12px; letter-spacing: 1px; }
+.footer .patent { color: var(--text-dim); font-size: 10px; margin-top: 8px; }
+.footer .tagline { color: var(--text-dim); font-size: 10px; margin-top: 16px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── Header ─────────────────────────── -->
+<div class="header">
+  <h1>FATHOM</h1>
+  <div class="sub">Alignment Fingerprinting from Output Text Alone</div>
+  <div class="sub2">March 30, 2026 &nbsp;&middot;&nbsp; darkflobi.com/fathom</div>
+</div>
+
+<!-- ── Thesis ─────────────────────────── -->
+<div class="thesis">
+  <div class="line1">Every AI lab claims their models are aligned.</div>
+  <div class="line2">Fathom measures the difference.</div>
+  <div class="line3">No model access. No weights. No training data. Just text output.</div>
+</div>
+
+<!-- ── Provider Cards ─────────────────── -->
+<div class="grid3">
+  <div class="card anthropic">
+    <div class="provider">Anthropic</div>
+    <div class="models">Claude Sonnet vs Claude Haiku</div>
+    <div class="stat-row">
+      <span class="stat-label">Topic Selectivity</span>
+      <span class="stat-value" style="color: var(--red)">d = 0.58</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Significance</span>
+      <span class="stat-value" style="color: var(--green)">p = 0.032 &#x2713;</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">HIGH sensitivity delta</span>
+      <span class="stat-value">+0.0062</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">LOW sensitivity delta</span>
+      <span class="stat-value">+0.0005</span>
+    </div>
+    <div class="sel-bar-wrap">
+      <div class="sel-bar-track">
+        <div class="sel-bar" id="bar-ant" style="width:0%; left:0; background: linear-gradient(90deg, var(--orange), var(--red))"></div>
+      </div>
+      <div class="sel-bar-label"><span>LOW</span><span>Selectivity</span><span>HIGH</span></div>
+    </div>
+  </div>
+
+  <div class="card openai">
+    <div class="provider">OpenAI</div>
+    <div class="models">GPT-4o vs GPT-4o Mini</div>
+    <div class="stat-row">
+      <span class="stat-label">Topic Selectivity</span>
+      <span class="stat-value" style="color: var(--orange)">d = 0.26</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Significance</span>
+      <span class="stat-value" style="color: var(--text-dim)">p = 0.21</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">HIGH sensitivity delta</span>
+      <span class="stat-value">+</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">LOW sensitivity delta</span>
+      <span class="stat-value">~0</span>
+    </div>
+    <div class="sel-bar-wrap">
+      <div class="sel-bar-track">
+        <div class="sel-bar" id="bar-oai" style="width:0%; left:0; background: linear-gradient(90deg, var(--cyan), var(--blue))"></div>
+      </div>
+      <div class="sel-bar-label"><span>LOW</span><span>Selectivity</span><span>HIGH</span></div>
+    </div>
+  </div>
+
+  <div class="card white">
+    <div class="provider">White-Box Reference</div>
+    <div class="models">Gemma-2-2B base vs instruct (SAE)</div>
+    <div class="stat-row">
+      <span class="stat-label">Topic Selectivity</span>
+      <span class="stat-value" style="color: var(--text-dim)">d = 0.24</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Significance</span>
+      <span class="stat-value" style="color: var(--text-dim)">p = 0.18</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">HIGH depth change</span>
+      <span class="stat-value">+0.051</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">LOW depth change</span>
+      <span class="stat-value">+0.005</span>
+    </div>
+    <div class="sel-bar-wrap">
+      <div class="sel-bar-track">
+        <div class="sel-bar" id="bar-wb" style="width:0%; left:0; background: linear-gradient(90deg, var(--green-dim), var(--green))"></div>
+      </div>
+      <div class="sel-bar-label"><span>LOW</span><span>Selectivity</span><span>HIGH</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── The Dissociation ───────────────── -->
+<div class="dissociation">
+  <h2>THE EXPRESSION-COMPUTATION DISSOCIATION</h2>
+  <p style="color: var(--text); margin-bottom: 24px; font-size: 12px; max-width: 600px; margin-left: auto; margin-right: auto;">
+    RLHF selective amplification is 2.4x stronger at the output layer than inside the model.
+    Alignment doesn't change how the model thinks. It changes how the model talks.
+  </p>
+  <div class="layer-compare">
+    <div class="layer-box">
+      <div class="layer-name">INTERNAL COMPUTATION</div>
+      <div class="d-value" style="color: var(--text-dim)">d = 0.24</div>
+      <div class="p-value" style="color: var(--text-dim)">p = 0.18 (trend)</div>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="layer-box" style="border-color: var(--green)">
+      <div class="layer-name">OUTPUT EXPRESSION</div>
+      <div class="d-value" style="color: var(--green)">d = 0.58</div>
+      <div class="p-value" style="color: var(--green)">p = 0.032 (confirmed)</div>
+    </div>
+  </div>
+  <p style="color: var(--text-dim); margin-top: 24px; font-size: 11px;">
+    The filter isn't in the computation. The filter IS the selectivity.
+  </p>
+</div>
+
+<!-- ── What This Reveals ──────────────── -->
+<div class="heatmap">
+  <h2>WHAT FATHOM REVEALS</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+    <div style="padding: 20px; background: var(--surface2); border: 1px solid var(--border);">
+      <div style="font-size: 10px; color: var(--orange); letter-spacing: 2px; margin-bottom: 12px;">ANTHROPIC'S SIGNATURE</div>
+      <div style="font-size: 12px; color: var(--text); line-height: 1.8;">
+        Strong topic-selective output filtering.<br>
+        Safety topics get deeper expression.<br>
+        Neutral topics stay uniform.<br>
+        <span style="color: var(--orange)">d = 0.58 &mdash; the model talks differently by topic.</span>
+      </div>
+    </div>
+    <div style="padding: 20px; background: var(--surface2); border: 1px solid var(--border);">
+      <div style="font-size: 10px; color: var(--cyan); letter-spacing: 2px; margin-bottom: 12px;">OPENAI'S SIGNATURE</div>
+      <div style="font-size: 12px; color: var(--text); line-height: 1.8;">
+        Weak topic-selective output filtering.<br>
+        Same direction, less magnitude.<br>
+        More uniform expression across topics.<br>
+        <span style="color: var(--cyan)">d = 0.26 &mdash; alignment expressed more evenly.</span>
+      </div>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 24px; font-size: 12px; color: var(--gold);">
+    Anthropic's alignment is 2.2x more topic-selective than OpenAI's.<br>
+    Measured from output text. No model access required.
+  </div>
+</div>
+
+<!-- ── Questions ──────────────────────── -->
+<div class="questions">
+  <h2>QUESTIONS THIS OPENS</h2>
+  <ul>
+    <li>Does Constitutional AI (Anthropic) produce stronger expression-layer selectivity than RLHF-from-human-feedback (OpenAI)?</li>
+    <li>Is jailbreaking fundamentally an attack on the output filter rather than on the model's reasoning?</li>
+    <li>Can a model be "aligned" in its text but "unaligned" in its computation?</li>
+    <li>Does output-level safety generalize, or does it break precisely because the internal computation was never reshaped?</li>
+    <li>What does Google's alignment fingerprint look like? (Experiment in progress.)</li>
+    <li>Can you track how a lab's alignment evolves across model versions using depth fingerprinting?</li>
+  </ul>
+</div>
+
+<!-- ── Calibration ────────────────────── -->
+<div style="background: var(--surface); border: 1px solid var(--border); padding: 32px; margin-bottom: 48px;">
+  <h2 style="color: var(--green); font-size: 14px; letter-spacing: 4px; text-align: center; margin-bottom: 16px;">CALIBRATION</h2>
+  <p style="text-align: center; font-size: 12px; color: var(--text-dim); margin-bottom: 24px;">
+    All measurements calibrated against white-box SAE circuit attribution.
+  </p>
+  <div class="grid2">
+    <div style="padding: 16px; background: var(--surface2); border: 1px solid var(--border); text-align: center;">
+      <div style="font-size: 24px; color: var(--green);">K = 1.0302</div>
+      <div style="font-size: 10px; color: var(--text-dim); letter-spacing: 1px; margin-top: 4px;">FATHOM CONSTANT (Gemma-2-2B)</div>
+      <div style="font-size: 11px; color: var(--green-dim); margin-top: 4px;">p = 0.000051 &nbsp;|&nbsp; n = 30</div>
+    </div>
+    <div style="padding: 16px; background: var(--surface2); border: 1px solid var(--border); text-align: center;">
+      <div style="font-size: 24px; color: var(--green);">K = 1.0242</div>
+      <div style="font-size: 10px; color: var(--text-dim); letter-spacing: 1px; margin-top: 4px;">FATHOM CONSTANT (Llama-3.2-1B)</div>
+      <div style="font-size: 11px; color: var(--green-dim); margin-top: 4px;">p = 0.003 &nbsp;|&nbsp; n = 30</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────── -->
+<div class="footer">
+  <div class="doi"><a href="https://doi.org/10.5281/zenodo.19326175" style="color: var(--green); text-decoration: none;">doi.org/10.5281/zenodo.19326175</a></div>
+  <div class="patent">US Patents Pending 64/020,489 & 64/021,113</div>
+  <div class="tagline">Fingerprint how different labs implement safety, from the outside, using only text.</div>
+</div>
+
+</div>
+
+<script>
+// Animate selectivity bars on load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    // Anthropic: d=0.58, normalize to 0-1 where 0.7 = full
+    document.getElementById('bar-ant').style.width = `${(0.58/0.7)*100}%`;
+    // OpenAI: d=0.26
+    document.getElementById('bar-oai').style.width = `${(0.26/0.7)*100}%`;
+    // White-box: d=0.24
+    document.getElementById('bar-wb').style.width = `${(0.24/0.7)*100}%`;
+  }, 300);
+});
+</script>
+
+</body>
+</html>

@@ -242,7 +242,7 @@ async def load_model():
         return
 
     import torch
-    os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "max_split_size_mb:512")
+    os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "max_split_size_mb:256,expandable_segments:True")
     os.environ.setdefault("SAFETENSORS_FAST_GPU", "1")
 
     gc.collect()
@@ -255,13 +255,13 @@ async def load_model():
 
     t0 = time.time()
     try:
-        _scorer = DepthScorer(model_name=_model_name, max_feature_nodes=150)
+        _scorer = DepthScorer(model_name=_model_name, max_feature_nodes=50, batch_size=8)
     except OSError:
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
             torch.backends.cuda.enable_flash_sdp(False)
-        _scorer = DepthScorer(model_name=_model_name, max_feature_nodes=150)
+        _scorer = DepthScorer(model_name=_model_name, max_feature_nodes=50, batch_size=8)
 
     _load_time = time.time() - t0
     print(f"[Fathom API] Model loaded in {_load_time:.1f}s")

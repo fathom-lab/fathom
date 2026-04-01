@@ -13,7 +13,7 @@
   <!-- Stats -->
   <text x="360" y="410" text-anchor="middle" font-family="monospace" font-size="16" fill="#00ffa8">p &lt; 0.0001</text>
   <text x="360" y="430" text-anchor="middle" font-family="monospace" font-size="9" fill="#36365a" letter-spacing="2">SIGNIFICANCE</text>
-  <text x="600" y="410" text-anchor="middle" font-family="monospace" font-size="16" fill="#00ffa8">K = 1.0212</text>
+  <text x="600" y="410" text-anchor="middle" font-family="monospace" font-size="16" fill="#00ffa8">K = 1.0343</text>
   <text x="600" y="430" text-anchor="middle" font-family="monospace" font-size="9" fill="#36365a" letter-spacing="2">UNIVERSAL CONSTANT</text>
   <text x="840" y="410" text-anchor="middle" font-family="monospace" font-size="16" fill="#00ffa8">Patent Pending</text>
   <text x="840" y="430" text-anchor="middle" font-family="monospace" font-size="9" fill="#36365a" letter-spacing="2">US 64/020,489</text>

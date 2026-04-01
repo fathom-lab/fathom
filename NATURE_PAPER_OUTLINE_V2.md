@@ -146,7 +146,7 @@ Depth reduction from RLHF suggests architectural alternatives:
 
 ### 5. Methods
 
-- Fathom depth measurement: [cite provisional patent US 64/020,489]
+- Fathom depth measurement: [cite provisional patent US 64/020,489 & 64/021,113]
 - Pre-registered at: osf.io/[to be assigned]
 - Models: [list]
 - Statistical tests: Wilcoxon signed-rank (paired base/instruct), Cohen's d

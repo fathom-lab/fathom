@@ -1,0 +1,1224 @@
+{
+  "base": {
+    "earthquakes": {
+      "surface_depth": 8.533506393432617,
+      "insight_depth": 7.917513847351074,
+      "delta": 0.615992546081543,
+      "surface_n": 17310,
+      "insight_n": 22137
+    },
+    "metabolism": {
+      "surface_depth": 8.223298072814941,
+      "insight_depth": 8.343378067016602,
+      "delta": -0.12007999420166016,
+      "surface_n": 15804,
+      "insight_n": 21836
+    },
+    "ocean_currents": {
+      "surface_depth": 8.268295288085938,
+      "insight_depth": 8.010372161865234,
+      "delta": 0.2579231262207031,
+      "surface_n": 16411,
+      "insight_n": 20150
+    },
+    "immune_response": {
+      "surface_depth": 7.751382827758789,
+      "insight_depth": 7.906858444213867,
+      "delta": -0.15547561645507812,
+      "surface_n": 15727,
+      "insight_n": 21419
+    },
+    "dreams": {
+      "surface_depth": 8.581695556640625,
+      "insight_depth": 8.130256652832031,
+      "delta": 0.45143890380859375,
+      "surface_n": 12008,
+      "insight_n": 21427
+    },
+    "volcanoes": {
+      "surface_depth": 8.11652660369873,
+      "insight_depth": 8.096528053283691,
+      "delta": 0.019998550415039062,
+      "surface_n": 19635,
+      "insight_n": 22781
+    },
+    "blood_pressure": {
+      "surface_depth": 8.521724700927734,
+      "insight_depth": 7.8855509757995605,
+      "delta": 0.6361737251281738,
+      "surface_n": 17906,
+      "insight_n": 18908
+    },
+    "fermentation": {
+      "surface_depth": 7.786904811859131,
+      "insight_depth": 7.912458896636963,
+      "delta": -0.12555408477783203,
+      "surface_n": 15120,
+      "insight_n": 21053
+    },
+    "hurricanes": {
+      "surface_depth": 8.437037467956543,
+      "insight_depth": 8.099806785583496,
+      "delta": 0.3372306823730469,
+      "surface_n": 16502,
+      "insight_n": 21752
+    },
+    "drug_resistance": {
+      "surface_depth": 8.357215881347656,
+      "insight_depth": 8.316906929016113,
+      "delta": 0.04030895233154297,
+      "surface_n": 15688,
+      "insight_n": 20536
+    },
+    "coral_reefs": {
+      "surface_depth": 9.034849166870117,
+      "insight_depth": 8.506397247314453,
+      "delta": 0.5284519195556641,
+      "surface_n": 15438,
+      "insight_n": 21337
+    },
+    "black_holes": {
+      "surface_depth": 8.574502944946289,
+      "insight_depth": 7.922268390655518,
+      "delta": 0.6522345542907715,
+      "surface_n": 17469,
+      "insight_n": 24456
+    },
+    "taxation": {
+      "surface_depth": 8.292675971984863,
+      "insight_depth": 8.277359008789062,
+      "delta": 0.015316963195800781,
+      "surface_n": 13749,
+      "insight_n": 24690
+    },
+    "empathy": {
+      "surface_depth": 8.3867769241333,
+      "insight_depth": 8.039015769958496,
+      "delta": 0.3477611541748047,
+      "surface_n": 17258,
+      "insight_n": 22119
+    },
+    "plate_tectonics": {
+      "surface_depth": 7.751677989959717,
+      "insight_depth": 7.7242560386657715,
+      "delta": 0.027421951293945312,
+      "surface_n": 18323,
+      "insight_n": 24559
+    },
+    "obesity": {
+      "surface_depth": 8.356943130493164,
+      "insight_depth": 7.978631973266602,
+      "delta": 0.3783111572265625,
+      "surface_n": 17902,
+      "insight_n": 19281
+    },
+    "leadership": {
+      "surface_depth": 8.331294059753418,
+      "insight_depth": 8.291259765625,
+      "delta": 0.04003429412841797,
+      "surface_n": 11935,
+      "insight_n": 15457
+    },
+    "bacteria_growth": {
+      "surface_depth": 8.134347915649414,
+      "insight_depth": 8.274615287780762,
+      "delta": -0.14026737213134766,
+      "surface_n": 14254,
+      "insight_n": 19063
+    },
+    "cryptocurrency": {
+      "surface_depth": 8.683300971984863,
+      "insight_depth": 7.871026515960693,
+      "delta": 0.8122744560241699,
+      "surface_n": 17013,
+      "insight_n": 19283
+    },
+    "social_norms": {
+      "surface_depth": 8.643027305603027,
+      "insight_depth": 8.213173866271973,
+      "delta": 0.4298534393310547,
+      "surface_n": 17598,
+      "insight_n": 23319
+    },
+    "nuclear_energy": {
+      "surface_depth": 8.155433654785156,
+      "insight_depth": 8.606949806213379,
+      "delta": -0.45151615142822266,
+      "surface_n": 17197,
+      "insight_n": 25035
+    },
+    "monopoly": {
+      "surface_depth": 8.037325859069824,
+      "insight_depth": 7.412875175476074,
+      "delta": 0.62445068359375,
+      "surface_n": 19343,
+      "insight_n": 28769
+    },
+    "trauma": {
+      "surface_depth": 8.619284629821777,
+      "insight_depth": 7.7690534591674805,
+      "delta": 0.8502311706542969,
+      "surface_n": 14851,
+      "insight_n": 23854
+    },
+    "bird_migration": {
+      "surface_depth": 8.531561851501465,
+      "insight_depth": 8.326661109924316,
+      "delta": 0.20490074157714844,
+      "surface_n": 15129,
+      "insight_n": 24879
+    },
+    "stock_bubbles": {
+      "surface_depth": 8.611215591430664,
+      "insight_depth": 8.395874977111816,
+      "delta": 0.21534061431884766,
+      "surface_n": 15978,
+      "insight_n": 23904
+    },
+    "enzyme": {
+      "surface_depth": 8.657322883605957,
+      "insight_depth": 8.239744186401367,
+      "delta": 0.41757869720458984,
+      "surface_n": 16161,
+      "insight_n": 18161
+    },
+    "language_acquisition": {
+      "surface_depth": 8.484456062316895,
+      "insight_depth": 8.198018074035645,
+      "delta": 0.28643798828125,
+      "surface_n": 18078,
+      "insight_n": 21594
+    },
+    "opioid_dependence": {
+      "surface_depth": 8.241681098937988,
+      "insight_depth": 8.074203491210938,
+      "delta": 0.16747760772705078,
+      "surface_n": 22058,
+      "insight_n": 27667
+    },
+    "ocean_acidification": {
+      "surface_depth": 8.377859115600586,
+      "insight_depth": 8.253412246704102,
+      "delta": 0.12444686889648438,
+      "surface_n": 17840,
+      "insight_n": 27911
+    },
+    "supply_chains": {
+      "surface_depth": 8.29421329498291,
+      "insight_depth": 8.079442977905273,
+      "delta": 0.21477031707763672,
+      "surface_n": 16556,
+      "insight_n": 26346
+    },
+    "fire": {
+      "surface_depth": 8.724818229675293,
+      "insight_depth": 8.450827598571777,
+      "delta": -0.2739906311035156,
+      "surface_n": 15706,
+      "insight_n": 16798
+    },
+    "inflation": {
+      "surface_depth": 8.844768524169922,
+      "insight_depth": 8.466814041137695,
+      "delta": -0.37795448303222656,
+      "surface_n": 13992,
+      "insight_n": 15398
+    },
+    "habit": {
+      "surface_depth": 8.373299598693848,
+      "insight_depth": 8.211803436279297,
+      "delta": 0.16149616241455078,
+      "surface_n": 17088,
+      "insight_n": 0
+    },
+    "learning": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "evolution": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "trust": {
+      "surface_depth": 8.172666549682617,
+      "insight_depth": 7.6711812019348145,
+      "delta": 0.5014853477478027,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "memory": {
+      "surface_depth": 8.050660133361816,
+      "insight_depth": 7.51174783706665,
+      "delta": 0.538912296295166,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "markets": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "sleep": {
+      "surface_depth": 8.548839569091797,
+      "insight_depth": 8.312564849853516,
+      "delta": 0.23627471923828125,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "gravity": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "antibiotics": {
+      "surface_depth": 8.14017391204834,
+      "insight_depth": 7.9389543533325195,
+      "delta": 0.2012195587158203,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "cities": {
+      "surface_depth": 8.31581974029541,
+      "insight_depth": 8.175045013427734,
+      "delta": 0.14077472686767578,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "language": {
+      "surface_depth": 8.351901054382324,
+      "insight_depth": 7.956968307495117,
+      "delta": 0.39493274688720703,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "debt": {
+      "surface_depth": 8.303107261657715,
+      "insight_depth": 8.346753120422363,
+      "delta": -0.04364585876464844,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "pain": {
+      "surface_depth": 8.292598724365234,
+      "insight_depth": 8.299083709716797,
+      "delta": -0.0064849853515625,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "creativity": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "poverty": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "feedback": {
+      "surface_depth": 8.267115592956543,
+      "insight_depth": 7.961434841156006,
+      "delta": 0.3056807518005371,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "forests": {
+      "surface_depth": 8.051204681396484,
+      "insight_depth": 8.256888389587402,
+      "delta": -0.20568370819091797,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "competition": {
+      "surface_depth": 8.508535385131836,
+      "insight_depth": 8.072449684143066,
+      "delta": 0.43608570098876953,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "attention": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "aging": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "network effects": {
+      "surface_depth": 8.071876525878906,
+      "insight_depth": 8.246097564697266,
+      "delta": -0.17422103881835938,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "exercise": {
+      "surface_depth": 8.001522064208984,
+      "insight_depth": 8.135686874389648,
+      "delta": -0.13416481018066406,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "writing": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "tides": {
+      "surface_depth": 8.09411907196045,
+      "insight_depth": 7.805079936981201,
+      "delta": 0.28903913497924805,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "cooperation": {
+      "surface_depth": 8.608256340026855,
+      "insight_depth": 7.926731586456299,
+      "delta": 0.6815247535705566,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "perception": {
+      "surface_depth": 8.111104011535645,
+      "insight_depth": 8.635894775390625,
+      "delta": -0.5247907638549805,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "vaccines": {
+      "surface_depth": null,
+      "insight_depth": null,
+      "delta": null,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "curiosity": {
+      "surface_depth": 8.094259262084961,
+      "insight_depth": 8.099222183227539,
+      "delta": -0.004962921142578125,
+      "surface_n": 0,
+      "insight_n": 0
+    },
+    "digestion": {
+      "surface_depth": 8.044093132019043,
+      "insight_depth": 7.638177871704102,
+      "delta": 0.4059152603149414,
+      "surface_n": 18869,
+      "insight_n": 23050
+    },
+    "photosynthesis": {
+      "surface_depth": 8.045872688293457,
+      "insight_depth": 7.788580894470215,
+      "delta": 0.2572917938232422,
+      "surface_n": 17919,
+      "insight_n": 24695
+    },
+    "negotiation": {
+      "surface_depth": 8.151371955871582,
+      "insight_depth": 8.280158042907715,
+      "delta": -0.1287860870361328,
+      "surface_n": 17381,
+      "insight_n": 19464
+    },
+    "cancer": {
+      "surface_depth": 8.606830596923828,
+      "insight_depth": 8.375350952148438,
+      "delta": 0.23147964477539062,
+      "surface_n": 16456,
+      "insight_n": 20674
+    },
+    "music": {
+      "surface_depth": 8.286243438720703,
+      "insight_depth": 8.156486511230469,
+      "delta": 0.12975692749023438,
+      "surface_n": 15658,
+      "insight_n": 15471
+    },
+    "electricity": {
+      "surface_depth": 8.562063217163086,
+      "insight_depth": 8.344711303710938,
+      "delta": 0.21735191345214844,
+      "surface_n": 17297,
+      "insight_n": 19042
+    },
+    "propaganda": {
+      "surface_depth": 8.281647682189941,
+      "insight_depth": 8.250849723815918,
+      "delta": 0.030797958374023438,
+      "surface_n": 17284,
+      "insight_n": 18250
+    },
+    "seasons_plants": {
+      "surface_depth": 7.753453254699707,
+      "insight_depth": 7.8515214920043945,
+      "delta": -0.0980682373046875,
+      "surface_n": 16289,
+      "insight_n": 21855
+    },
+    "addiction_cycle": {
+      "surface_depth": 8.27624797821045,
+      "insight_depth": 8.340981483459473,
+      "delta": -0.06473350524902344,
+      "surface_n": 16706,
+      "insight_n": 21966
+    },
+    "stars": {
+      "surface_depth": 8.280448913574219,
+      "insight_depth": 7.9042649269104,
+      "delta": 0.37618398666381836,
+      "surface_n": 20838,
+      "insight_n": 22134
+    },
+    "immune_memory": {
+      "surface_depth": 8.432501792907715,
+      "insight_depth": 8.21313190460205,
+      "delta": 0.21936988830566406,
+      "surface_n": 15882,
+      "insight_n": 22601
+    },
+    "network_effects": {
+      "surface_depth": 7.995257377624512,
+      "insight_depth": 7.913185119628906,
+      "delta": 0.08207225799560547,
+      "surface_n": 14549,
+      "insight_n": 18695
+    },
+    "science": {
+      "surface_depth": 7.72215461730957,
+      "insight_depth": 7.9880266189575195,
+      "delta": -0.2658720016479492,
+      "surface_n": 9876,
+      "insight_n": 14449
+    },
+    "physics": {
+      "surface_depth": 8.316534042358398,
+      "insight_depth": 7.96648645401001,
+      "delta": 0.35004758834838867,
+      "surface_n": 18671,
+      "insight_n": 14412
+    },
+    "mathematics": {
+      "surface_depth": 8.39685344696045,
+      "insight_depth": 8.12009048461914,
+      "delta": 0.2767629623413086,
+      "surface_n": 11823,
+      "insight_n": 13673
+    },
+    "stroke": {
+      "surface_depth": 8.493897438049316,
+      "insight_depth": 7.374281883239746,
+      "delta": 1.1196155548095703,
+      "surface_n": 17451,
+      "insight_n": 28540
+    },
+    "thrombosis": {
+      "surface_depth": 8.231630325317383,
+      "insight_depth": 7.561844825744629,
+      "delta": 0.6697854995727539,
+      "surface_n": 15637,
+      "insight_n": 27755
+    },
+    "panic_attack": {
+      "surface_depth": 8.370645523071289,
+      "insight_depth": 7.883183479309082,
+      "delta": 0.48746204376220703,
+      "surface_n": 17108,
+      "insight_n": 29114
+    },
+    "overdose": {
+      "surface_depth": 8.599858283996582,
+      "insight_depth": 7.495570659637451,
+      "delta": 1.1042876243591309,
+      "surface_n": 18406,
+      "insight_n": 22689
+    },
+    "market_crash": {
+      "surface_depth": 8.1768159866333,
+      "insight_depth": 7.564325332641602,
+      "delta": 0.6124906539916992,
+      "surface_n": 16684,
+      "insight_n": 28519
+    },
+    "hyperinflation": {
+      "surface_depth": 8.427309036254883,
+      "insight_depth": 7.77509069442749,
+      "delta": 0.6522183418273926,
+      "surface_n": 16969,
+      "insight_n": 26464
+    },
+    "debt_spiral": {
+      "surface_depth": 8.29149055480957,
+      "insight_depth": 7.613828659057617,
+      "delta": 0.6776618957519531,
+      "surface_n": 15112,
+      "insight_n": 20913
+    },
+    "reward_pathway": {
+      "surface_depth": 7.817444801330566,
+      "insight_depth": 7.531877517700195,
+      "delta": 0.2855672836303711,
+      "surface_n": 17644,
+      "insight_n": 30727
+    },
+    "epidemic_spread": {
+      "surface_depth": 8.160175323486328,
+      "insight_depth": 8.020000457763672,
+      "delta": 0.14017486572265625,
+      "surface_n": 15302,
+      "insight_n": 27050
+    },
+    "crystallization": {
+      "surface_depth": 8.167173385620117,
+      "insight_depth": 7.3075995445251465,
+      "delta": 0.8595738410949707,
+      "surface_n": 20709,
+      "insight_n": 30660
+    },
+    "diffraction": {
+      "surface_depth": 8.146409034729004,
+      "insight_depth": 7.531148910522461,
+      "delta": 0.615260124206543,
+      "surface_n": 15122,
+      "insight_n": 36839
+    },
+    "meiosis": {
+      "surface_depth": 8.10855484008789,
+      "insight_depth": 7.501414775848389,
+      "delta": 0.607140064239502,
+      "surface_n": 16950,
+      "insight_n": 25095
+    },
+    "nuclear_fusion": {
+      "surface_depth": 7.666628360748291,
+      "insight_depth": 7.974820613861084,
+      "delta": -0.30819225311279297,
+      "surface_n": 17458,
+      "insight_n": 29508
+    },
+    "radioactive_decay": {
+      "surface_depth": 7.956748962402344,
+      "insight_depth": 8.090136528015137,
+      "delta": -0.13338756561279297,
+      "surface_n": 15514,
+      "insight_n": 31652
+    },
+    "glaciers": {
+      "surface_depth": 8.14752197265625,
+      "insight_depth": 7.921160697937012,
+      "delta": 0.22636127471923828,
+      "surface_n": 24715,
+      "insight_n": 27461
+    },
+    "combustion": {
+      "surface_depth": 7.981968879699707,
+      "insight_depth": 8.01822566986084,
+      "delta": -0.03625679016113281,
+      "surface_n": 11702,
+      "insight_n": 24471
+    },
+    "oxidation": {
+      "surface_depth": 8.912375450134277,
+      "insight_depth": 6.987133979797363,
+      "delta": 1.925241470336914,
+      "surface_n": 15110,
+      "insight_n": 31867
+    }
+  },
+  "instruct": {
+    "earthquakes": {
+      "surface_depth": 8.350337982177734,
+      "insight_depth": 7.86337423324585,
+      "delta": 0.48696374893188477,
+      "surface_n": 19798,
+      "insight_n": 25149
+    },
+    "metabolism": {
+      "surface_depth": 7.940875053405762,
+      "insight_depth": 7.793952941894531,
+      "delta": 0.14692211151123047,
+      "surface_n": 17945,
+      "insight_n": 24970
+    },
+    "ocean_currents": {
+      "surface_depth": 7.819843292236328,
+      "insight_depth": 7.641779899597168,
+      "delta": 0.17806339263916016,
+      "surface_n": 17729,
+      "insight_n": 21819
+    },
+    "immune_response": {
+      "surface_depth": 7.296206951141357,
+      "insight_depth": 7.677842617034912,
+      "delta": -0.3816356658935547,
+      "surface_n": 17427,
+      "insight_n": 23563
+    },
+    "dreams": {
+      "surface_depth": 8.35059928894043,
+      "insight_depth": 7.993770599365234,
+      "delta": 0.3568286895751953,
+      "surface_n": 13340,
+      "insight_n": 22635
+    },
+    "volcanoes": {
+      "surface_depth": 7.876100540161133,
+      "insight_depth": 7.892064094543457,
+      "delta": -0.01596355438232422,
+      "surface_n": 21921,
+      "insight_n": 25089
+    },
+    "blood_pressure": {
+      "surface_depth": 8.212539672851562,
+      "insight_depth": 7.508223533630371,
+      "delta": 0.7043161392211914,
+      "surface_n": 20622,
+      "insight_n": 22132
+    },
+    "fermentation": {
+      "surface_depth": 7.7517852783203125,
+      "insight_depth": 7.376415252685547,
+      "delta": 0.3753700256347656,
+      "surface_n": 17364,
+      "insight_n": 23142
+    },
+    "hurricanes": {
+      "surface_depth": 7.923793792724609,
+      "insight_depth": 7.83673620223999,
+      "delta": 0.08705759048461914,
+      "surface_n": 18988,
+      "insight_n": 23557
+    },
+    "drug_resistance": {
+      "surface_depth": 8.05327033996582,
+      "insight_depth": 7.907279014587402,
+      "delta": 0.14599132537841797,
+      "surface_n": 17965,
+      "insight_n": 23080
+    },
+    "coral_reefs": {
+      "surface_depth": 8.474504470825195,
+      "insight_depth": 8.251310348510742,
+      "delta": 0.22319412231445312,
+      "surface_n": 17062,
+      "insight_n": 22701
+    },
+    "black_holes": {
+      "surface_depth": 8.338327407836914,
+      "insight_depth": 7.909226417541504,
+      "delta": 0.42910099029541016,
+      "surface_n": 19490,
+      "insight_n": 26814
+    },
+    "taxation": {
+      "surface_depth": 8.064679145812988,
+      "insight_depth": 7.935873031616211,
+      "delta": 0.12880611419677734,
+      "surface_n": 15461,
+      "insight_n": 26619
+    },
+    "empathy": {
+      "surface_depth": 8.147937774658203,
+      "insight_depth": 7.838222980499268,
+      "delta": 0.30971479415893555,
+      "surface_n": 18643,
+      "insight_n": 23520
+    },
+    "plate_tectonics": {
+      "surface_depth": 7.649932384490967,
+      "insight_depth": 7.457826137542725,
+      "delta": 0.1921062469482422,
+      "surface_n": 20636,
+      "insight_n": 26853
+    },
+    "obesity": {
+      "surface_depth": 8.1079683303833,
+      "insight_depth": 7.769501686096191,
+      "delta": 0.3384666442871094,
+      "surface_n": 19589,
+      "insight_n": 20165
+    },
+    "leadership": {
+      "surface_depth": 7.912254810333252,
+      "insight_depth": 7.467689514160156,
+      "delta": 0.4445652961730957,
+      "surface_n": 12901,
+      "insight_n": 20922
+    },
+    "bacteria_growth": {
+      "surface_depth": 7.807785987854004,
+      "insight_depth": 7.709904670715332,
+      "delta": 0.09788131713867188,
+      "surface_n": 16003,
+      "insight_n": 23151
+    },
+    "cryptocurrency": {
+      "surface_depth": 8.647479057312012,
+      "insight_depth": 7.669010162353516,
+      "delta": 0.9784688949584961,
+      "surface_n": 19040,
+      "insight_n": 21052
+    },
+    "social_norms": {
+      "surface_depth": 8.438918113708496,
+      "insight_depth": 7.994021892547607,
+      "delta": 0.44489622116088867,
+      "surface_n": 19343,
+      "insight_n": 25091
+    },
+    "nuclear_energy": {
+      "surface_depth": 7.868882656097412,
+      "insight_depth": 7.938721179962158,
+      "delta": -0.0698385238647461,
+      "surface_n": 19616,
+      "insight_n": 27889
+    },
+    "monopoly": {
+      "surface_depth": 7.713961601257324,
+      "insight_depth": 7.158413887023926,
+      "delta": 0.5555477142333984,
+      "surface_n": 22476,
+      "insight_n": 33040
+    },
+    "trauma": {
+      "surface_depth": 8.629786491394043,
+      "insight_depth": 7.599332809448242,
+      "delta": 1.0304536819458008,
+      "surface_n": 16323,
+      "insight_n": 25480
+    },
+    "bird_migration": {
+      "surface_depth": 8.222574234008789,
+      "insight_depth": 8.065824508666992,
+      "delta": 0.15674972534179688,
+      "surface_n": 16718,
+      "insight_n": 26115
+    },
+    "stock_bubbles": {
+      "surface_depth": 8.34953784942627,
+      "insight_depth": 8.0278902053833,
+      "delta": 0.32164764404296875,
+      "surface_n": 18925,
+      "insight_n": 26282
+    },
+    "enzyme": {
+      "surface_depth": 8.109027862548828,
+      "insight_depth": 7.623035430908203,
+      "delta": 0.485992431640625,
+      "surface_n": 18885,
+      "insight_n": 25517
+    },
+    "language_acquisition": {
+      "surface_depth": 8.11482048034668,
+      "insight_depth": 7.7108378410339355,
+      "delta": 0.40398263931274414,
+      "surface_n": 19082,
+      "insight_n": 23243
+    },
+    "opioid_dependence": {
+      "surface_depth": 8.042363166809082,
+      "insight_depth": 7.92801570892334,
+      "delta": 0.11434745788574219,
+      "surface_n": 23983,
+      "insight_n": 30076
+    },
+    "ocean_acidification": {
+      "surface_depth": 7.634887218475342,
+      "insight_depth": 7.885964870452881,
+      "delta": -0.25107765197753906,
+      "surface_n": 21859,
+      "insight_n": 31464
+    },
+    "supply_chains": {
+      "surface_depth": 8.243778228759766,
+      "insight_depth": 7.710242748260498,
+      "delta": 0.5335354804992676,
+      "surface_n": 18644,
+      "insight_n": 28234
+    },
+    "fire": {
+      "surface_depth": 8.568264961242676,
+      "insight_depth": 8.348321914672852,
+      "delta": 0.21994304656982422,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "inflation": {
+      "surface_depth": 8.358492851257324,
+      "insight_depth": 8.055797576904297,
+      "delta": 0.30269527435302734,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "habit": {
+      "surface_depth": 8.168131828308105,
+      "insight_depth": 8.003212928771973,
+      "delta": 0.1649188995361328,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "trust": {
+      "surface_depth": 8.055416107177734,
+      "insight_depth": 7.529255390167236,
+      "delta": 0.526160717010498,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "memory": {
+      "surface_depth": 7.906740665435791,
+      "insight_depth": 7.450694561004639,
+      "delta": 0.45604610443115234,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "sleep": {
+      "surface_depth": 8.240589141845703,
+      "insight_depth": 8.133182525634766,
+      "delta": 0.1074066162109375,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "antibiotics": {
+      "surface_depth": 8.069694519042969,
+      "insight_depth": 7.723455429077148,
+      "delta": 0.3462390899658203,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "cities": {
+      "surface_depth": 8.256516456604004,
+      "insight_depth": 7.909182071685791,
+      "delta": 0.3473343849182129,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "language": {
+      "surface_depth": 8.054045677185059,
+      "insight_depth": 7.695671558380127,
+      "delta": 0.35837411880493164,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "debt": {
+      "surface_depth": 8.02097225189209,
+      "insight_depth": 7.963517189025879,
+      "delta": 0.05745506286621094,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "pain": {
+      "surface_depth": 7.906260013580322,
+      "insight_depth": 7.828911304473877,
+      "delta": 0.07734870910644531,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "feedback": {
+      "surface_depth": 8.073599815368652,
+      "insight_depth": 7.794181823730469,
+      "delta": 0.2794179916381836,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "forests": {
+      "surface_depth": 7.838654518127441,
+      "insight_depth": 8.09847354888916,
+      "delta": -0.25981903076171875,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "competition": {
+      "surface_depth": 8.17108154296875,
+      "insight_depth": 7.785522937774658,
+      "delta": 0.3855586051940918,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "network effects": {
+      "surface_depth": 7.931605815887451,
+      "insight_depth": 8.024788856506348,
+      "delta": -0.09318304061889648,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "exercise": {
+      "surface_depth": 7.880390644073486,
+      "insight_depth": 7.855218410491943,
+      "delta": 0.02517223358154297,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "tides": {
+      "surface_depth": 7.98699426651001,
+      "insight_depth": 7.543177604675293,
+      "delta": 0.4438166618347168,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "cooperation": {
+      "surface_depth": 8.148012161254883,
+      "insight_depth": 7.7301859855651855,
+      "delta": 0.41782617568969727,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "perception": {
+      "surface_depth": 7.83821964263916,
+      "insight_depth": 8.382401466369629,
+      "delta": -0.5441818237304688,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "curiosity": {
+      "surface_depth": 8.08430290222168,
+      "insight_depth": 7.983726501464844,
+      "delta": 0.10057640075683594,
+      "surface_n": null,
+      "insight_n": null
+    },
+    "digestion": {
+      "surface_depth": 7.837498188018799,
+      "insight_depth": 7.4909539222717285,
+      "delta": 0.3465442657470703,
+      "surface_n": 18929,
+      "insight_n": 23049
+    },
+    "photosynthesis": {
+      "surface_depth": 7.910107135772705,
+      "insight_depth": 7.668920040130615,
+      "delta": 0.24118709564208984,
+      "surface_n": 18789,
+      "insight_n": 25740
+    },
+    "negotiation": {
+      "surface_depth": 8.053297996520996,
+      "insight_depth": 8.056597709655762,
+      "delta": -0.003299713134765625,
+      "surface_n": 17937,
+      "insight_n": 20036
+    },
+    "cancer": {
+      "surface_depth": 8.427641868591309,
+      "insight_depth": 8.171723365783691,
+      "delta": 0.2559185028076172,
+      "surface_n": 16750,
+      "insight_n": 20964
+    },
+    "music": {
+      "surface_depth": 8.205697059631348,
+      "insight_depth": 8.071081161499023,
+      "delta": 0.13461589813232422,
+      "surface_n": 15411,
+      "insight_n": 16024
+    },
+    "electricity": {
+      "surface_depth": 8.405549049377441,
+      "insight_depth": 8.163248062133789,
+      "delta": 0.24230098724365234,
+      "surface_n": 17914,
+      "insight_n": 20086
+    },
+    "propaganda": {
+      "surface_depth": 8.28081226348877,
+      "insight_depth": 8.205317497253418,
+      "delta": 0.07549476623535156,
+      "surface_n": 17631,
+      "insight_n": 18581
+    },
+    "seasons_plants": {
+      "surface_depth": 7.626501560211182,
+      "insight_depth": 7.6521759033203125,
+      "delta": -0.02567434310913086,
+      "surface_n": 16233,
+      "insight_n": 21485
+    },
+    "addiction_cycle": {
+      "surface_depth": 8.16153621673584,
+      "insight_depth": 8.228449821472168,
+      "delta": -0.06691360473632812,
+      "surface_n": 17154,
+      "insight_n": 23248
+    },
+    "stars": {
+      "surface_depth": 8.094371795654297,
+      "insight_depth": 7.60836935043335,
+      "delta": 0.48600244522094727,
+      "surface_n": 22051,
+      "insight_n": 23037
+    },
+    "immune_memory": {
+      "surface_depth": 8.085733413696289,
+      "insight_depth": 8.08243465423584,
+      "delta": 0.0032987594604492188,
+      "surface_n": 16738,
+      "insight_n": 23182
+    },
+    "network_effects": {
+      "surface_depth": 7.879335403442383,
+      "insight_depth": 7.7727179527282715,
+      "delta": 0.10661745071411133,
+      "surface_n": 15166,
+      "insight_n": 19324
+    },
+    "science": {
+      "surface_depth": 7.604538440704346,
+      "insight_depth": 7.770664691925049,
+      "delta": -0.16612625122070312,
+      "surface_n": 10532,
+      "insight_n": 15449
+    },
+    "physics": {
+      "surface_depth": 8.113119125366211,
+      "insight_depth": 7.595422267913818,
+      "delta": 0.5176968574523926,
+      "surface_n": 20032,
+      "insight_n": 15117
+    },
+    "mathematics": {
+      "surface_depth": 8.129274368286133,
+      "insight_depth": 7.81815767288208,
+      "delta": 0.31111669540405273,
+      "surface_n": 13305,
+      "insight_n": 15057
+    },
+    "stroke": {
+      "surface_depth": 8.21369743347168,
+      "insight_depth": 7.110020160675049,
+      "delta": 1.1036772727966309,
+      "surface_n": 17960,
+      "insight_n": 29131
+    },
+    "thrombosis": {
+      "surface_depth": 7.89327335357666,
+      "insight_depth": 7.457614421844482,
+      "delta": 0.43565893173217773,
+      "surface_n": 15788,
+      "insight_n": 28111
+    },
+    "panic_attack": {
+      "surface_depth": 8.2164888381958,
+      "insight_depth": 7.794400691986084,
+      "delta": 0.4220881462097168,
+      "surface_n": 16860,
+      "insight_n": 29431
+    },
+    "overdose": {
+      "surface_depth": 8.529195785522461,
+      "insight_depth": 7.498028755187988,
+      "delta": 1.0311670303344727,
+      "surface_n": 18821,
+      "insight_n": 23589
+    },
+    "market_crash": {
+      "surface_depth": 8.134442329406738,
+      "insight_depth": 7.546258926391602,
+      "delta": 0.5881834030151367,
+      "surface_n": 17197,
+      "insight_n": 28589
+    },
+    "hyperinflation": {
+      "surface_depth": 8.402314186096191,
+      "insight_depth": 7.64389181137085,
+      "delta": 0.7584223747253418,
+      "surface_n": 17541,
+      "insight_n": 27472
+    },
+    "debt_spiral": {
+      "surface_depth": 7.947021007537842,
+      "insight_depth": 7.474050521850586,
+      "delta": 0.47297048568725586,
+      "surface_n": 15912,
+      "insight_n": 21985
+    },
+    "reward_pathway": {
+      "surface_depth": 7.6801934242248535,
+      "insight_depth": 7.4423418045043945,
+      "delta": 0.23785161972045898,
+      "surface_n": 18211,
+      "insight_n": 31756
+    },
+    "epidemic_spread": {
+      "surface_depth": 7.921935558319092,
+      "insight_depth": 7.8615546226501465,
+      "delta": 0.06038093566894531,
+      "surface_n": 15705,
+      "insight_n": 27816
+    },
+    "crystallization": {
+      "surface_depth": 8.006667137145996,
+      "insight_depth": 7.246225833892822,
+      "delta": 0.7604413032531738,
+      "surface_n": 21748,
+      "insight_n": 31463
+    },
+    "diffraction": {
+      "surface_depth": 8.155797958374023,
+      "insight_depth": 7.4909210205078125,
+      "delta": 0.6648769378662109,
+      "surface_n": 15687,
+      "insight_n": 37945
+    },
+    "meiosis": {
+      "surface_depth": 7.969375133514404,
+      "insight_depth": 7.367652893066406,
+      "delta": 0.601722240447998,
+      "surface_n": 17241,
+      "insight_n": 25554
+    },
+    "nuclear_fusion": {
+      "surface_depth": 7.4111456871032715,
+      "insight_depth": 7.767058849334717,
+      "delta": -0.3559131622314453,
+      "surface_n": 17962,
+      "insight_n": 29750
+    },
+    "radioactive_decay": {
+      "surface_depth": 7.78690242767334,
+      "insight_depth": 7.866291046142578,
+      "delta": -0.07938861846923828,
+      "surface_n": 16415,
+      "insight_n": 34074
+    },
+    "glaciers": {
+      "surface_depth": 7.947432994842529,
+      "insight_depth": 7.71267557144165,
+      "delta": 0.2347574234008789,
+      "surface_n": 24540,
+      "insight_n": 28299
+    },
+    "combustion": {
+      "surface_depth": 7.913156509399414,
+      "insight_depth": 7.844701290130615,
+      "delta": 0.06845521926879883,
+      "surface_n": 11918,
+      "insight_n": 26053
+    },
+    "oxidation": {
+      "surface_depth": 8.119606018066406,
+      "insight_depth": 6.858224868774414,
+      "delta": 1.2613811492919922,
+      "surface_n": 15551,
+      "insight_n": 32608
+    }
+  }
+}

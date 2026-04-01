@@ -1,5 +1,5 @@
 # FATHOM — PATENT CLAIMS ADDENDUM
-## New Findings Since Provisional Filing (US 64/020,489)
+## New Findings Since Provisional Filing (US 64/020,489 & 64/021,113)
 **Date:** March 29, 2026
 **Status:** For inclusion in full utility patent application (due by March 29, 2027)
 
@@ -236,5 +236,5 @@ This invention is distinguished from prior art as follows:
 ---
 
 *Document prepared by Alexander Rodabaugh / darkflobi Industries*
-*Provisional Patent US 64/020,489 filed March 29, 2026*
+*Provisional Patent US 64/020,489 & 64/021,113 filed March 29, 2026*
 *Full utility patent filing deadline: March 29, 2027*

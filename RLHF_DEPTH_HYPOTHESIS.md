@@ -152,5 +152,5 @@ Test on models with varying alignment intensity (Claude Haiku, Claude Sonnet, Cl
 
 ---
 
-*Fathom — US Patent Pending 64/020,489*
+*Fathom — US Patent Pending 64/020,489 & 64/021,113*
 *darkflobi.com/fathom*

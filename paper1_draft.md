@@ -159,6 +159,6 @@ Gifford, A., et al. (2025). TRIBE v2: Trimodal Brain Encoder. Meta AI Research.
 
 ---
 
-*Preprint. USPTO Provisional Patent Pending: Application No. 64/020,489, filed March 29, 2026.*
+*Preprint. USPTO Provisional Patent Pending: Application No. 64/020,489 & 64/021,113, filed March 29, 2026.*
 *Title: "System and Method for Measuring Reasoning Depth and Integrated Computational Geometry in Artificial Neural Networks"*
 *Contact: darkflobi.com | @darkflobi*

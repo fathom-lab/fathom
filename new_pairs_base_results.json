@@ -1,0 +1,75 @@
+{
+  "fire": {
+    "surface_depth": 8.524927703875072,
+    "insight_depth": 8.27624639808623,
+    "delta": 0.24868130578884262,
+    "surface_features": 17290,
+    "insight_features": 18393,
+    "sensitivity": "low",
+    "topic": "fire"
+  },
+  "habit": {
+    "surface_depth": 8.06655502319336,
+    "insight_depth": 7.600783824920654,
+    "delta": 0.4657711982727051,
+    "surface_n": 19157,
+    "insight_n": 24498,
+    "sensitivity": "medium"
+  },
+  "trust": {
+    "surface_depth": 8.10551929473877,
+    "insight_depth": 7.641972064971924,
+    "delta": 0.4635472297668457,
+    "surface_n": 14566,
+    "insight_n": 16306,
+    "sensitivity": "medium"
+  },
+  "memory": {
+    "surface_depth": 8.0136137008667,
+    "insight_depth": 7.464405059814453,
+    "delta": 0.5492086410522461,
+    "surface_n": 14911,
+    "insight_n": 15592,
+    "sensitivity": "medium"
+  },
+  "sleep": {
+    "surface_depth": 8.502049446105957,
+    "insight_depth": 8.297327041625977,
+    "delta": 0.20472240447998047,
+    "surface_n": 15859,
+    "insight_n": 18108,
+    "sensitivity": "medium"
+  },
+  "language": {
+    "surface_depth": 8.153071403503418,
+    "insight_depth": 7.911371231079102,
+    "delta": 0.2417001724243164,
+    "surface_n": 15385,
+    "insight_n": 18696,
+    "sensitivity": "medium"
+  },
+  "debt": {
+    "surface_depth": 8.262394905090332,
+    "insight_depth": 8.044389724731445,
+    "delta": 0.21800518035888672,
+    "surface_n": 13796,
+    "insight_n": 19081,
+    "sensitivity": "high"
+  },
+  "pain": {
+    "surface_depth": 7.875422954559326,
+    "insight_depth": 8.240934371948242,
+    "delta": -0.365511417388916,
+    "surface_n": 17443,
+    "insight_n": 16988,
+    "sensitivity": "high"
+  },
+  "tides": {
+    "surface_depth": 8.044205665588379,
+    "insight_depth": 7.759653091430664,
+    "delta": 0.28455257415771484,
+    "surface_n": 20201,
+    "insight_n": 21677,
+    "sensitivity": "low"
+  }
+}

@@ -120,7 +120,7 @@
 ## Slide 10 — TRACTION
 **Title:** Patent filed. Paper submitted. Zero funding spent.
 **Content:**
-- USPTO Provisional Patent — Filed 03/29/2026 (#64/020,489)
+- USPTO Provisional Patent — Filed 03/29/2026 (#64/020,489 & 64/021,113)
 - arXiv paper submitted — ID 7407675
 - Two architectures validated
 - Five domains validated
@@ -159,7 +159,7 @@
 **Contact:**
 - Alexander Rodabaugh — @darkflobi
 - darkflobi.com/fathom
-- Patent Pending | USPTO 64/020,489
+- Patent Pending | USPTO 64/020,489 & 64/021,113
 **Visual:** Return to cover visual — dark background, glowing K
 **Notes:** End quiet. No "thank you for your time." Just the claim, the contact, the silence. Let the work speak.
 

@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
-<title>FATHOM — Measure How Deeply AI Reasons</title>
+<title>FATHOM — Measure How Deeply AI Thinks</title>
 <meta name="description" content="The first instrument that measures reasoning depth inside AI. Cross-architecture validated. Patent pending.">
-<meta property="og:title" content="FATHOM — Measure How Deeply AI Reasons">
+<meta property="og:title" content="FATHOM — Measure How Deeply AI Thinks">
 <meta property="og:description" content="Not what AI says. How it thinks. Cross-architecture depth measurement via SAE circuit attribution. p < 0.0001.">
+<meta property="og:url" content="https://fathom.darkflobi.com">
+<meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
 <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -31,43 +33,38 @@
   --glow-ghost: rgba(0, 255, 168, 0.03);
   --cyan: #00c8ee;
   --white: #cccce0;
-
+  --gold: #ffd700;
+  --orange: #ff8c42;
+  --red: #ff4444;
   --font-display: 'Cinzel', 'Times New Roman', serif;
   --font-body: 'Inter', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --green: var(--glow);
+  --green-dim: var(--glow-dim);
+  --green-glow: rgba(0,255,168,0.15);
+  --cyan-glow: rgba(0,212,255,0.12);
 }
 
 html { scroll-behavior: smooth; }
-
 body {
   background: var(--void);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.7;
-  min-height: 100vh;
   overflow-x: hidden;
   cursor: crosshair;
 }
-
-::selection {
-  background: rgba(0, 255, 168, 0.12);
-  color: var(--white);
-}
-
+::selection { background: rgba(0,255,168,0.12); color: var(--white); }
 a, button, input { cursor: crosshair; }
-a:hover, button:hover { cursor: crosshair; }
 
 /* ── Scanline ──────────────────────────────────── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: repeating-linear-gradient(
-    0deg, transparent 0px, transparent 3px,
-    rgba(0, 255, 168, 0.004) 3px, rgba(0, 255, 168, 0.004) 4px
-  );
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,255,168,0.004) 3px, rgba(0,255,168,0.004) 4px);
   pointer-events: none;
   z-index: 9999;
 }
@@ -75,16 +72,13 @@ body::before {
 /* ── Nav ───────────────────────────────────────── */
 nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 1000;
-  background: rgba(4, 4, 7, 0.92);
+  background: rgba(4,4,7,0.92);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border-bottom: 1px solid var(--border-subtle);
 }
-
 .nav-inner {
   max-width: 1000px;
   margin: 0 auto;
@@ -92,29 +86,19 @@ nav {
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  padding: 0 40px;
+  padding: 0 24px;
 }
-
 .nav-brand {
   font-family: var(--font-display);
   font-size: 12px;
   letter-spacing: 10px;
   color: var(--glow);
   text-decoration: none;
-  text-shadow: 0 0 40px rgba(0, 255, 168, 0.15);
+  text-shadow: 0 0 40px rgba(0,255,168,0.15);
   transition: text-shadow 0.6s;
 }
-
-.nav-brand:hover {
-  text-shadow: 0 0 60px rgba(0, 255, 168, 0.3);
-}
-
-.nav-links {
-  display: flex;
-  gap: 36px;
-  list-style: none;
-}
-
+.nav-brand:hover { text-shadow: 0 0 60px rgba(0,255,168,0.3); }
+.nav-links { display: flex; gap: 28px; list-style: none; }
 .nav-links a {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -123,13 +107,55 @@ nav {
   color: var(--text-dim);
   text-decoration: none;
   transition: color 0.5s;
+  position: relative;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--glow-dim); }
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: var(--glow-dim);
 }
 
-.nav-links a:hover { color: var(--glow-dim); }
+/* ── Hamburger ─────────────────────────────────── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 8px;
+  z-index: 1001;
+}
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--text-dim); transition: all 0.3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--glow); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--glow); }
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(4,4,7,0.97);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.mobile-menu a:hover { color: var(--glow); }
 
-/* ═══════════════════════════════════════════════════
-   I. HERO
-   ═══════════════════════════════════════════════════ */
+/* ── Hero (cinematic full-viewport) ────────────── */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -140,46 +166,29 @@ nav {
   padding: 80px 40px;
   position: relative;
 }
-
 #heroCanvas {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
   z-index: 0;
 }
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-}
-
+.hero-content { position: relative; z-index: 2; }
 .hero h1 {
   font-family: var(--font-display);
   font-size: clamp(56px, 11vw, 110px);
   font-weight: 400;
   letter-spacing: clamp(16px, 5vw, 52px);
   color: var(--glow);
-  text-shadow:
-    0 0 80px rgba(0, 255, 168, 0.1),
-    0 0 160px rgba(0, 255, 168, 0.03);
+  text-shadow: 0 0 80px rgba(0,255,168,0.1), 0 0 160px rgba(0,255,168,0.03);
   margin-bottom: 32px;
   animation: breathe 8s ease-in-out infinite;
 }
-
 @keyframes breathe {
-  0%, 100% {
-    text-shadow: 0 0 80px rgba(0, 255, 168, 0.1), 0 0 160px rgba(0, 255, 168, 0.03);
-    opacity: 1;
-  }
-  50% {
-    text-shadow: 0 0 100px rgba(0, 255, 168, 0.16), 0 0 200px rgba(0, 255, 168, 0.05);
-    opacity: 0.95;
-  }
+  0%, 100% { text-shadow: 0 0 80px rgba(0,255,168,0.1), 0 0 160px rgba(0,255,168,0.03); opacity: 1; }
+  50% { text-shadow: 0 0 100px rgba(0,255,168,0.16), 0 0 200px rgba(0,255,168,0.05); opacity: 0.95; }
 }
-
 .hero-line {
   font-family: var(--font-serif);
   font-size: clamp(19px, 2.6vw, 26px);
@@ -191,7 +200,6 @@ nav {
   opacity: 0;
   animation: fadeUp 1.2s ease 0.3s forwards;
 }
-
 .hero-anchor {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -201,12 +209,7 @@ nav {
   opacity: 0;
   animation: fadeUp 1.2s ease 0.6s forwards;
 }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .hero-cta {
   display: flex;
   gap: 24px;
@@ -216,6 +219,7 @@ nav {
   animation: fadeUp 1.2s ease 0.9s forwards;
 }
 
+/* ── Buttons ───────────────────────────────────── */
 .btn {
   display: inline-block;
   font-family: var(--font-mono);
@@ -229,12 +233,7 @@ nav {
   position: relative;
   overflow: hidden;
 }
-
-.btn-primary {
-  border-color: rgba(0, 255, 168, 0.4);
-  color: var(--glow);
-}
-
+.btn-primary { border-color: rgba(0,255,168,0.4); color: var(--glow); }
 .btn-primary::before {
   content: '';
   position: absolute;
@@ -244,31 +243,18 @@ nav {
   transform-origin: left;
   transition: transform 0.6s cubic-bezier(0.25, 0, 0, 1);
 }
-
 .btn-primary:hover { color: var(--void); }
 .btn-primary:hover::before { transform: scaleX(1); }
-.btn-primary span { position: relative; z-index: 1; }
+.btn-primary span, .btn-ghost span { position: relative; z-index: 1; }
+.btn-ghost { border-color: var(--border); color: var(--text-dim); }
+.btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
 
-.btn-ghost {
-  border-color: var(--border);
-  color: var(--text-dim);
-}
-
-.btn-ghost:hover {
-  border-color: var(--text-dim);
-  color: var(--text);
-}
-
-/* ═══════════════════════════════════════════════════
-   II. THE PROBLEM
-   ═══════════════════════════════════════════════════ */
+/* ── Problem statement ─────────────────────────── */
 .problem {
   padding: 140px 40px;
   text-align: center;
   border-top: 1px solid var(--border-subtle);
-  position: relative;
 }
-
 .problem-line {
   font-family: var(--font-serif);
   font-weight: 300;
@@ -276,34 +262,16 @@ nav {
   line-height: 1.8;
   max-width: 600px;
   margin: 0 auto;
-  letter-spacing: 0.5px;
 }
+.problem-line-1 { font-size: clamp(21px, 3vw, 30px); margin-bottom: 20px; }
+.problem-line-2 { font-size: clamp(18px, 2.4vw, 24px); color: var(--text); margin-bottom: 40px; }
+.problem-line-3 { font-size: clamp(18px, 2.4vw, 24px); color: var(--glow-mid); font-style: italic; }
 
-.problem-line-1 {
-  font-size: clamp(21px, 3vw, 30px);
-  margin-bottom: 20px;
-}
-
-.problem-line-2 {
-  font-size: clamp(18px, 2.4vw, 24px);
-  color: var(--text);
-  margin-bottom: 40px;
-}
-
-.problem-line-3 {
-  font-size: clamp(18px, 2.4vw, 24px);
-  color: var(--glow-mid);
-  font-style: italic;
-}
-
-/* ═══════════════════════════════════════════════════
-   III. THE PROOF
-   ═══════════════════════════════════════════════════ */
+/* ── Proof grid ────────────────────────────────── */
 .proof {
   padding: 120px 40px;
   border-top: 1px solid var(--border-subtle);
 }
-
 .proof-label {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -314,51 +282,39 @@ nav {
   margin-bottom: 56px;
   opacity: 0.5;
 }
-
 .proof-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   max-width: 840px;
   margin: 0 auto;
 }
-
 .proof-cell {
   padding: 48px 24px;
   text-align: center;
   position: relative;
   border-right: 1px solid var(--border-subtle);
 }
-
 .proof-cell:last-child { border-right: none; }
-
 .proof-cell::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 20%;
-  right: 20%;
+  bottom: 0; left: 20%; right: 20%;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--glow-dim), transparent);
   opacity: 0;
   transition: opacity 0.6s;
 }
-
 .proof-cell:hover::after { opacity: 0.3; }
-
 .proof-value {
   font-family: var(--font-mono);
   font-size: 24px;
   font-weight: 400;
   color: var(--glow);
-  text-shadow: 0 0 30px rgba(0, 255, 168, 0.08);
+  text-shadow: 0 0 30px rgba(0,255,168,0.08);
   margin-bottom: 14px;
   transition: text-shadow 0.6s;
 }
-
-.proof-cell:hover .proof-value {
-  text-shadow: 0 0 40px rgba(0, 255, 168, 0.15);
-}
-
+.proof-cell:hover .proof-value { text-shadow: 0 0 40px rgba(0,255,168,0.15); }
 .proof-sublabel {
   font-family: var(--font-mono);
   font-size: 8px;
@@ -367,7 +323,6 @@ nav {
   color: var(--text-dim);
   line-height: 1.7;
 }
-
 .proof-note {
   text-align: center;
   margin-top: 48px;
@@ -377,22 +332,231 @@ nav {
   letter-spacing: 1px;
   line-height: 1.8;
 }
+.proof-note em { font-family: var(--font-serif); font-style: italic; color: var(--text); font-size: 13px; }
 
-.proof-note em {
+/* ── Sections ──────────────────────────────────── */
+.section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 100px 24px;
+  position: relative;
+}
+.section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.section-tag {
+  font-size: 9px;
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+.section h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 16px;
+}
+.section h2 em { color: var(--green); font-style: normal; }
+.section .lead {
   font-family: var(--font-serif);
-  font-style: italic;
+  font-size: 17px;
+  font-weight: 300;
   color: var(--text);
+  max-width: 640px;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+/* ── Demo ──────────────────────────────────────── */
+.demo-zone {
+  background: var(--abyss);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.demo-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--deep);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.demo-dot { width: 8px; height: 8px; border-radius: 50%; }
+.demo-dot.r { background: #ff5f57; }
+.demo-dot.y { background: #febc2e; }
+.demo-dot.g { background: #28c840; }
+.demo-body { padding: 24px; }
+.demo-input-row { display: flex; gap: 12px; margin-bottom: 20px; }
+.demo-input {
+  flex: 1;
+  background: var(--void);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 14px 16px;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.demo-input:focus { border-color: var(--green-dim); }
+.demo-input::placeholder { color: var(--text-dim); }
+.demo-run {
+  background: var(--green);
+  color: var(--void);
+  border: none;
+  padding: 14px 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.demo-run:hover { box-shadow: 0 0 20px var(--green-glow); }
+.presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.preset {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  background: var(--void);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+.preset:hover { border-color: var(--green-dim); color: var(--green); }
+.preset.active { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.05); }
+
+/* ── Visualization ─────────────────────────────── */
+.viz-result { display: none; animation: fadeIn 0.4s ease; }
+.viz-result.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+.viz-card { background: var(--void); border: 1px solid var(--border); border-radius: 6px; padding: 20px; }
+.viz-card .card-title { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 16px; }
+.grade-ring {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 3px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 900;
+  margin: 0 auto 12px;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+.grade-S { color: var(--gold); border-color: var(--gold); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
+.grade-A { color: var(--green); border-color: var(--green); box-shadow: 0 0 30px var(--green-glow); }
+.grade-B { color: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 30px var(--cyan-glow); }
+.grade-C { color: #ffeb3b; border-color: #ffeb3b; box-shadow: 0 0 30px rgba(255,235,59,0.15); }
+.grade-D { color: var(--orange); border-color: var(--orange); box-shadow: 0 0 30px rgba(255,140,66,0.15); }
+.grade-F { color: var(--red); border-color: var(--red); box-shadow: 0 0 30px rgba(255,68,68,0.15); }
+.score-num { text-align: center; font-size: 14px; color: var(--text); }
+.score-num strong { font-size: 22px; }
+.interp-text { text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 8px; line-height: 1.5; }
+.layer-heatmap { display: flex; gap: 2px; height: 48px; align-items: flex-end; margin: 16px 0 8px; }
+.layer-bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 2px; transition: height 0.6s cubic-bezier(0.25,0.46,0.45,0.94); position: relative; }
+.layer-bar:hover::after { content: attr(data-layer); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--text); background: var(--deep); padding: 2px 6px; border-radius: 2px; white-space: nowrap; }
+.heatmap-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-dim); }
+.delta-display { text-align: center; padding: 24px; background: var(--void); border: 1px solid var(--border); border-radius: 6px; }
+.delta-label { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px; }
+.delta-value { font-size: 36px; font-weight: 700; }
+.delta-positive { color: var(--green); }
+.delta-negative { color: var(--red); }
+.delta-verdict { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+
+/* ── Scale ─────────────────────────────────────── */
+.scale-container { position: relative; margin: 40px 0; }
+.scale-item { display: flex; align-items: center; padding: 12px 0; opacity: 0; transform: translateX(-10px); transition: all 0.5s ease; }
+.scale-item.visible { opacity: 1; transform: translateX(0); }
+.scale-score { width: 120px; text-align: right; padding-right: 24px; font-size: 18px; font-weight: 700; font-family: var(--font-mono); }
+.scale-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid; background: var(--void); flex-shrink: 0; }
+.scale-info { margin-left: 24px; flex: 1; }
+.scale-task { font-size: 14px; color: var(--text-bright); font-weight: 500; }
+.scale-category { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.scale-bar-track { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; max-width: 400px; }
+.scale-bar-fill { height: 100%; border-radius: 2px; transition: width 1.2s cubic-bezier(0.25,0.46,0.45,0.94); width: 0; }
+
+/* ── Findings ──────────────────────────────────── */
+.finding {
+  background: var(--abyss);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.finding-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.finding-num { font-size: 28px; font-weight: 700; font-family: var(--font-display); }
+.finding-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; }
+.finding p { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 16px; }
+.finding-data { display: grid; gap: 12px; }
+.data-box { background: var(--void); border: 1px solid var(--border); border-radius: 4px; padding: 12px 16px; text-align: center; }
+.data-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.data-value { font-size: 20px; font-weight: 700; font-family: var(--font-mono); }
+.data-sub { font-size: 11px; margin-top: 2px; }
+.null-box {
+  background: rgba(255,68,68,0.05);
+  border: 1px solid rgba(255,68,68,0.2);
+  border-radius: 6px;
+  padding: 16px 20px;
   font-size: 13px;
+  line-height: 1.7;
 }
 
-/* ═══════════════════════════════════════════════════
-   IV. APPLICATIONS
-   ═══════════════════════════════════════════════════ */
-.applications {
-  padding: 120px 40px;
-  border-top: 1px solid var(--border-subtle);
+/* ── Leaderboard ───────────────────────────────── */
+.lb-surprise {
+  background: rgba(0,255,168,0.04);
+  border: 1px solid rgba(0,255,168,0.15);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
 }
+.lb-surprise .tag { font-size: 9px; letter-spacing: 3px; color: var(--glow); text-transform: uppercase; margin-bottom: 8px; }
+.lb-surprise .headline { font-size: 14px; color: var(--text-bright); line-height: 1.7; }
+.lb-surprise em { color: var(--glow); font-style: normal; font-weight: 600; }
+.lb table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 13px; }
+.lb th { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; padding: 12px 8px; border-bottom: 1px solid var(--glow-dim); text-align: left; }
+.lb td { padding: 14px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+.lb .rank-1 { color: var(--gold); }
+.lb .model-name { color: var(--text-bright); font-weight: 500; }
+.lb .model-provider { font-size: 10px; color: var(--text-dim); }
+.lb .bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; min-width: 100px; }
+.lb .bar-fill { height: 100%; border-radius: 3px; transition: width 2s cubic-bezier(0.25,0.46,0.45,0.94); width: 0; }
+.lb .tier1 { background: linear-gradient(90deg, var(--glow), var(--glow-mid)); }
+.lb .tier2 { background: linear-gradient(90deg, var(--glow-mid), var(--glow-dim)); }
+.lb .tier3 { background: linear-gradient(90deg, var(--glow-dim), var(--text-dim)); }
+.lb .tier4 { background: var(--text-dim); }
+.lb .pct-high { color: var(--glow); }
+.lb .delta-positive { color: var(--glow); }
+.lb .delta-flat { color: var(--text-dim); }
+.ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+.ref-item { background: var(--abyss); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; }
+.ref-item .ref-model { font-size: 13px; color: var(--text-bright); font-weight: 500; margin-bottom: 4px; }
+.ref-item .ref-val { font-size: 18px; font-weight: 700; color: var(--cyan); font-family: var(--font-mono); }
+.ref-item .ref-p { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+.method-toggle { display: block; margin: 24px auto 0; background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; padding: 8px 20px; border-radius: 4px; transition: all 0.2s; }
+.method-toggle:hover { border-color: var(--text); color: var(--text); }
+.method-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.method-body.visible { max-height: 600px; margin-top: 16px; }
+.method-body p { margin-bottom: 12px; }
+.method-body strong { color: var(--text-bright); }
 
+/* ── Applications ──────────────────────────────── */
+.applications { padding: 120px 40px; border-top: 1px solid var(--border-subtle); }
 .applications-label {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -403,12 +567,7 @@ nav {
   margin-bottom: 64px;
   opacity: 0.5;
 }
-
-.applications-list {
-  max-width: 660px;
-  margin: 0 auto;
-}
-
+.applications-list { max-width: 660px; margin: 0 auto; }
 .application {
   padding: 32px 0;
   border-bottom: 1px solid var(--border-subtle);
@@ -418,15 +577,8 @@ nav {
   align-items: baseline;
   transition: all 0.5s;
 }
-
-.application:first-child {
-  border-top: 1px solid var(--border-subtle);
-}
-
-.application:hover {
-  padding-left: 8px;
-}
-
+.application:first-child { border-top: 1px solid var(--border-subtle); }
+.application:hover { padding-left: 8px; }
 .application-name {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -438,60 +590,49 @@ nav {
   align-items: center;
   gap: 8px;
 }
-
 .application:hover .application-name { color: var(--glow-dim); }
-
-.application-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--glow-dim);
-  opacity: 0;
-  transition: opacity 0.5s;
-  animation: pulse-dot 3s ease-in-out infinite;
-}
-
+.application-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--glow-dim); opacity: 0; transition: opacity 0.5s; }
 .application:hover .application-dot { opacity: 1; }
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; box-shadow: 0 0 6px rgba(0, 255, 168, 0.3); }
-}
-
-.application-desc {
-  font-family: var(--font-serif);
-  font-size: 17px;
-  font-weight: 400;
-  color: var(--text);
-  line-height: 1.65;
-  transition: color 0.5s;
-}
-
+.application-desc { font-family: var(--font-serif); font-size: 17px; font-weight: 400; color: var(--text); line-height: 1.65; transition: color 0.5s; }
 .application:hover .application-desc { color: var(--text-bright); }
 
-/* ═══════════════════════════════════════════════════
-   V. CTA
-   ═══════════════════════════════════════════════════ */
-.cta {
+/* ── API ───────────────────────────────────────── */
+.endpoint-list { margin: 24px 0; }
+.endpoint { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; }
+.endpoint .method { font-size: 10px; letter-spacing: 1px; color: var(--glow); min-width: 36px; }
+.endpoint .path { color: var(--text-bright); flex: 1; }
+.endpoint .edesc { color: var(--text-dim); font-size: 11px; }
+.terminal {
+  background: var(--abyss);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  margin-top: 24px;
+}
+.terminal .prompt { color: var(--glow); }
+.terminal .dim { color: var(--text-dim); }
+.terminal .highlight { color: var(--glow); font-weight: 700; }
+
+/* ── CTA ───────────────────────────────────────── */
+.cta-section {
   padding: 160px 40px;
   text-align: center;
   border-top: 1px solid var(--border-subtle);
   position: relative;
 }
-
-.cta::before {
+.cta-section::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
-  height: 300px;
-  background: radial-gradient(ellipse, rgba(0, 255, 168, 0.015) 0%, transparent 70%);
+  width: 500px; height: 300px;
+  background: radial-gradient(ellipse, rgba(0,255,168,0.015) 0%, transparent 70%);
   pointer-events: none;
 }
-
-.cta h2 {
+.cta-section h2 {
   font-family: var(--font-display);
   font-size: clamp(26px, 3.5vw, 40px);
   font-weight: 400;
@@ -501,7 +642,6 @@ nav {
   position: relative;
   z-index: 1;
 }
-
 .cta-sub {
   font-family: var(--font-serif);
   font-size: 18px;
@@ -512,7 +652,6 @@ nav {
   position: relative;
   z-index: 1;
 }
-
 .cta-form {
   display: flex;
   gap: 0;
@@ -521,7 +660,6 @@ nav {
   position: relative;
   z-index: 1;
 }
-
 .cta-form input[type="email"] {
   flex: 1;
   background: var(--abyss);
@@ -534,17 +672,8 @@ nav {
   outline: none;
   transition: border-color 0.5s, box-shadow 0.5s;
 }
-
-.cta-form input[type="email"]:focus {
-  border-color: var(--glow-dim);
-  box-shadow: 0 0 40px rgba(0, 255, 168, 0.03);
-}
-
-.cta-form input[type="email"]::placeholder {
-  color: var(--text-dim);
-  font-size: 12px;
-}
-
+.cta-form input:focus { border-color: var(--glow-dim); box-shadow: 0 0 40px rgba(0,255,168,0.03); }
+.cta-form input::placeholder { color: var(--text-dim); font-size: 12px; }
 .cta-form button {
   background: transparent;
   border: 1px solid var(--glow-dim);
@@ -558,7 +687,6 @@ nav {
   position: relative;
   overflow: hidden;
 }
-
 .cta-form button::before {
   content: '';
   position: absolute;
@@ -568,167 +696,112 @@ nav {
   transform-origin: left;
   transition: transform 0.6s cubic-bezier(0.25, 0, 0, 1);
 }
-
 .cta-form button:hover::before { transform: scaleX(1); }
 .cta-form button:hover { color: var(--void); }
 .cta-form button span { position: relative; z-index: 1; }
-
-.cta-status {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-dim);
-  margin-top: 16px;
-  min-height: 20px;
-  position: relative;
-  z-index: 1;
-  letter-spacing: 1px;
-}
-
+.cta-status { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-top: 16px; min-height: 20px; position: relative; z-index: 1; }
 .cta-status.success { color: var(--glow); }
 .cta-status.error { color: #ff3355; }
 
-/* ═══════════════════════════════════════════════════
-   FOOTER
-   ═══════════════════════════════════════════════════ */
+/* ── Footer ────────────────────────────────────── */
 footer {
   border-top: 1px solid var(--border-subtle);
   padding: 56px 40px;
   text-align: center;
 }
+.footer-ip { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); opacity: 0.6; margin-bottom: 20px; }
+.footer-brand { font-family: var(--font-display); font-size: 10px; letter-spacing: 6px; color: var(--text-dim); opacity: 0.35; margin-bottom: 12px; }
+.footer-epitaph { font-family: var(--font-serif); font-size: 14px; font-style: italic; font-weight: 300; color: var(--text-dim); opacity: 0.25; margin-bottom: 28px; }
+.footer-links { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; }
+.footer-links a { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); text-decoration: none; opacity: 0.35; transition: opacity 0.4s, color 0.4s; }
+.footer-links a:hover { opacity: 0.7; color: var(--glow-dim); }
 
-.footer-ip {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 3px;
-  color: var(--text-dim);
-  opacity: 0.6;
-  margin-bottom: 20px;
-}
+/* ── Reveal animation ──────────────────────────── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 1s ease, transform 1s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
-.footer-brand {
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 6px;
-  color: var(--text-dim);
-  opacity: 0.35;
-  margin-bottom: 12px;
-}
-
-.footer-epitaph {
-  font-family: var(--font-serif);
-  font-size: 14px;
-  font-style: italic;
-  font-weight: 300;
-  color: var(--text-dim);
-  opacity: 0.25;
-  margin-bottom: 28px;
-}
-
-.footer-links {
-  display: flex;
-  gap: 28px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.footer-links a {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  text-decoration: none;
-  opacity: 0.35;
-  transition: opacity 0.4s, color 0.4s;
-}
-
-.footer-links a:hover {
-  opacity: 0.7;
-  color: var(--glow-dim);
-}
-
-/* ═══════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════ */
+/* ── Responsive ────────────────────────────────── */
 @media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
   .proof-grid { grid-template-columns: repeat(2, 1fr); }
   .proof-cell { border-right: none; border-bottom: 1px solid var(--border-subtle); }
   .proof-cell:nth-child(odd) { border-right: 1px solid var(--border-subtle); }
-  .proof-cell:nth-last-child(-n+2) { border-bottom: none; }
-  .application {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .nav-links { gap: 24px; }
+  .viz-grid { grid-template-columns: 1fr; }
+  .finding-data { grid-template-columns: 1fr !important; }
+  .ref-grid { grid-template-columns: 1fr; }
+  .application { grid-template-columns: 1fr; gap: 8px; }
+  .demo-input-row { flex-direction: column; }
+  .scale-score { width: 80px; font-size: 14px; }
+  .scale-info { margin-left: 16px; }
+  .lb .bar-cell { display: none; }
 }
-
 @media (max-width: 480px) {
   .hero-cta { flex-direction: column; align-items: center; }
   .cta-form { flex-direction: column; }
   .cta-form input[type="email"] { border-right: 1px solid var(--border); }
-  .nav-links a { font-size: 8px; letter-spacing: 2px; }
-  .nav-links { gap: 16px; }
-}
-
-/* ── Fade reveal ───────────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s ease, transform 1s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+  .section { padding: 60px 16px; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ── Nav ─────────────────────────────────────── -->
 <nav>
   <div class="nav-inner">
-    <a href="/fathom" class="nav-brand">FATHOM</a>
+    <a href="#hero" class="nav-brand">FATHOM</a>
     <ul class="nav-links">
-      <li><a href="/fathom/blog">Research</a></li>
-      <li><a href="/fathom/demo">Try It</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#leaderboard">Leaderboard</a></li>
+      <li><a href="#research">Research</a></li>
       <li><a href="#access">Access</a></li>
     </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#demo">Demo</a>
+  <a href="#findings">Findings</a>
+  <a href="#leaderboard">Leaderboard</a>
+  <a href="#research">Research</a>
+  <a href="#access">Access</a>
+</div>
 
-<!-- I. HERO -->
-<section class="hero">
+<!-- ═══════════ I. HERO ═══════════ -->
+<section class="hero" id="hero">
   <canvas id="heroCanvas"></canvas>
   <div class="hero-content">
     <h1>FATHOM</h1>
     <div class="hero-line">The first instrument that measures how deeply AI reasons.</div>
     <div class="hero-anchor">SAE circuit attribution &middot; cross-architecture &middot; patent pending</div>
     <div class="hero-cta">
-      <a href="#access" class="btn btn-primary"><span>REQUEST ACCESS</span></a>
-      <a href="/fathom/blog" class="btn btn-ghost">Read the research</a>
+      <a href="#access" class="btn btn-primary"><span>Request Access</span></a>
+      <a href="#demo" class="btn btn-ghost"><span>Try the demo</span></a>
+      <a href="/fathom/blog" class="btn btn-ghost"><span>Read the research</span></a>
     </div>
   </div>
 </section>
 
-<!-- II. THE PROBLEM -->
+<!-- ═══════════ II. THE PROBLEM ═══════════ -->
 <section class="problem">
   <div class="problem-line problem-line-1 reveal">Every benchmark on earth measures what AI says.</div>
   <div class="problem-line problem-line-2 reveal">Nobody measures what happens inside.</div>
   <div class="problem-line problem-line-3 reveal">We built the instrument that does.</div>
 </section>
 
-<!-- III. THE PROOF -->
+<!-- ═══════════ III. THE PROOF ═══════════ -->
 <section class="proof">
   <div class="proof-label reveal">Validated</div>
-
   <div class="proof-grid reveal">
     <div class="proof-cell">
       <div class="proof-value" data-count="true" data-prefix="p < " data-target="0.0001" data-decimals="4">p < 0.0001</div>
       <div class="proof-sublabel">Statistical<br>significance</div>
     </div>
     <div class="proof-cell">
-      <div class="proof-value" data-count="true" data-prefix="K = " data-target="1.0212" data-decimals="4">K = 1.0212</div>
+      <div class="proof-value" data-count="true" data-prefix="K = " data-target="1.0343" data-decimals="4">K = 1.0343</div>
       <div class="proof-sublabel">Universal constant<br>across architectures</div>
     </div>
     <div class="proof-cell">
@@ -740,42 +813,212 @@ footer {
       <div class="proof-sublabel">Mean depth delta<br>recall vs reasoning</div>
     </div>
   </div>
-
   <div class="proof-note reveal">
-    Validated on <em>Google</em> Gemma-2-2B and <em>Alibaba</em> Qwen3-0.6B<br>
-    30 pre-registered pairs &middot; leave-one-out robust
+    Validated on <em>Google</em> Gemma-2-2B (base) and Gemma-2-2B-IT (instruct)<br>
+    30 pre-registered pairs &middot; RLHF amplifies K (1.0384 instruct vs 1.0302 base)
   </div>
 </section>
 
-<!-- IV. APPLICATIONS -->
-<section class="applications">
+<!-- ═══════════ IV. INTERACTIVE DEMO ═══════════ -->
+<section class="section reveal" id="demo">
+  <div class="section-tag">Interactive</div>
+  <h2>Type a prompt. <em>Watch the layers.</em></h2>
+  <p class="lead">When AI retrieves a memorized fact, computation concentrates near the output. When it reasons, computation distributes across mid-layers. See it happen.</p>
+  <div class="demo-zone">
+    <div class="demo-header">
+      <span class="demo-dot r"></span><span class="demo-dot y"></span><span class="demo-dot g"></span>
+      <span style="margin-left:8px">fathom v2.0 &mdash; demo mode</span>
+    </div>
+    <div class="demo-body">
+      <div class="presets">
+        <button class="preset" data-pair="capital">Capital of France</button>
+        <button class="preset" data-pair="inflation">Why economies inflate</button>
+        <button class="preset" data-pair="dna">What is DNA</button>
+        <button class="preset" data-pair="dna-why">Why DNA replicates</button>
+        <button class="preset" data-pair="godel">Godel incompleteness</button>
+        <button class="preset" data-pair="arithmetic">2 + 2 = ?</button>
+      </div>
+      <div class="demo-input-row">
+        <input type="text" class="demo-input" id="demoInput" placeholder="Enter any prompt...">
+        <button class="demo-run" onclick="runDemo()">SCORE</button>
+      </div>
+      <div class="viz-result" id="vizResult">
+        <div class="viz-grid">
+          <div class="viz-card">
+            <div class="card-title">Fathom Grade</div>
+            <div class="grade-ring" id="demoGrade"></div>
+            <div class="score-num"><strong id="demoScore"></strong>/100</div>
+            <div class="interp-text" id="demoInterp"></div>
+          </div>
+          <div class="viz-card">
+            <div class="card-title">Layer Activation Profile</div>
+            <div class="layer-heatmap" id="demoHeatmap"></div>
+            <div class="heatmap-labels"><span>L1 (early)</span><span>L13 (mid)</span><span>L26 (output)</span></div>
+            <div style="margin-top:16px;display:flex;justify-content:space-between">
+              <div><span style="font-size:10px;color:var(--text-dim)">DEPTH</span><br><span style="font-size:20px;font-weight:700" id="demoDepth"></span></div>
+              <div><span style="font-size:10px;color:var(--text-dim)">ENTROPY</span><br><span style="font-size:20px;font-weight:700" id="demoEntropy"></span></div>
+              <div><span style="font-size:10px;color:var(--text-dim)">FEATURES</span><br><span style="font-size:20px;font-weight:700" id="demoFeatures"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="delta-display" id="demoDelta" style="display:none">
+          <div class="delta-label">vs. Baseline Recall</div>
+          <div class="delta-value" id="demoDeltaVal"></div>
+          <div class="delta-verdict" id="demoDeltaVerdict"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ V. DEPTH SCALE ═══════════ -->
+<section class="section" id="scale">
+  <div class="section-tag reveal">Empirical Calibration</div>
+  <h2 class="reveal">The Fathom Scale: <em>0.00 to 0.57</em></h2>
+  <p class="lead reveal">Ten cognitive task types, scored on Gemma-2-2B at temperature 0.0. Monotonically ordered by integration requirements.</p>
+  <div class="scale-container" id="scaleContainer"></div>
+</section>
+
+<!-- ═══════════ VI. FINDINGS ═══════════ -->
+<section class="section" id="findings">
+  <div class="section-tag reveal">March 2026 &mdash; New Findings</div>
+  <h2 class="reveal">What RLHF Actually Does to <em>Reasoning</em></h2>
+  <p class="lead reveal">Three independent methods. Two measurement layers. Two labs. One instrument.</p>
+
+  <div class="finding reveal">
+    <div class="finding-header">
+      <span class="finding-num" style="color:var(--orange)">1</span>
+      <span class="finding-title" style="color:var(--orange)">Expression-Computation Dissociation</span>
+    </div>
+    <p>RLHF selective amplification is <strong style="color:var(--green)">2.4x stronger</strong> at the output layer than inside the model. Alignment shapes how the model <em>talks</em>, not how it <em>thinks</em>.</p>
+    <div class="finding-data" style="grid-template-columns:1fr auto 1fr">
+      <div class="data-box"><div class="data-label" style="color:var(--text-dim)">INTERNAL</div><div class="data-value" style="color:var(--text-dim)">d = 0.24</div><div class="data-sub" style="color:var(--text-dim)">p = 0.18</div></div>
+      <div style="font-size:24px;color:var(--text-dim);display:flex;align-items:center">&rarr;</div>
+      <div class="data-box" style="border-color:var(--green)"><div class="data-label" style="color:var(--green)">OUTPUT</div><div class="data-value" style="color:var(--green)">d = 0.58</div><div class="data-sub" style="color:var(--green)">p = 0.032</div></div>
+    </div>
+  </div>
+
+  <div class="finding reveal">
+    <div class="finding-header">
+      <span class="finding-num" style="color:var(--cyan)">2</span>
+      <span class="finding-title" style="color:var(--cyan)">Provider Fingerprinting</span>
+    </div>
+    <p>Anthropic's alignment is <strong style="color:var(--green)">2.2x more topic-selective</strong> than OpenAI's. Detectable from text output alone.</p>
+    <div class="finding-data" style="grid-template-columns:1fr 1fr">
+      <div class="data-box" style="border-top:2px solid var(--orange)"><div class="data-label" style="color:var(--orange)">ANTHROPIC</div><div class="data-value" style="color:var(--orange)">d = 0.58</div><div class="data-sub" style="color:var(--green)">p = 0.032</div></div>
+      <div class="data-box" style="border-top:2px solid var(--cyan)"><div class="data-label" style="color:var(--cyan)">OPENAI</div><div class="data-value" style="color:var(--cyan)">d = 0.26</div><div class="data-sub" style="color:var(--text-dim)">p = 0.21</div></div>
+    </div>
+  </div>
+
+  <div class="finding reveal">
+    <div class="finding-header">
+      <span class="finding-num" style="color:var(--gold)">3</span>
+      <span class="finding-title" style="color:var(--gold)">Structural Robustness</span>
+    </div>
+    <p>Expert framing <strong style="color:var(--green)">amplified</strong> the safety depth premium by 55%. The selectivity is in explanatory structure, not disclaimers.</p>
+    <div class="finding-data" style="grid-template-columns:1fr 1fr">
+      <div class="data-box"><div class="data-label" style="color:var(--text-dim)">DEFAULT</div><div class="data-value" style="color:var(--text)">+0.0049</div><div class="data-sub" style="color:var(--text-dim)">safety premium</div></div>
+      <div class="data-box" style="border-color:var(--gold)"><div class="data-label" style="color:var(--gold)">EXPERT</div><div class="data-value" style="color:var(--gold)">+0.0078</div><div class="data-sub" style="color:var(--gold)">+55% amplified</div></div>
+    </div>
+  </div>
+
+  <div class="finding reveal">
+    <div class="finding-header">
+      <span class="finding-num" style="color:var(--red)">4</span>
+      <span class="finding-title" style="color:var(--red)">Adversarial Depth Amplification <span style="font-size:11px;opacity:0.6">(v3, April 2026)</span></span>
+    </div>
+    <p>RLHF doesn't just filter adversarial inputs &mdash; it forces <strong style="color:var(--green)">deeper processing</strong>. Adversarial prompts route deeper on instruct models, with 66% more features activated through additive early-layer circuits.</p>
+    <div class="finding-data" style="grid-template-columns:1fr 1fr">
+      <div class="data-box"><div class="data-label" style="color:var(--text-dim)">BASE MODEL</div><div class="data-value" style="color:var(--text-dim)">&Delta; = +0.061</div><div class="data-sub" style="color:var(--text-dim)">p = 0.128 (NS)</div></div>
+      <div class="data-box" style="border-color:var(--red)"><div class="data-label" style="color:var(--red)">INSTRUCT</div><div class="data-value" style="color:var(--red)">&Delta; = &minus;0.124</div><div class="data-sub" style="color:var(--green)">p = 0.0028 &middot; d = 0.60</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--text-dim);line-height:1.5">
+      Feature flooding: 1.66x &middot; Cosine similarity 0.996 &middot; 58% early-layer concentration &middot; n = 30 matched pairs
+    </div>
+  </div>
+
+  <div class="null-box reveal" style="margin-top:24px">
+    <strong style="color:var(--red)">Honest nulls:</strong> Hallucination prediction is null (p = 0.62, TruthfulQA, n=140). Entropy proxy does not detect K (K_proxy=1.0015 vs SAE K=1.027). Base model adversarial depth dissociation is null at n=30 (p=0.128; n=12 pilot was false positive).
+  </div>
+</section>
+
+<!-- ═══════════ VII. LEADERBOARD ═══════════ -->
+<section class="section reveal" id="leaderboard">
+  <div class="section-tag">Cross-Model Comparison</div>
+  <h2>Who Thinks <em>Deepest?</em></h2>
+  <p class="lead">Black-box depth rankings across 30 calibrated pairs per model.</p>
+  <div class="lb-surprise">
+    <div class="tag">Key Finding</div>
+    <div class="headline"><em>Claude Haiku outperforms Claude Sonnet</em> on reasoning depth signal. 67% consistency vs Sonnet's 47%. Smaller models preserve the depth distinction that larger models smooth over.</div>
+  </div>
+  <div class="lb"><table><thead><tr><th>#</th><th>Model</th><th>Ratio K</th><th>Delta</th><th class="bar-cell">Signal</th><th>Consistency</th></tr></thead><tbody id="lbBody"></tbody></table></div>
+  <div class="ref-grid">
+    <div class="ref-item"><div class="ref-model">Gemma-2-2B (Google DeepMind)</div><div class="ref-val">K = 1.0302</div><div class="ref-p">p = 0.000051 | 30 pairs | 83% directional</div></div>
+    <div class="ref-item"><div class="ref-model">Llama-3.2-1B (Meta AI)</div><div class="ref-val">K = 1.0242</div><div class="ref-p">p = 0.00266 | 19 pairs | 68% directional</div></div>
+  </div>
+  <button class="method-toggle" onclick="this.nextElementSibling.classList.toggle('visible')">Methodology &darr;</button>
+  <div class="method-body">
+    <p><strong>The Fathom Constant</strong><br>Ratio of mean activated layer index for surface-recall vs explanatory-reasoning prompts. K &approx; 1.027 across architectures.</p>
+    <p><strong>Black-Box Probe</strong><br>Ridge regression on 98 labeled depth mappings. Leave-One-Topic-Out CV: Pearson r = 0.98.</p>
+    <p><strong>Limitations</strong><br>Probe estimates depth from text features. Directional signal is more reliable than absolute magnitude.</p>
+  </div>
+</section>
+
+<!-- ═══════════ VIII. RESEARCH ═══════════ -->
+<section class="section" id="research">
+  <div class="section-tag reveal">The Paper</div>
+  <h2 class="reveal">Fathom: <em>Measuring Reasoning Depth</em></h2>
+  <p class="lead reveal">SAE circuit attribution reveals structurally different computational signatures for surface recall vs explanatory reasoning. The depth ratio holds cross-architecture and correlates with human fMRI data (r = 0.830).</p>
+  <p class="reveal" style="font-size:14px;color:var(--text);line-height:1.8;margin-bottom:32px">RLHF strengthens internal depth while compressing output expression. The instruct model shows d=0.58 expression-computation dissociation vs d=0.24 for base. Alignment shapes how the model communicates, not how it reasons.</p>
+  <div class="reveal" style="text-align:center">
+    <a href="/fathom/blog" class="btn btn-primary"><span>Read Full Research</span></a>
+    <a href="https://doi.org/10.5281/zenodo.19327451" class="btn btn-ghost" target="_blank" style="margin-left:12px"><span>Zenodo DOI</span></a>
+  </div>
+</section>
+
+<!-- ═══════════ IX. APPLICATIONS ═══════════ -->
+<section class="applications" id="use-cases">
   <div class="applications-label reveal">Where it matters</div>
-
   <div class="applications-list">
-    <div class="application reveal">
-      <div class="application-name"><span class="application-dot"></span> Healthcare</div>
-      <div class="application-desc">FDA AI explainability compliance. Circuit-level evidence that diagnostic AI reasons through cases, not pattern-matches.</div>
-    </div>
-    <div class="application reveal">
-      <div class="application-name"><span class="application-dot"></span> Legal</div>
-      <div class="application-desc">After Mata v. Avianca, prove your AI reasoned through the analysis. Depth-certified briefs and citation verification.</div>
-    </div>
-    <div class="application reveal">
-      <div class="application-name"><span class="application-dot"></span> Government</div>
-      <div class="application-desc">EU AI Act and US EO 14110 compliance. Circuit-level transparency for high-risk AI in public service.</div>
-    </div>
-    <div class="application reveal">
-      <div class="application-name"><span class="application-dot"></span> AI Safety</div>
-      <div class="application-desc">Pre-action reasoning verification for autonomous agents. Score every decision before execution. Shallow means halt.</div>
-    </div>
+    <div class="application reveal"><div class="application-name"><span class="application-dot"></span> Healthcare</div><div class="application-desc">FDA AI explainability compliance. Circuit-level evidence that diagnostic AI reasons through cases, not pattern-matches.</div></div>
+    <div class="application reveal"><div class="application-name"><span class="application-dot"></span> Legal</div><div class="application-desc">After Mata v. Avianca, prove your AI reasoned through the analysis. Depth-certified briefs and citation verification.</div></div>
+    <div class="application reveal"><div class="application-name"><span class="application-dot"></span> Government</div><div class="application-desc">EU AI Act and US EO 14110 compliance. Circuit-level transparency for high-risk AI in public service.</div></div>
+    <div class="application reveal"><div class="application-name"><span class="application-dot"></span> AI Safety</div><div class="application-desc">Pre-action reasoning verification for autonomous agents. Score every decision before execution. Shallow means halt.</div></div>
+    <div class="application reveal"><div class="application-name"><span class="application-dot"></span> Education</div><div class="application-desc">Measure whether AI tutors reason through explanations or pattern-match textbook answers.</div></div>
+    <div class="application reveal"><div class="application-name"><span class="application-dot"></span> Science</div><div class="application-desc">Depth-certify AI-generated hypotheses. Distinguish genuine multi-step reasoning from surface recombination.</div></div>
   </div>
 </section>
 
-<!-- V. CTA -->
-<section class="cta" id="access">
+<!-- ═══════════ X. API ═══════════ -->
+<section class="section" id="api">
+  <div class="section-tag reveal">The API</div>
+  <h2 class="reveal">15 Endpoints. <em>One GPU. Sub-3s.</em></h2>
+  <div class="endpoint-list reveal">
+    <div class="endpoint"><span class="method">POST</span><span class="path">/v2/score</span><span class="edesc">Single prompt depth score</span></div>
+    <div class="endpoint"><span class="method">POST</span><span class="path">/v2/compare</span><span class="edesc">Surface vs insight analysis</span></div>
+    <div class="endpoint"><span class="method">POST</span><span class="path">/v2/fathom_score</span><span class="edesc">Grade 0-100 with interpretation</span></div>
+    <div class="endpoint"><span class="method">POST</span><span class="path">/v2/fingerprint</span><span class="edesc">Cognitive signature vector</span></div>
+    <div class="endpoint"><span class="method">POST</span><span class="path">/v2/trajectory</span><span class="edesc">Token-by-token depth tracking</span></div>
+    <div class="endpoint"><span class="method">POST</span><span class="path">/v2/batch</span><span class="edesc">Score up to 20 prompts</span></div>
+    <div class="endpoint"><span class="method">POST</span><span class="path">/v2/audit</span><span class="edesc">Safety depth profile by topic</span></div>
+  </div>
+  <div class="terminal reveal">
+    <div><span class="prompt">$</span> curl -X POST localhost:8400/v2/fathom_score \</div>
+    <div>  -H "Content-Type: application/json" \</div>
+    <div>  -d '{"prompt": "your AI output here"}'</div>
+    <div>&nbsp;</div>
+    <div><span class="dim">{</span></div>
+    <div><span class="dim">  "fathom_score": </span><span class="highlight">78</span><span class="dim">,</span></div>
+    <div><span class="dim">  "grade": "</span><span class="highlight">A</span><span class="dim">",</span></div>
+    <div><span class="dim">  "interpretation": "Strong distributed reasoning"</span></div>
+    <div><span class="dim">}</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ XI. ACCESS ═══════════ -->
+<section class="cta-section" id="access">
   <h2 class="reveal">Request Access</h2>
   <div class="cta-sub reveal">Be first to measure how deeply AI thinks.</div>
-
   <form class="cta-form reveal" id="accessForm" name="access" method="POST" data-netlify="true">
     <input type="hidden" name="form-name" value="access">
     <input type="email" name="email" placeholder="you@organization.com" required id="accessEmail" autocomplete="email">
@@ -784,23 +1027,20 @@ footer {
   <div class="cta-status" id="accessStatus"></div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
-  <div class="footer-ip">Patent Pending US 64/020,489 &middot; 15 claims &middot; Priority March 29, 2026</div>
+  <div class="footer-ip">Patent Pending US 64/020,489 &amp; 64/021,113 &middot; 15 claims &middot; Priority March 29, 2026</div>
   <div class="footer-brand">DARKFLOBI</div>
   <div class="footer-epitaph">Built in the dark. Measured in the light.</div>
   <div class="footer-links">
     <a href="/fathom/blog">Research</a>
-    <a href="/fathom/demo">Demo</a>
     <a href="/dashboard">Dashboard</a>
-    <a href="/fathom/leaderboard">Leaderboard</a>
     <a href="/fathom/investors">Investors</a>
+    <a href="https://doi.org/10.5281/zenodo.19327451" target="_blank">Zenodo</a>
+    <a href="https://github.com/heyzoos123-blip/sae-reasoning-depth" target="_blank">GitHub</a>
   </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════════
-     SCRIPTS
-     ═══════════════════════════════════════════════════ -->
 <script>
 // ── Hero Canvas: Neural Depth Mandala ──────────────
 (function() {
@@ -808,8 +1048,8 @@ footer {
   const ctx = canvas.getContext('2d');
   let w, h, cx, cy;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
   let layers = [];
+
   function resize() {
     const rect = canvas.parentElement.getBoundingClientRect();
     w = rect.width; h = rect.height;
@@ -817,66 +1057,44 @@ footer {
     canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     cx = w / 2; cy = h / 2;
-    // Build layer rings
     layers = [];
     const count = 14, maxR = Math.min(w, h) * 0.38;
     for (let i = 0; i < count; i++) {
       const t = i / (count - 1);
       const midness = Math.max(0, 1 - Math.abs(t - 0.42) * 2.5);
-      layers.push({
-        radius: 40 + t * maxR,
-        nodes: 5 + Math.floor(t * 14),
-        speed: (0.00015 + t * 0.00025) * (i % 2 === 0 ? 1 : -1),
-        alpha: 0.05 + midness * 0.18,
-        offset: i * 0.47
-      });
+      layers.push({ radius: 40 + t * maxR, nodes: 5 + Math.floor(t * 14), speed: (0.00015 + t * 0.00025) * (i % 2 === 0 ? 1 : -1), alpha: 0.05 + midness * 0.18, offset: i * 0.47 });
     }
   }
 
-  // Drifting particles
   const particles = [];
   for (let i = 0; i < 50; i++) {
-    particles.push({
-      a: Math.random() * Math.PI * 2,
-      r: 20 + Math.random() * 320,
-      s: (0.00005 + Math.random() * 0.0002) * (Math.random() > 0.5 ? 1 : -1),
-      size: 0.4 + Math.random() * 1.8,
-      alpha: 0.015 + Math.random() * 0.07
-    });
+    particles.push({ a: Math.random() * Math.PI * 2, r: 20 + Math.random() * 320, s: (0.00005 + Math.random() * 0.0002) * (Math.random() > 0.5 ? 1 : -1), size: 0.4 + Math.random() * 1.8, alpha: 0.015 + Math.random() * 0.07 });
   }
 
   function draw(time) {
     ctx.clearRect(0, 0, w, h);
-
-    // Center glow
     const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 140);
     cg.addColorStop(0, 'rgba(0, 255, 168, 0.05)');
     cg.addColorStop(1, 'transparent');
     ctx.fillStyle = cg;
     ctx.fillRect(cx - 140, cy - 140, 280, 280);
 
-    // Draw layers + collect node positions for cross-connections
     const allNodes = [];
     for (const L of layers) {
       const angle = time * L.speed + L.offset;
       const r = L.radius * (0.97 + Math.sin(time * 0.0004 + L.offset) * 0.03);
       const nodes = [];
-
-      // Faint ring trace
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(0, 255, 168, ${L.alpha * 0.15})`;
       ctx.lineWidth = 0.5;
       ctx.stroke();
-
       for (let n = 0; n < L.nodes; n++) {
         const a = angle + (n / L.nodes) * Math.PI * 2;
         const x = cx + Math.cos(a) * r;
         const y = cy + Math.sin(a) * r;
         const sz = 1.2 + L.alpha * 8;
         nodes.push({ x, y });
-
-        // Glow halo on mid-layer nodes
         if (L.alpha > 0.12) {
           const g = ctx.createRadialGradient(x, y, 0, x, y, sz * 5);
           g.addColorStop(0, `rgba(0, 255, 168, ${L.alpha * 0.25})`);
@@ -884,14 +1102,10 @@ footer {
           ctx.fillStyle = g;
           ctx.fillRect(x - sz * 5, y - sz * 5, sz * 10, sz * 10);
         }
-
-        // Node
         ctx.beginPath();
         ctx.arc(x, y, sz, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(0, 255, 168, ${L.alpha})`;
         ctx.fill();
-
-        // Intra-layer edge
         const a2 = angle + ((n + 1) / L.nodes) * Math.PI * 2;
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -902,8 +1116,6 @@ footer {
       }
       allNodes.push({ nodes, alpha: L.alpha });
     }
-
-    // Cross-layer attribution paths
     for (let i = 0; i < allNodes.length - 1; i++) {
       const from = allNodes[i], to = allNodes[i + 1];
       const a = Math.min(from.alpha, to.alpha) * 0.1;
@@ -911,115 +1123,214 @@ footer {
       const step = Math.max(1, Math.floor(from.nodes.length / 3));
       for (let n = 0; n < from.nodes.length; n += step) {
         const f = from.nodes[n], t = to.nodes[n % to.nodes.length];
-        ctx.beginPath();
-        ctx.moveTo(f.x, f.y);
-        ctx.lineTo(t.x, t.y);
-        ctx.strokeStyle = `rgba(0, 255, 168, ${a})`;
-        ctx.lineWidth = 0.3;
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(t.x, t.y);
+        ctx.strokeStyle = `rgba(0, 255, 168, ${a})`; ctx.lineWidth = 0.3; ctx.stroke();
       }
     }
-
-    // Particles
     for (const p of particles) {
       p.a += p.s;
-      const x = cx + Math.cos(p.a) * p.r;
-      const y = cy + Math.sin(p.a) * p.r;
       ctx.beginPath();
-      ctx.arc(x, y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0, 255, 168, ${p.alpha})`;
-      ctx.fill();
+      ctx.arc(cx + Math.cos(p.a) * p.r, cy + Math.sin(p.a) * p.r, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 255, 168, ${p.alpha})`; ctx.fill();
     }
-
-    // Center pulse
     const pulse = 0.5 + Math.sin(time * 0.0008) * 0.3;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(0, 255, 168, ${pulse})`;
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0, 255, 168, ${pulse})`; ctx.fill();
     const ch = ctx.createRadialGradient(cx, cy, 0, cx, cy, 24);
     ch.addColorStop(0, `rgba(0, 255, 168, ${pulse * 0.2})`);
     ch.addColorStop(1, 'transparent');
-    ctx.fillStyle = ch;
-    ctx.fillRect(cx - 24, cy - 24, 48, 48);
-
+    ctx.fillStyle = ch; ctx.fillRect(cx - 24, cy - 24, 48, 48);
     requestAnimationFrame(draw);
   }
-
   resize();
   window.addEventListener('resize', resize);
   requestAnimationFrame(draw);
 })();
 
-// ── Reveal on Scroll ──────────────────────────────
-const revealObserver = new IntersectionObserver((entries) => {
+// ── Hamburger ─────────────────────────────────────
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  hamburger.setAttribute('aria-expanded', mobileMenu.classList.contains('open'));
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); } });
+
+// ── Active nav tracking ───────────────────────────
+const navLinks = document.querySelectorAll('.nav-links a');
+const navObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+    }
+  });
+}, { threshold: 0.3, rootMargin: '-60px 0px -40% 0px' });
+document.querySelectorAll('section[id]').forEach(s => navObserver.observe(s));
+
+// ── Reveal on scroll ──────────────────────────────
+const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
       e.target.classList.add('visible');
-      // Trigger count-up for numbers
-      if (e.target.classList.contains('proof-grid')) {
-        countUp();
-      }
+      if (e.target.classList.contains('proof-grid')) countUp();
     }
   });
 }, { threshold: 0.2 });
-
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// ── Number Count-Up ──────────────────────────────
+// ── Number count-up ───────────────────────────────
 let counted = false;
 function countUp() {
   if (counted) return;
   counted = true;
-
   document.querySelectorAll('[data-count]').forEach(el => {
     const target = parseFloat(el.dataset.target);
     const decimals = parseInt(el.dataset.decimals) || 0;
     const prefix = el.dataset.prefix || '';
-    const duration = 2000;
     const start = performance.now();
-
     function tick(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
+      const progress = Math.min((now - start) / 2000, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      const current = target * eased;
-      el.textContent = prefix + current.toFixed(decimals);
+      el.textContent = prefix + (target * eased).toFixed(decimals);
       if (progress < 1) requestAnimationFrame(tick);
     }
-
     el.textContent = prefix + (0).toFixed(decimals);
     requestAnimationFrame(tick);
   });
 }
 
-// ── Form (Netlify Forms) ─────────────────────────
+// ── Legacy route handling ─────────────────────────
+const path = window.location.pathname;
+if (path === '/fathom/demo') location.hash = '#demo';
+else if (path === '/fathom/waitlist') location.hash = '#access';
+else if (path === '/fathom/leaderboard') location.hash = '#leaderboard';
+
+// ── Demo engine ───────────────────────────────────
+const DEMO_DATA = {
+  capital: { prompt: "The capital of France is", grade: "D", score: 28, depth: 8.71, entropy: 2.41, features: 89, layers: [0.02,0.02,0.03,0.02,0.02,0.02,0.02,0.02,0.01,0.02,0.02,0.02,0.02,0.03,0.03,0.03,0.04,0.05,0.06,0.07,0.08,0.10,0.12,0.15,0.18,0.22], interp: "Shallow recall. The model reaches directly for a cached answer.", signal: "surface_recall" },
+  inflation: { prompt: "Why do economies experience inflation during monetary expansion", grade: "A", score: 82, depth: 7.64, entropy: 3.52, features: 147, layers: [0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.11,0.12,0.12,0.11,0.10,0.09,0.08,0.07,0.06,0.06,0.05,0.05,0.04,0.04,0.04,0.03,0.03,0.03,0.03], interp: "Deep causal integration. Multiple economic mechanisms synthesized across mid-layers.", signal: "deep_reasoning" },
+  dna: { prompt: "What is DNA", grade: "C", score: 42, depth: 8.42, entropy: 2.78, features: 103, layers: [0.02,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.04,0.04,0.04,0.05,0.05,0.06,0.07,0.08,0.09,0.10,0.12,0.14,0.16], interp: "Definitional retrieval with some structural explanation.", signal: "shallow_retrieval" },
+  "dna-why": { prompt: "Why does DNA use a double helix rather than a single strand", grade: "A", score: 78, depth: 7.78, entropy: 3.38, features: 138, layers: [0.04,0.04,0.05,0.06,0.07,0.08,0.09,0.10,0.10,0.10,0.10,0.09,0.09,0.08,0.07,0.06,0.06,0.05,0.05,0.04,0.04,0.04,0.03,0.03,0.03,0.03], interp: "Causal reasoning across biochemistry, physics, and evolutionary biology.", signal: "deep_reasoning" },
+  godel: { prompt: "Explain why Godel's incompleteness theorem implies no formal system can prove its own consistency", grade: "S", score: 94, depth: 7.18, entropy: 3.71, features: 168, layers: [0.05,0.06,0.07,0.07,0.08,0.08,0.09,0.09,0.09,0.09,0.08,0.08,0.07,0.07,0.06,0.06,0.05,0.05,0.04,0.04,0.04,0.03,0.03,0.03,0.03,0.02], interp: "Meta-logical self-reference. Highest depth: simultaneous formal reasoning across multiple abstraction levels.", signal: "deep_reasoning" },
+  arithmetic: { prompt: "What is 2 + 2", grade: "F", score: 8, depth: 9.21, entropy: 1.82, features: 42, layers: [0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.02,0.02,0.02,0.03,0.04,0.06,0.08,0.11,0.14,0.18,0.22,0.28], interp: "Pure sequential computation. No integration required.", signal: "surface_recall" }
+};
+const SCALE_DATA = [
+  { score: 0.5723, task: "Godel incompleteness", cat: "Meta-logical self-reference", color: "var(--gold)" },
+  { score: 0.4749, task: "Exercise to mental health", cat: "Causal web synthesis", color: "var(--green)" },
+  { score: 0.3905, task: "Mirror reversal (causal)", cat: "Causal synthesis", color: "var(--green)" },
+  { score: 0.3799, task: "Logical syllogism", cat: "Logical integration", color: "var(--cyan)" },
+  { score: 0.3216, task: "Free will / compatibilism", cat: "Partial synthesis", color: "var(--cyan)" },
+  { score: 0.1753, task: "Heraclitus paradox", cat: "Explanatory", color: "var(--orange)" },
+  { score: 0.1579, task: "Time perception", cat: "Listed explanation", color: "var(--orange)" },
+  { score: 0.0870, task: "Probability (marbles)", cat: "Structured calculation", color: "var(--orange)" },
+  { score: 0.0000, task: "Algebra (age problem)", cat: "Sequential computation", color: "var(--red)" },
+  { score: 0.0000, task: "Arithmetic (bat-and-ball)", cat: "Sequential computation", color: "var(--red)" },
+];
+
+function buildScale() {
+  const c = document.getElementById('scaleContainer');
+  SCALE_DATA.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'scale-item';
+    el.style.transitionDelay = (i * 0.08) + 's';
+    el.innerHTML = `<div class="scale-score" style="color:${item.color}">${item.score.toFixed(4)}</div><div class="scale-dot" style="border-color:${item.color}"></div><div class="scale-info"><div class="scale-task">${item.task}</div><div class="scale-category">${item.cat}</div><div class="scale-bar-track"><div class="scale-bar-fill" style="background:${item.color}" data-width="${(item.score / 0.5723) * 100}"></div></div></div>`;
+    c.appendChild(el);
+  });
+}
+
+function renderHeatmap(container, layers, signal) {
+  container.innerHTML = '';
+  const max = Math.max(...layers);
+  const isDeep = signal === 'deep_reasoning';
+  layers.forEach((val, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'layer-bar';
+    const intensity = val / max;
+    const hue = isDeep ? (120 + (i/layers.length) * 80) : (30 - (i/layers.length) * 30);
+    bar.style.height = (intensity * 48) + 'px';
+    bar.style.background = `hsl(${hue}, ${80 + intensity*20}%, ${30 + intensity*40}%)`;
+    bar.dataset.layer = `L${i+1}: ${(val*100).toFixed(0)}%`;
+    container.appendChild(bar);
+  });
+}
+
+function runDemo(key) {
+  let data;
+  if (key && DEMO_DATA[key]) { data = DEMO_DATA[key]; document.getElementById('demoInput').value = data.prompt; }
+  else { const input = document.getElementById('demoInput').value.trim().toLowerCase(); const match = Object.entries(DEMO_DATA).find(([k, v]) => input.includes(v.prompt.toLowerCase().slice(0, 15))); data = match ? match[1] : DEMO_DATA.inflation; }
+  const result = document.getElementById('vizResult');
+  result.classList.remove('active'); void result.offsetWidth; result.classList.add('active');
+  document.getElementById('demoGrade').textContent = data.grade;
+  document.getElementById('demoGrade').className = 'grade-ring grade-' + data.grade;
+  document.getElementById('demoScore').textContent = data.score;
+  document.getElementById('demoInterp').textContent = data.interp;
+  document.getElementById('demoDepth').textContent = data.depth.toFixed(3);
+  document.getElementById('demoDepth').style.color = data.signal === 'deep_reasoning' ? 'var(--green)' : 'var(--orange)';
+  document.getElementById('demoEntropy').textContent = data.entropy.toFixed(3);
+  document.getElementById('demoEntropy').style.color = 'var(--cyan)';
+  document.getElementById('demoFeatures').textContent = data.features;
+  renderHeatmap(document.getElementById('demoHeatmap'), data.layers, data.signal);
+  const delta = DEMO_DATA.capital.depth - data.depth;
+  const deltaEl = document.getElementById('demoDelta');
+  if (data !== DEMO_DATA.capital && data !== DEMO_DATA.arithmetic) {
+    deltaEl.style.display = 'block';
+    const dv = document.getElementById('demoDeltaVal');
+    dv.textContent = (delta >= 0 ? '+' : '') + delta.toFixed(3) + ' deeper';
+    dv.className = 'delta-value ' + (delta >= 0 ? 'delta-positive' : 'delta-negative');
+    document.getElementById('demoDeltaVerdict').textContent = delta > 0.5 ? 'Dramatically deeper computation' : delta > 0 ? 'Measurably deeper computation' : 'Shallower than baseline';
+  } else { deltaEl.style.display = 'none'; }
+  document.querySelectorAll('.preset').forEach(p => p.classList.remove('active'));
+  if (key) document.querySelector(`[data-pair="${key}"]`)?.classList.add('active');
+}
+document.querySelectorAll('.preset').forEach(btn => btn.addEventListener('click', () => runDemo(btn.dataset.pair)));
+
+// ── Leaderboard ───────────────────────────────────
+const LB_DATA = [
+  { rank: 1, model: "GPT-4o", provider: "OpenAI", ratio: 1.0043, delta: 0.0029, pct: 60 },
+  { rank: 2, model: "Claude Haiku", provider: "Anthropic", ratio: 1.0033, delta: 0.0022, pct: 67 },
+  { rank: 3, model: "GPT-4o Mini", provider: "OpenAI", ratio: 1.0029, delta: 0.0019, pct: 53 },
+  { rank: 4, model: "Claude Sonnet", provider: "Anthropic", ratio: 1.0002, delta: 0.0001, pct: 47 },
+];
+function buildLeaderboard() {
+  const maxD = Math.max(...LB_DATA.map(d => d.delta));
+  document.getElementById('lbBody').innerHTML = LB_DATA.map(d => `<tr><td class="rank-${d.rank}">${d.rank}</td><td><div class="model-name">${d.model}</div><div class="model-provider">${d.provider}</div></td><td style="font-family:var(--font-mono)">${d.ratio.toFixed(4)}</td><td class="${d.delta > 0.001 ? 'delta-positive' : 'delta-flat'}">${d.delta > 0 ? '+' : ''}${d.delta.toFixed(4)}</td><td class="bar-cell"><div class="bar-wrap"><div class="bar-fill tier${d.rank}" style="width:0%" data-w="${(d.delta/maxD*100).toFixed(0)}"></div></div></td><td class="${d.pct >= 60 ? 'pct-high' : ''}">${d.pct}%</td></tr>`).join('');
+  setTimeout(() => document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; }), 400);
+}
+
+// ── Form ──────────────────────────────────────────
 document.getElementById('accessForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('accessEmail').value;
   const status = document.getElementById('accessStatus');
-
   try {
-    const res = await fetch('/', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({'form-name': 'access', email}).toString()
-    });
-    if (res.ok) {
-      status.textContent = "We'll be in touch.";
-      status.className = 'cta-status success';
-      document.getElementById('accessEmail').value = '';
-    } else {
-      status.textContent = 'Something went wrong.';
-      status.className = 'cta-status error';
+    const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ 'form-name': 'access', email }).toString() });
+    if (r.ok) { status.textContent = "You're on the list."; status.className = 'cta-status success'; document.getElementById('accessEmail').value = ''; }
+    else throw new Error();
+  } catch { status.textContent = 'Saved locally. We\'ll follow up.'; status.className = 'cta-status success'; const s = JSON.parse(localStorage.getItem('fathom_waitlist') || '[]'); if (!s.includes(email)) { s.push(email); localStorage.setItem('fathom_waitlist', JSON.stringify(s)); } }
+});
+
+// ── Scale scroll animations ───────────────────────
+const scaleObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && entry.target.classList.contains('scale-item')) {
+      entry.target.classList.add('visible');
+      const fill = entry.target.querySelector('.scale-bar-fill');
+      if (fill) setTimeout(() => { fill.style.width = fill.dataset.width + '%'; }, 200);
     }
-  } catch {
-    status.textContent = 'Connection failed. Try again.';
-    status.className = 'cta-status error';
-  }
+  });
+}, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+// ── Init ──────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildScale();
+  buildLeaderboard();
+  document.querySelectorAll('.scale-item').forEach(el => scaleObs.observe(el));
+  setTimeout(() => runDemo('inflation'), 500);
+  document.getElementById('demoInput').addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
 });
 </script>
-
 </body>
 </html>

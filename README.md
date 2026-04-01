@@ -9,7 +9,7 @@
 
 **Measure how deeply AI thinks.** Reasoning depth scoring via SAE circuit attribution.
 
-US Provisional Patent 64/020,489 | [Paper](https://arxiv.org/abs/XXXX.XXXXX) | [Blog](https://darkflobi.com/fathom-blog) | [Demo](https://darkflobi.com/fathom/demo) | [API Waitlist](https://darkflobi.com/fathom/waitlist)
+US Provisional Patents 64/020,489 & 64/021,113 | [Paper](https://doi.org/10.5281/zenodo.19326175) | [Blog](https://darkflobi.com/fathom-blog) | [Demo](https://darkflobi.com/fathom/demo) | [API Waitlist](https://darkflobi.com/fathom/waitlist)
 
 ---
 
@@ -94,7 +94,20 @@ Depth measures integration *structure*, not content volume. A shorter answer wit
 Concept-level integration tasks score *deeper* at T=0.3 than T=0.0 (+0.107 for syllogisms). Formal-precision tasks score *shallower* (-0.149 for Godel). Same pattern as biological stochastic resonance (Wiesenfeld & Moss 1995).
 
 ### The Fathom Constant
-Surface/insight depth ratio across architectures: Gemma-2-2B = 1.0302, Qwen3-0.6B = 1.0020. Mean = **1.0212**. The structural pattern holds across labs and parameter counts.
+Surface/insight depth ratio: Gemma-2-2B = 1.0302, Gemma-2-2B-IT = 1.0384. Weighted mean = **1.0343** (spread 0.0082, convergent). RLHF amplifies the signal (86.7% directional accuracy vs 76.7% base). Cross-family validation pending (Llama device error on retest).
+
+### RLHF Safety: Adversarial Depth Amplification (v3, April 2026)
+RLHF safety training deepens adversarial processing through additive early-layer circuits. n=30 matched pairs, base vs instruct Gemma-2-2B:
+- **Instruct model:** adversarial prompts route DEEPER (delta=-0.124, p=0.0028, Cohen's d=-0.596)
+- **Base model:** no significant depth difference (delta=+0.061, p=0.128)
+- **Both models:** 1.61-1.66x feature count explosion on adversarial inputs (p<0.000001)
+- Layer profile cosine similarity 0.996 = flooding/additive, not substitutive rerouting
+- Extra features concentrate 58-61% in early layers — front-loaded detection circuits
+- ICML submission target: Neel Nanda's Mech Interp Workshop (May 8, 2026)
+
+### Negative Results
+- **Entropy proxy does not detect K:** K_proxy=1.0015 vs SAE-based K=1.027 on Gemma. Activation entropy measures spread, not concept routing. SAE attribution is strictly necessary.
+- **Pythia-160m too small for depth routing:** 12-layer model shows no K signal even with SAE proxy. K emergence scan parked for larger models (OLMo).
 
 ### fMRI Topology Convergence
 Universality coefficient **0.830** between transformer layer distributions and human prefrontal/hippocampal activation patterns. Correlation, not causal claim.
@@ -165,6 +178,17 @@ python run_experiments.py
 
 All raw data in JSON: `results_power_replication.json`, `temperature_experiment_data.json`, `fathom_constant_v2_results.json`.
 
+```bash
+# RLHF selective amplification (white-box, GPU required)
+python score_remaining_pairs.py --model base
+python score_remaining_pairs.py --model instruct
+python score_remaining_pairs.py --analyze
+
+# Selective amplification cross-validation (black-box, API keys only)
+export ANTHROPIC_API_KEY=sk-ant-...
+python experiment_selective_blackbox.py --claude
+```
+
 ---
 
 ## Citation
@@ -175,7 +199,9 @@ All raw data in JSON: `results_power_replication.json`, `temperature_experiment_
          in Language Models via SAE Circuit Attribution},
   author={Rodabaugh, Alexander},
   year={2026},
-  journal={arXiv preprint arXiv:XXXX.XXXXX}
+  doi={10.5281/zenodo.19326175},
+  url={https://doi.org/10.5281/zenodo.19326175},
+  note={Zenodo preprint. arXiv submission pending.}
 }
 ```
 
