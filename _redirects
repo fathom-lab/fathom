@@ -1,11 +1,13 @@
-# Pretty URLs → actual files
+# Unified single-page site
 /fathom                /fathom.html                    200
+/fathom/demo           /fathom.html                    200
+/fathom/waitlist       /fathom.html                    200
+/fathom/leaderboard    /fathom.html                    200
+
+# Separate pages (tools + blog)
 /fathom/blog           /darkflobi-site/fathom-blog.html 200
-/fathom/demo           /demo/index.html                200
-/fathom/waitlist       /waitlist.html                  200
-/fathom/leaderboard    /fathom_leaderboard.html        200
 /fathom/investors      /fathom_investor_demo.html      200
 /dashboard             /dashboard/index.html           200
 
-# Root serves landing page directly
+# Root
 /                      /fathom.html                    200

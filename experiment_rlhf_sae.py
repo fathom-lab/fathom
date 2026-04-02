@@ -392,7 +392,7 @@ def generate_report(instruct_results, comparison):
         "---",
         "",
         f"*Generated at {c['timestamp'][:19]}*",
-        f"*Fathom -- US Patent Pending 64/020,489*",
+        f"*Fathom -- US Patent Pending 64/020,489 & 64/021,113*",
     ]
     return "\n".join(lines)
 

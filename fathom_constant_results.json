@@ -1,17 +1,18 @@
 {
-  "timestamp": "2026-03-28 17:49:18",
-  "duration_s": 810.7,
+  "timestamp": "2026-03-31 21:08:27",
+  "duration_s": 2614.0,
   "n_pairs": 30,
   "pair_source": "paper power replication set (p=0.000051)",
   "constant": {
-    "constant": 1.0302,
-    "convergent": false,
-    "spread": 0.0,
-    "n_models": 1,
+    "constant": 1.0343,
+    "convergent": true,
+    "spread": 0.0082,
+    "n_models": 2,
     "ratios": {
-      "google/gemma-2-2b": 1.0302
+      "google/gemma-2-2b": 1.0302,
+      "google/gemma-2-2b-it": 1.0384
     },
-    "total_pairs": 30
+    "total_pairs": 60
   },
   "models": [
     {
@@ -23,7 +24,19 @@
       "delta": 0.2408,
       "ratio": 1.0302,
       "pct_expected_direction": 0.7667,
-      "compute_time_s": 577.76,
+      "compute_time_s": 992.68,
+      "error": null
+    },
+    {
+      "model_name": "google/gemma-2-2b-it",
+      "transcoder_set": "gemma",
+      "n_pairs": 30,
+      "surface_mean": 8.0698,
+      "insight_mean": 7.7714,
+      "delta": 0.2984,
+      "ratio": 1.0384,
+      "pct_expected_direction": 0.8667,
+      "compute_time_s": 1378.68,
       "error": null
     },
     {
@@ -35,7 +48,7 @@
       "delta": 0.0,
       "ratio": 0.0,
       "pct_expected_direction": 0.0,
-      "compute_time_s": 228.01,
+      "compute_time_s": 238.41,
       "error": "No valid pairs"
     }
   ]

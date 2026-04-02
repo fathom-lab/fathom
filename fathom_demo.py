@@ -373,7 +373,7 @@ def main():
 
     print("\n" + "#" * 70)
     print("#  FATHOM -- Measuring Reasoning Depth in Artificial Intelligence  #")
-    print("#  US Provisional Patent 64/020,489 | darkflobi.com/fathom         #")
+    print("#  US Provisional Patent 64/020,489 & 64/021,113 | darkflobi.com/fathom         #")
     print("#" * 70)
 
     # Check API

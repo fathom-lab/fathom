@@ -418,5 +418,205 @@
     "direction": "surface_deeper",
     "time_surface_s": 20.9,
     "time_insight_s": 26.1
+  },
+  {
+    "pair_id": "fire",
+    "surface_depth": 8.568264961242676,
+    "insight_depth": 8.348321914672852,
+    "delta": 0.21994304656982422,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 13.1,
+    "timestamp": "2026-03-30T00:19:14.397642"
+  },
+  {
+    "pair_id": "inflation",
+    "surface_depth": 8.358492851257324,
+    "insight_depth": 8.055797576904297,
+    "delta": 0.30269527435302734,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 10.5,
+    "timestamp": "2026-03-30T00:19:25.161914"
+  },
+  {
+    "pair_id": "habit",
+    "surface_depth": 8.168131828308105,
+    "insight_depth": 8.003212928771973,
+    "delta": 0.1649188995361328,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 11.2,
+    "timestamp": "2026-03-30T00:19:36.612712"
+  },
+  {
+    "pair_id": "trust",
+    "surface_depth": 8.055416107177734,
+    "insight_depth": 7.529255390167236,
+    "delta": 0.526160717010498,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 10.0,
+    "timestamp": "2026-03-30T00:19:47.332176"
+  },
+  {
+    "pair_id": "memory",
+    "surface_depth": 7.906740665435791,
+    "insight_depth": 7.450694561004639,
+    "delta": 0.45604610443115234,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.7,
+    "timestamp": "2026-03-30T00:19:57.256210"
+  },
+  {
+    "pair_id": "sleep",
+    "surface_depth": 8.240589141845703,
+    "insight_depth": 8.133182525634766,
+    "delta": 0.1074066162109375,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.6,
+    "timestamp": "2026-03-30T00:20:07.383289"
+  },
+  {
+    "pair_id": "antibiotics",
+    "surface_depth": 8.069694519042969,
+    "insight_depth": 7.723455429077148,
+    "delta": 0.3462390899658203,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.5,
+    "timestamp": "2026-03-30T00:20:17.348424"
+  },
+  {
+    "pair_id": "cities",
+    "surface_depth": 8.256516456604004,
+    "insight_depth": 7.909182071685791,
+    "delta": 0.3473343849182129,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.9,
+    "timestamp": "2026-03-30T00:20:27.473719"
+  },
+  {
+    "pair_id": "language",
+    "surface_depth": 8.054045677185059,
+    "insight_depth": 7.695671558380127,
+    "delta": 0.35837411880493164,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.2,
+    "timestamp": "2026-03-30T00:20:36.945554"
+  },
+  {
+    "pair_id": "debt",
+    "surface_depth": 8.02097225189209,
+    "insight_depth": 7.963517189025879,
+    "delta": 0.05745506286621094,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.5,
+    "timestamp": "2026-03-30T00:20:46.676004"
+  },
+  {
+    "pair_id": "pain",
+    "surface_depth": 7.906260013580322,
+    "insight_depth": 7.828911304473877,
+    "delta": 0.07734870910644531,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 11.0,
+    "timestamp": "2026-03-30T00:20:57.911634"
+  },
+  {
+    "pair_id": "feedback",
+    "surface_depth": 8.073599815368652,
+    "insight_depth": 7.794181823730469,
+    "delta": 0.2794179916381836,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.7,
+    "timestamp": "2026-03-30T00:21:08.335154"
+  },
+  {
+    "pair_id": "forests",
+    "surface_depth": 7.838654518127441,
+    "insight_depth": 8.09847354888916,
+    "delta": -0.25981903076171875,
+    "direction": "I>S",
+    "max_features_used": 100,
+    "time_s": 9.8,
+    "timestamp": "2026-03-30T00:21:18.395656"
+  },
+  {
+    "pair_id": "competition",
+    "surface_depth": 8.17108154296875,
+    "insight_depth": 7.785522937774658,
+    "delta": 0.3855586051940918,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 10.1,
+    "timestamp": "2026-03-30T00:21:28.756098"
+  },
+  {
+    "pair_id": "network effects",
+    "surface_depth": 7.931605815887451,
+    "insight_depth": 8.024788856506348,
+    "delta": -0.09318304061889648,
+    "direction": "I>S",
+    "max_features_used": 100,
+    "time_s": 9.5,
+    "timestamp": "2026-03-30T00:21:39.022672"
+  },
+  {
+    "pair_id": "exercise",
+    "surface_depth": 7.880390644073486,
+    "insight_depth": 7.855218410491943,
+    "delta": 0.02517223358154297,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.9,
+    "timestamp": "2026-03-30T00:21:49.178720"
+  },
+  {
+    "pair_id": "tides",
+    "surface_depth": 7.98699426651001,
+    "insight_depth": 7.543177604675293,
+    "delta": 0.4438166618347168,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 10.6,
+    "timestamp": "2026-03-30T00:22:00.351569"
+  },
+  {
+    "pair_id": "cooperation",
+    "surface_depth": 8.148012161254883,
+    "insight_depth": 7.7301859855651855,
+    "delta": 0.41782617568969727,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 10.1,
+    "timestamp": "2026-03-30T00:22:10.723905"
+  },
+  {
+    "pair_id": "perception",
+    "surface_depth": 7.83821964263916,
+    "insight_depth": 8.382401466369629,
+    "delta": -0.5441818237304688,
+    "direction": "I>S",
+    "max_features_used": 100,
+    "time_s": 10.9,
+    "timestamp": "2026-03-30T00:22:21.850253"
+  },
+  {
+    "pair_id": "curiosity",
+    "surface_depth": 8.08430290222168,
+    "insight_depth": 7.983726501464844,
+    "delta": 0.10057640075683594,
+    "direction": "S>I",
+    "max_features_used": 100,
+    "time_s": 9.8,
+    "timestamp": "2026-03-30T00:22:32.194343"
   }
 ]

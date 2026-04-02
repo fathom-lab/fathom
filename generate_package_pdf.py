@@ -26,7 +26,7 @@ class PDF(FPDF):
         self.set_y(-12)
         self.set_font("Arial", "I", 7)
         self.set_text_color(150, 150, 150)
-        self.cell(0, 5, "US Provisional Patent 64/020,489 | Patent Pending | darkflobi.com/fathom", align="C")
+        self.cell(0, 5, "US Provisional Patent 64/020,489 & 64/021,113 | Patent Pending | darkflobi.com/fathom", align="C")
 
     def section(self, title):
         self.ln(5)
@@ -108,7 +108,7 @@ pdf.set_text_color(200, 255, 200)
 pdf.set_font("Arial", "B", 10)
 x = 30
 pdf.set_x(x)
-pdf.cell(150, 8, "   US PROVISIONAL PATENT 64/020,489 | PATENT PENDING", fill=True, align="L", new_x="LMARGIN", new_y="NEXT")
+pdf.cell(150, 8, "   US PROVISIONAL PATENT 64/020,489 & 64/021,113 | PATENT PENDING", fill=True, align="L", new_x="LMARGIN", new_y="NEXT")
 
 pdf.ln(8)
 pdf.set_text_color(100, 100, 100)
@@ -247,7 +247,7 @@ pdf.body(
 
 # ── PAGE 4: PATENT COVERAGE ───────────────────────────────────────────────────
 pdf.add_page()
-pdf.section("Patent Coverage -- US 64/020,489")
+pdf.section("Patent Coverage -- US 64/020,489 & 64/021,113")
 
 pdf.body(
     "Filed: March 29, 2026 | Confirmation #: 8308 | Patent Center #: 75062003\n"
@@ -379,7 +379,7 @@ completed = [
     "Primary Gemma-2-2B experiment: 30 pairs, p=0.000051, K=1.0302",
     "Cross-arch replication (Llama-3.2-1B): 19 pairs, p=0.00266, K=1.0242",
     "Fathom Constant (2-model estimate): K = 1.027",
-    "USPTO Provisional Patent Filed: #64/020,489 -- Patent Pending",
+    "USPTO Provisional Patent Filed: #64/020,489 & 64/021,113 -- Patent Pending",
     "arXiv draft prepared: ID 7407675, source zip ready, awaiting endorsement",
     "Feature visualization data: 10,000+ features analyzed and catalogued",
     "Temperature/stochastic resonance experiments: validated across 40 prompts",
@@ -448,7 +448,7 @@ pdf.body(
     "Twitter: @darkflobi\n"
     "Website: https://darkflobi.com/fathom\n"
     "GitHub: github.com/heyzoos123-blip/darkflobi-industries\n\n"
-    "Patent: US Provisional 64/020,489 (filed March 29, 2026)\n"
+    "Patent: US Provisional 64/020,489 & 64/021,113 (filed March 29, 2026)\n"
     "arXiv: Draft ID 7407675 (cs.LG, pending endorsement)\n\n"
     "For partnership, licensing, or investment inquiries:\n"
     "Fathom measures what AI actually does. Everything else is marketing.",

@@ -19,7 +19,7 @@ class InvestorPDF(FPDF):
         self.set_y(-12)
         self.set_font("Arial", "I", 7)
         self.set_text_color(150,150,150)
-        self.cell(0, 5, "US Provisional Patent 64/020,489 | CONFIDENTIAL | darkflobi.com/fathom", align="C")
+        self.cell(0, 5, "US Provisional Patent 64/020,489 & 64/021,113 | CONFIDENTIAL | darkflobi.com/fathom", align="C")
 
 pdf = InvestorPDF()
 pdf.add_font("Arial", "", FONT)
@@ -156,7 +156,7 @@ body(
 # ── TRACTION ───────────────────────────────────────────────────────────────────
 section("TRACTION")
 rows2 = [
-    ("USPTO Provisional Patent","Filed 03/29/2026 -- #64/020,489 -- PATENT PENDING"),
+    ("USPTO Provisional Patent","Filed 03/29/2026 -- #64/020,489 & 64/021,113 -- PATENT PENDING"),
     ("arXiv Paper","Submitted ID 7407675 -- endorsement pending -- p=0.000051"),
     ("Cross-architecture","Gemma-2-2B + Llama-3.2-1B -- K converges"),
     ("Domain validation","5 industries -- 5/5 correct direction -- live demo"),
@@ -203,7 +203,7 @@ pdf.ln(4)
 pdf.set_font("Arial","B",9)
 pdf.set_text_color(0,100,40)
 pdf.set_x(18)
-pdf.cell(0,6,"Alexander Rodabaugh  --  @darkflobi  --  darkflobi.com/fathom  --  USPTO 64/020,489")
+pdf.cell(0,6,"Alexander Rodabaugh  --  @darkflobi  --  darkflobi.com/fathom  --  USPTO 64/020,489 & 64/021,113")
 
 pdf.output(str(OUT))
 print(f"PDF: {OUT}")

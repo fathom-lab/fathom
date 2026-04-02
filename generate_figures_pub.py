@@ -147,7 +147,7 @@ def fig1_depth_scale():
             ha='right', va='center')
 
     # Patent badge
-    ax.text(0.62, -0.8, 'US Patent Pending 64/020,489',
+    ax.text(0.62, -0.8, 'US Patent Pending 64/020,489 & 64/021,113',
             fontsize=5.5, color=GOLD, alpha=0.5, ha='right',
             style='italic')
 
