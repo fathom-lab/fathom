@@ -6,11 +6,13 @@ Monitors C_delta during token generation and intervenes when
 late-layer coherence spikes (cognitive lock-in signature).
 
 Architecture:
-    generate token → encoder pass (fast) → C_delta check
-    → if > threshold: subtract lock-in vector → next token
+    generate token → single run_with_hooks pass (fast) → C_delta check
+    → if > threshold: second pass with steering hook → modified logits
 
-No full circuit_tracer attribution in the loop.
-Encoder-only pass: single matrix multiply per layer (~5ms).
+Optimization (v2):
+    OLD: inner(tokens) + run_with_cache(tokens) = 2 full forward passes per token
+    NEW: run_with_hooks(tokens, capture_hooks) = 1 pass, captures hidden states inline
+    Overhead target: <10% (vs 61% before)
 
 Usage:
     from coherence_steerer import CoherenceSteerer
@@ -53,17 +55,22 @@ class GenerationResult:
     total_tokens: int
     generation_time_s: float
     monitor_overhead_s: float                    # time spent on C computation
+    overhead_pct: float                          # monitor_overhead / generation_time * 100
 
 
 class CoherenceSteerer:
     """
     Real-time coherence monitor and steering engine.
 
-    Uses transcoder encoder pass (single matmul per layer) for fast
-    feature activation extraction. No full circuit attribution needed.
+    Uses a single run_with_hooks forward pass per token to extract residual
+    stream activations alongside logit generation — eliminating the second
+    run_with_cache pass that caused 61% overhead.
+
+    When C_delta exceeds threshold, runs one additional pass with a steering
+    hook that subtracts the lock-in direction from the residual stream before
+    the final layer, producing corrected logits.
 
     Computes C_delta = mean(C_late) - mean(C_early) per token.
-    When C_delta exceeds threshold, injects steering vector to break lock-in.
     """
 
     def __init__(
@@ -103,32 +110,27 @@ class CoherenceSteerer:
         else:
             self.late_layers = late_layers
 
-        # Cache decoder weight norms for fast coherence
-        self._dec_norms = {}
+        # Cache decoder weights for fast coherence
         self._dec_weights = {}
         for i, tc in enumerate(self._tc_list):
             W_dec = getattr(tc, "W_dec", None)
             if W_dec is not None:
                 self._dec_weights[i] = W_dec
-                self._dec_norms[i] = W_dec.norm(dim=-1, keepdim=True).clamp(min=1e-8)
 
-        # Steering vector (computed from calibration data)
-        self._steering_vectors = {}  # {layer_idx: steering_vec}
+        # Build hook names list once (used every token)
+        self._monitor_layers = self.early_layers + self.late_layers
+        self._hook_names = {
+            l: f"blocks.{l}.hook_resid_post" for l in self._monitor_layers
+        }
 
         print(f"[CoherenceSteerer] Ready. {self._n_layers} layers, "
               f"early={self.early_layers}, late={self.late_layers}, "
               f"threshold={self.c_delta_threshold}")
 
     def _get_inner_model(self):
-        """Access inner HookedTransformer.
-
-        The ReplacementModel (TransformerLensReplacementModel) IS the
-        HookedTransformer — it has to_tokens, generate, hook_dict directly.
-        """
-        # The model itself might be the HookedTransformer
+        """Access inner HookedTransformer."""
         if hasattr(self._model, "to_tokens") and hasattr(self._model, "hook_dict"):
             return self._model
-        # Otherwise check nested
         for attr in ["model", "hooked_model", "_model"]:
             candidate = getattr(self._model, attr, None)
             if candidate is not None and hasattr(candidate, "to_tokens"):
@@ -165,7 +167,7 @@ class CoherenceSteerer:
         if n_active < 2:
             return None
 
-        k = min(self.top_k, n_active)
+        k = min(self.top_k, int(n_active))
         topk_vals, topk_ids = torch.topk(acts, k)
 
         # Get decoder vectors for these features
@@ -217,9 +219,9 @@ class CoherenceSteerer:
         """
         Compute the lock-in direction at a given layer.
 
-        The lock-in direction is the mean of the top-k most activated
-        feature decoder vectors. Subtracting this pushes the hidden state
-        away from the current attractor.
+        The lock-in direction is the magnitude-weighted mean of the top-k
+        activated feature decoder vectors. Subtracting this from the
+        residual stream pushes it away from the current attractor basin.
         """
         tc = self._tc_list[layer_idx]
         W_enc = getattr(tc, "W_enc", None)
@@ -239,7 +241,7 @@ class CoherenceSteerer:
         if n_active < 1:
             return None
 
-        k = min(20, n_active)  # top-20 for steering direction
+        k = min(20, int(n_active))  # top-20 for steering direction
         topk_vals, topk_ids = torch.topk(acts, k)
 
         valid_mask = topk_ids < W_dec.shape[0]
@@ -264,10 +266,7 @@ class CoherenceSteerer:
         prompt: str,
         max_tokens: int = 50,
     ) -> GenerationResult:
-        """
-        Generate text while monitoring C_delta at each token.
-        No intervention — just observation.
-        """
+        """Generate text while monitoring C_delta at each token. No intervention."""
         return self._generate(prompt, max_tokens, steer=False)
 
     def generate_steered(
@@ -275,11 +274,23 @@ class CoherenceSteerer:
         prompt: str,
         max_tokens: int = 50,
     ) -> GenerationResult:
-        """
-        Generate text with active steering.
-        When C_delta exceeds threshold, inject correction vector.
-        """
+        """Generate text with active steering when lock-in detected."""
         return self._generate(prompt, max_tokens, steer=True)
+
+    def _build_capture_hooks(self, hidden_states: dict) -> list:
+        """
+        Build fwd_hooks list that writes last-token residual stream into hidden_states dict.
+        Called once per token — closure captures the dict by reference so it's filled in-place.
+        """
+        hooks = []
+        for l in self._monitor_layers:
+            name = self._hook_names[l]
+            def _hook(value, hook, _l=l):
+                # value: (batch=1, seq, d_model) — grab last token position
+                hidden_states[_l] = value[0, -1].detach().clone()
+                return value
+            hooks.append((name, _hook))
+        return hooks
 
     def _generate(
         self,
@@ -287,7 +298,18 @@ class CoherenceSteerer:
         max_tokens: int,
         steer: bool,
     ) -> GenerationResult:
-        """Core generation loop with optional steering."""
+        """
+        Core generation loop with optional steering.
+
+        Per-token flow (optimized):
+            1. run_with_hooks(tokens, capture_hooks) — ONE forward pass,
+               captures last-token hidden states inline → logits
+            2. Compute C_delta from captured hidden states (encoder-only matmuls)
+            3. If steer=True and C_delta > threshold:
+                 run_with_hooks(tokens, steer_hook) — one extra pass,
+                 modifies residual stream at lock-in layer → corrected logits
+            4. Append argmax(logits[-1]) to sequence
+        """
         inner = self._inner
         if inner is None:
             raise ValueError("Inner model not accessible")
@@ -302,48 +324,22 @@ class CoherenceSteerer:
         t_start = time.time()
 
         for step in range(max_tokens):
-            with torch.no_grad():
-                logits = inner(tokens)
-
-            # Get next token
-            next_token_id = logits[0, -1].argmax().item()
-            next_token_str = inner.tokenizer.decode([next_token_id])
-
-            # Stop on EOS
-            if next_token_id == inner.tokenizer.eos_token_id:
-                break
-
-            # ── C_delta monitoring ──
-            t_monitor = time.time()
-
-            # Extract hidden states using run_with_cache
-            monitor_layers = self.early_layers + self.late_layers
-            hook_names = [f"blocks.{l}.hook_resid_post" for l in monitor_layers]
-
-            with torch.no_grad():
-                _, cache = inner.run_with_cache(
-                    tokens,
-                    names_filter=lambda name: name in hook_names,
-                )
-
+            # ── Step 1: single forward pass, capture hidden states ──
             hidden_states = {}
-            for layer_idx in monitor_layers:
-                key = f"blocks.{layer_idx}.hook_resid_post"
-                if key in cache:
-                    hidden_states[layer_idx] = cache[key][0, -1].detach()
+            capture_hooks = self._build_capture_hooks(hidden_states)
 
-            del cache
+            t_monitor = time.time()
+            with torch.no_grad():
+                logits = inner.run_with_hooks(tokens, fwd_hooks=capture_hooks)
 
-            # Compute C_delta
+            # ── Step 2: C_delta from captured activations ──
             c_delta, layer_c = self._fast_c_delta(hidden_states)
             c_delta_trajectory.append(c_delta)
             c_layer_trajectory.append({k: v for k, v in layer_c.items() if v is not None})
-
             monitor_time += time.time() - t_monitor
 
-            # ── Steering intervention ──
+            # ── Step 3: steering intervention (if enabled + triggered) ──
             if steer and c_delta is not None and c_delta > self.c_delta_threshold:
-                # Find the late layer with highest coherence
                 late_c = {l: layer_c[l] for l in self.late_layers if layer_c.get(l) is not None}
                 if late_c:
                     lock_layer = max(late_c, key=late_c.get)
@@ -351,21 +347,42 @@ class CoherenceSteerer:
                         hidden_states[lock_layer], lock_layer
                     )
                     if lock_dir is not None:
-                        # Subtract lock-in direction from logits
-                        # This is a simplified version — full version would
-                        # modify the residual stream before the final layer
-                        interventions.append(step)
-                        print(f"    [STEER] token {step} '{next_token_str}' "
-                              f"C_delta={c_delta:+.4f} > {self.c_delta_threshold} "
-                              f"— intervening at layer {lock_layer}")
+                        # Build steering hook: subtract lock-in direction from residual stream
+                        _dir = lock_dir.to(tokens.device)
+                        _strength = self.steering_strength
+                        _layer_name = self._hook_names[lock_layer]
 
-            # Append token
+                        def _steer_hook(value, hook, _d=_dir, _s=_strength):
+                            # Project out the lock-in direction from last token position
+                            h = value[0, -1].float()
+                            proj_coeff = (h @ _d)
+                            value[0, -1] = (h - _s * proj_coeff * _d).to(value.dtype)
+                            return value
+
+                        with torch.no_grad():
+                            logits = inner.run_with_hooks(
+                                tokens, fwd_hooks=[(_layer_name, _steer_hook)]
+                            )
+                        interventions.append(step)
+
+                        next_token_id_before = logits[0, -1].argmax().item()
+                        print(f"    [STEER] step {step} C_delta={c_delta:+.4f} > {self.c_delta_threshold} "
+                              f"— steered at layer {lock_layer}")
+
+            # ── Step 4: decode next token ──
+            next_token_id = logits[0, -1].argmax().item()
+            next_token_str = inner.tokenizer.decode([next_token_id])
+
+            if next_token_id == inner.tokenizer.eos_token_id:
+                break
+
             generated_tokens.append(next_token_str)
             next_token_tensor = torch.tensor([[next_token_id]], device=tokens.device)
             tokens = torch.cat([tokens, next_token_tensor], dim=1)
 
         elapsed = time.time() - t_start
         full_text = "".join(generated_tokens)
+        overhead_pct = (monitor_time / max(elapsed, 0.001)) * 100
 
         return GenerationResult(
             prompt=prompt,
@@ -378,6 +395,7 @@ class CoherenceSteerer:
             total_tokens=len(generated_tokens),
             generation_time_s=elapsed,
             monitor_overhead_s=monitor_time,
+            overhead_pct=overhead_pct,
         )
 
     # ── Calibration ─────────────────────────────────────────────────────
@@ -403,7 +421,6 @@ class CoherenceSteerer:
                     halluc_deltas.append(result.c_delta_trajectory[0])
 
         if correct_deltas and halluc_deltas:
-            # Threshold = midpoint between means
             c_mean = np.mean(correct_deltas)
             h_mean = np.mean(halluc_deltas)
             self.c_delta_threshold = float((c_mean + h_mean) / 2)
@@ -414,7 +431,7 @@ class CoherenceSteerer:
     # ── Quick demo ──────────────────────────────────────────────────────
 
     def demo(self, prompt: str = "The capital of France is", max_tokens: int = 30):
-        """Quick demo of monitored generation."""
+        """Quick demo of monitored generation with overhead measurement."""
         print(f"\n{'='*60}")
         print(f"FATHOM COHERENCE MONITOR — LIVE DEMO")
         print(f"{'='*60}")
@@ -433,14 +450,21 @@ class CoherenceSteerer:
 
         print(f"\nStats:")
         print(f"  tokens: {result.total_tokens}")
-        print(f"  generation time: {result.generation_time_s:.1f}s")
-        print(f"  monitor overhead: {result.monitor_overhead_s:.3f}s "
-              f"({result.monitor_overhead_s/max(result.generation_time_s,0.001)*100:.1f}%)")
+        print(f"  generation time: {result.generation_time_s:.2f}s")
+        print(f"  monitor overhead: {result.monitor_overhead_s:.3f}s ({result.overhead_pct:.1f}%)")
 
         return result
 
 
 if __name__ == "__main__":
     steerer = CoherenceSteerer()
-    steerer.demo("The meaning of life is")
-    steerer.demo("The president of Australia is")
+
+    print("\n--- AUSTRALIA DEMO (monitor) ---")
+    r1 = steerer.demo("The president of Australia is", max_tokens=20)
+
+    print(f"\n--- AUSTRALIA DEMO (steered) ---")
+    r2 = steerer.generate_steered("The president of Australia is", max_tokens=20)
+    print(f"Unsteered: {r1.text}")
+    print(f"Steered:   {r2.text}")
+    print(f"Interventions: {r2.interventions}")
+    print(f"Overhead: {r1.overhead_pct:.1f}%")
