@@ -120,7 +120,15 @@ class CoherenceSteerer:
               f"threshold={self.c_delta_threshold}")
 
     def _get_inner_model(self):
-        """Access inner HookedTransformer."""
+        """Access inner HookedTransformer.
+
+        The ReplacementModel (TransformerLensReplacementModel) IS the
+        HookedTransformer — it has to_tokens, generate, hook_dict directly.
+        """
+        # The model itself might be the HookedTransformer
+        if hasattr(self._model, "to_tokens") and hasattr(self._model, "hook_dict"):
+            return self._model
+        # Otherwise check nested
         for attr in ["model", "hooked_model", "_model"]:
             candidate = getattr(self._model, attr, None)
             if candidate is not None and hasattr(candidate, "to_tokens"):
@@ -308,31 +316,23 @@ class CoherenceSteerer:
             # ── C_delta monitoring ──
             t_monitor = time.time()
 
-            # Extract hidden states at key layers using hooks
-            hidden_states = {}
-            hooks = []
-
-            def make_hook(layer_idx):
-                def hook_fn(value, hook):
-                    # value shape: (batch, seq, d_model)
-                    hidden_states[layer_idx] = value[0, -1].detach()
-                return hook_fn
-
-            # Only hook early + late layers for speed
+            # Extract hidden states using run_with_cache
             monitor_layers = self.early_layers + self.late_layers
-            for layer_idx in monitor_layers:
-                hook_name = f"blocks.{layer_idx}.hook_resid_post"
-                if hook_name in inner.hook_dict:
-                    h = inner.hook_dict[hook_name].add_hook(make_hook(layer_idx))
-                    hooks.append(h)
+            hook_names = [f"blocks.{l}.hook_resid_post" for l in monitor_layers]
 
-            # Forward pass with hooks to capture hidden states
             with torch.no_grad():
-                inner(tokens)
+                _, cache = inner.run_with_cache(
+                    tokens,
+                    names_filter=lambda name: name in hook_names,
+                )
 
-            # Remove hooks
-            for h in hooks:
-                h.remove()
+            hidden_states = {}
+            for layer_idx in monitor_layers:
+                key = f"blocks.{layer_idx}.hook_resid_post"
+                if key in cache:
+                    hidden_states[layer_idx] = cache[key][0, -1].detach()
+
+            del cache
 
             # Compute C_delta
             c_delta, layer_c = self._fast_c_delta(hidden_states)
