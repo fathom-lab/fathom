@@ -150,6 +150,8 @@ class DepthResult:
     depth_score_std: Optional[float] = None
     # ── Coherence (C axis) ──
     coherence_score: Optional[float] = None  # mean pairwise cosine sim of top-k feature decoders
+    layer_coherence: Optional[dict] = None   # {layer_idx: C_score} per-layer coherence profile
+    c_delta: Optional[float] = None          # C_late - C_early: negative = hallucination signature
     feature_indices: Optional[list] = None   # (layer, feature_idx) pairs for analysis
 
     def to_dict(self):
@@ -525,6 +527,108 @@ class DepthScorer:
 
         return float(np.mean(pairwise_sims))
 
+    def _compute_per_layer_coherence(
+        self, feature_indices: list
+    ) -> Optional[dict]:
+        """Compute coherence (C) separately within each layer.
+
+        Returns {layer_idx: C_score} where C_score is mean pairwise cosine
+        similarity of decoder vectors for features activated in that layer only.
+        Layers with fewer than 2 features return None (not 0 — zero would
+        artificially suppress the curve at sparse layers).
+
+        This is the refined coherence metric: cross-layer comparisons are
+        meaningless because early and late layers encode different abstractions.
+        Per-layer C measures whether concepts at EACH level are coherent.
+        """
+        if not feature_indices:
+            return None
+
+        # Group features by layer
+        by_layer = {}
+        for lyr, fid in feature_indices:
+            by_layer.setdefault(lyr, []).append(fid)
+
+        # Access transcoders
+        tc = getattr(self._model, "transcoders", None)
+        tc_list = getattr(tc, "transcoders", None) if tc is not None else None
+        if tc_list is None:
+            return None
+
+        layer_coherences = {}
+        for layer_idx in range(self._n_layers):
+            feat_ids = by_layer.get(layer_idx, [])
+            if len(feat_ids) < 2:
+                layer_coherences[layer_idx] = None
+                continue
+
+            try:
+                sae = tc_list[layer_idx]
+                W_dec = None
+                for attr in ["W_dec", "decoder", "weight_dec"]:
+                    w = getattr(sae, attr, None)
+                    if w is not None and isinstance(w, torch.Tensor):
+                        W_dec = w
+                        break
+                if W_dec is None:
+                    layer_coherences[layer_idx] = None
+                    continue
+
+                # Get decoder vectors for these features
+                feat_ids_tensor = torch.tensor(feat_ids, dtype=torch.long)
+                # Handle both orientations
+                if W_dec.shape[0] > W_dec.shape[1]:
+                    # (n_features, d_model)
+                    valid_mask = feat_ids_tensor < W_dec.shape[0]
+                    valid_ids = feat_ids_tensor[valid_mask]
+                    if len(valid_ids) < 2:
+                        layer_coherences[layer_idx] = None
+                        continue
+                    vecs = W_dec[valid_ids].float()
+                else:
+                    # (d_model, n_features)
+                    valid_mask = feat_ids_tensor < W_dec.shape[1]
+                    valid_ids = feat_ids_tensor[valid_mask]
+                    if len(valid_ids) < 2:
+                        layer_coherences[layer_idx] = None
+                        continue
+                    vecs = W_dec[:, valid_ids].T.float()
+
+                # Normalize
+                vecs = vecs / (vecs.norm(dim=-1, keepdim=True) + 1e-8)
+                # Mean pairwise cosine sim
+                sim_matrix = vecs @ vecs.T
+                n = len(vecs)
+                C_layer = (sim_matrix.sum().item() - n) / (n * (n - 1))
+                layer_coherences[layer_idx] = C_layer
+            except Exception:
+                layer_coherences[layer_idx] = None
+
+        return layer_coherences if any(v is not None for v in layer_coherences.values()) else None
+
+    def _compute_c_delta(self, layer_coherences: Optional[dict]) -> Optional[float]:
+        """Compute C_delta = C_late - C_early.
+
+        Negative C_delta = coherence collapse during concept assembly = hallucination signature.
+        This is a single, clean, interpretable, auditable number.
+
+        Early layers: first third of the network.
+        Late layers: last third of the network.
+        """
+        if layer_coherences is None:
+            return None
+
+        early_bound, mid_bound = self._bands
+        early_vals = [v for k, v in layer_coherences.items() if k < early_bound and v is not None]
+        late_vals = [v for k, v in layer_coherences.items() if k >= mid_bound and v is not None]
+
+        if not early_vals or not late_vals:
+            return None
+
+        c_early = np.mean(early_vals)
+        c_late = np.mean(late_vals)
+        return float(c_late - c_early)
+
     def _compute_layer_entropy(self, layer_profile: dict, total: int) -> float:
         """Shannon entropy of the layer distribution (bits).
 
@@ -657,6 +761,10 @@ class DepthScorer:
         # Coherence score (C axis — second dimension of cognitive geometry)
         coherence = self._compute_coherence(decoder_vectors)
 
+        # Per-layer coherence profile + C_delta
+        layer_coh = self._compute_per_layer_coherence(feature_indices)
+        c_delta = self._compute_c_delta(layer_coh)
+
         # Anomaly detection (§7)
         is_anom, anom_reasons = self._detect_anomalies(total, layer_profile, compute_time)
         self._compute_times.append(compute_time)
@@ -678,6 +786,8 @@ class DepthScorer:
             is_anomalous=is_anom,
             anomaly_reasons=anom_reasons if anom_reasons else None,
             coherence_score=coherence,
+            layer_coherence=layer_coh,
+            c_delta=c_delta,
             feature_indices=feature_indices if feature_indices else None,
         )
 

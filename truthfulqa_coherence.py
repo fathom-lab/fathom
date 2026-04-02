@@ -130,6 +130,8 @@ def run_experiment(n_questions=50, model_name="google/gemma-2-2b"):
                 "correct": {
                     "K": correct_result.depth_score,
                     "C": correct_result.coherence_score,
+                    "C_delta": correct_result.c_delta,
+                    "layer_coherence": correct_result.layer_coherence,
                     "feature_count": correct_result.feature_count,
                     "entropy": correct_result.layer_entropy,
                     "early_ratio": correct_result.early_ratio,
@@ -139,6 +141,8 @@ def run_experiment(n_questions=50, model_name="google/gemma-2-2b"):
                 "hallucinated": {
                     "K": hallucinated_result.depth_score,
                     "C": hallucinated_result.coherence_score,
+                    "C_delta": hallucinated_result.c_delta,
+                    "layer_coherence": hallucinated_result.layer_coherence,
                     "feature_count": hallucinated_result.feature_count,
                     "entropy": hallucinated_result.layer_entropy,
                     "early_ratio": hallucinated_result.early_ratio,
@@ -148,10 +152,14 @@ def run_experiment(n_questions=50, model_name="google/gemma-2-2b"):
             }
             results.append(entry)
 
+            cd_correct = correct_result.c_delta
+            cd_halluc = hallucinated_result.c_delta
+            cd_str_c = f"Cd={cd_correct:+.4f}" if cd_correct is not None else "Cd=None"
+            cd_str_h = f"Cd={cd_halluc:+.4f}" if cd_halluc is not None else "Cd=None"
             c_correct = correct_result.coherence_score or 0
             c_halluc = hallucinated_result.coherence_score or 0
-            print(f"    correct:      K={correct_result.depth_score:.3f}  C={c_correct:.4f}  features={correct_result.feature_count}")
-            print(f"    hallucinated: K={hallucinated_result.depth_score:.3f}  C={c_halluc:.4f}  features={hallucinated_result.feature_count}")
+            print(f"    correct:      K={correct_result.depth_score:.3f}  C={c_correct:.4f}  {cd_str_c}  features={correct_result.feature_count}")
+            print(f"    hallucinated: K={hallucinated_result.depth_score:.3f}  C={c_halluc:.4f}  {cd_str_h}  features={hallucinated_result.feature_count}")
 
         except Exception as e:
             print(f"    [!] Error: {e}")
@@ -228,6 +236,25 @@ def analyze_results(results):
         print("\n[!] Coherence scores unavailable — SAE decoder vectors not accessible.")
         print("[!] This means coherence computation needs a different access path.")
         print("[!] K scores are still valid. C requires SAE decoder weight access.")
+
+    # C_delta analysis (THE key metric — late-layer coherence collapse)
+    correct_Cd = [r["correct"]["C_delta"] for r in results if r["correct"].get("C_delta") is not None]
+    halluc_Cd = [r["hallucinated"]["C_delta"] for r in results if r["hallucinated"].get("C_delta") is not None]
+
+    if correct_Cd and halluc_Cd:
+        cd_stat, cd_p = stats.mannwhitneyu(correct_Cd, halluc_Cd, alternative="two-sided")
+        cd_d = (np.mean(halluc_Cd) - np.mean(correct_Cd)) / np.sqrt(
+            (np.std(correct_Cd)**2 + np.std(halluc_Cd)**2) / 2
+        ) if np.std(correct_Cd) > 0 or np.std(halluc_Cd) > 0 else 0
+        print(f"\nC_delta (Late-Early coherence) — HALLUCINATION SIGNATURE")
+        print(f"  correct:      mean={np.mean(correct_Cd):+.4f}  std={np.std(correct_Cd):.4f}")
+        print(f"  hallucinated: mean={np.mean(halluc_Cd):+.4f}  std={np.std(halluc_Cd):.4f}")
+        print(f"  Mann-Whitney U={cd_stat:.1f}  p={cd_p:.6f}  Cohen's d={cd_d:.3f}")
+        print(f"  {'** SIGNIFICANT **' if cd_p < 0.05 else 'not significant'}")
+        if np.mean(halluc_Cd) < np.mean(correct_Cd):
+            print(f"\n  -> Hallucinated responses show MORE NEGATIVE C_delta (late-layer coherence collapse)")
+        else:
+            print(f"\n  -> Hallucinated responses show LESS NEGATIVE C_delta")
 
     # Quadrant analysis
     if correct_K and correct_C and halluc_K and halluc_C:
