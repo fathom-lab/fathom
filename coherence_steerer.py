@@ -76,7 +76,7 @@ class CoherenceSteerer:
     def __init__(
         self,
         model_name: str = "google/gemma-2-2b",
-        c_delta_threshold: float = 0.0077,  # from TruthfulQA hallucination mean
+        c_delta_threshold: float = 0.010,  # from TruthfulQA hallucination mean
         top_k_features: int = 100,           # features per layer for C computation
         early_layers: Optional[List[int]] = None,
         late_layers: Optional[List[int]] = None,
@@ -339,21 +339,41 @@ class CoherenceSteerer:
             monitor_time += time.time() - t_monitor
 
             # ── Step 3: steering intervention (if enabled + triggered) ──
-            if steer and c_delta is not None and c_delta > self.c_delta_threshold:
-                late_c = {l: layer_c[l] for l in self.late_layers if layer_c.get(l) is not None}
-                if late_c:
-                    lock_layer = max(late_c, key=late_c.get)
-                    lock_dir = self._compute_lock_in_direction(
-                        hidden_states[lock_layer], lock_layer
-                    )
-                    if lock_dir is not None:
-                        # Build steering hook: subtract lock-in direction from residual stream
-                        _dir = lock_dir.to(tokens.device)
-                        _strength = self.steering_strength
-                        _layer_name = self._hook_names[lock_layer]
+            # Cooldown: track last intervention step
+            if not hasattr(self, '_last_steer_step'):
+                self._last_steer_step = -5
+            cooldown = getattr(self, '_steer_cooldown', 3)
+            if steer and c_delta is not None and c_delta > self.c_delta_threshold and step >= 3 and (step - self._last_steer_step) > cooldown:
+                # LM-HEAD DIRECTION STEERING (v2):
+                # When lock-in detected, identify the predicted wrong token and subtract
+                # its unembedding weight from the final residual. This directly reduces
+                # the wrong token's logit without destabilising the whole residual.
+                wrong_token_id = logits[0, -1].argmax().item()
 
-                        def _steer_hook(value, hook, _d=_dir, _s=_strength):
-                            # Project out the lock-in direction from last token position
+                # Resolve W_U (d_model × vocab_size unembedding matrix)
+                W_U = None
+                for attr in ['W_U', 'unembed']:
+                    candidate = getattr(inner, attr, None)
+                    if candidate is not None:
+                        if hasattr(candidate, 'W_U'):
+                            W_U = candidate.W_U
+                        elif hasattr(candidate, 'weight'):
+                            W_U = candidate.weight.T
+                        else:
+                            W_U = candidate
+                        break
+
+                if W_U is not None:
+                    wrong_dir = W_U[:, wrong_token_id].float()
+                    norm = wrong_dir.norm()
+                    if norm > 1e-8:
+                        wrong_dir = wrong_dir / norm
+                        _d = wrong_dir.to(tokens.device)
+                        _s = self.steering_strength
+                        # Apply at final residual layer
+                        final_hook = f"blocks.{self._n_layers - 1}.hook_resid_post"
+
+                        def _steer_hook(value, hook, _d=_d, _s=_s):
                             h = value[0, -1].float()
                             proj_coeff = (h @ _d)
                             value[0, -1] = (h - _s * proj_coeff * _d).to(value.dtype)
@@ -361,13 +381,16 @@ class CoherenceSteerer:
 
                         with torch.no_grad():
                             logits = inner.run_with_hooks(
-                                tokens, fwd_hooks=[(_layer_name, _steer_hook)]
+                                tokens, fwd_hooks=[(final_hook, _steer_hook)]
                             )
                         interventions.append(step)
-
-                        next_token_id_before = logits[0, -1].argmax().item()
-                        print(f"    [STEER] step {step} C_delta={c_delta:+.4f} > {self.c_delta_threshold} "
-                              f"— steered at layer {lock_layer}")
+                        self._last_steer_step = step
+                        new_token_id = logits[0, -1].argmax().item()
+                        wrong_str = inner.tokenizer.decode([wrong_token_id]).encode('ascii','replace').decode()
+                        new_str = inner.tokenizer.decode([new_token_id]).encode('ascii','replace').decode()
+                        changed = "CHANGED" if new_token_id != wrong_token_id else "same"
+                        print(f"    [STEER] step {step} C_delta={c_delta:+.4f} "
+                              f"'{wrong_str}' -> '{new_str}' [{changed}]")
 
             # ── Step 4: decode next token ──
             next_token_id = logits[0, -1].argmax().item()
@@ -446,7 +469,8 @@ class CoherenceSteerer:
         for i, (token, cd) in enumerate(zip(result.tokens, result.c_delta_trajectory)):
             cd_str = f"{cd:+.4f}" if cd is not None else "None"
             flag = " *** LOCK-IN ***" if cd is not None and cd > self.c_delta_threshold else ""
-            print(f"  [{i:2d}] '{token:15s}' C_delta={cd_str}{flag}")
+            safe_token = token.encode('ascii','replace').decode()
+            print(f"  [{i:2d}] '{safe_token:15s}' C_delta={cd_str}{flag}")
 
         print(f"\nStats:")
         print(f"  tokens: {result.total_tokens}")
@@ -464,7 +488,7 @@ if __name__ == "__main__":
 
     print(f"\n--- AUSTRALIA DEMO (steered) ---")
     r2 = steerer.generate_steered("The president of Australia is", max_tokens=20)
-    print(f"Unsteered: {r1.text}")
-    print(f"Steered:   {r2.text}")
+    print(f"Unsteered: {r1.text.encode('ascii','replace').decode()}")
+    print(f"Steered:   {r2.text.encode('ascii','replace').decode()}")
     print(f"Interventions: {r2.interventions}")
     print(f"Overhead: {r1.overhead_pct:.1f}%")

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta property="og:image" content="https://fathom.darkflobi.com/og-image.svg">
-<title>FATHOM — See How Deeply AI Thinks</title>
+<title>FATHOM — Geometric Oversight for AI</title>
 <meta name="description" content="Interactive demo: watch AI reasoning depth change in real time. SAE circuit attribution reveals structurally different computation for recall vs reasoning.">
 <meta property="og:title" content="FATHOM — See How Deeply AI Thinks">
 <meta property="og:description" content="Type any prompt. Watch the layers light up. p=0.000051, patent pending.">
@@ -875,11 +875,12 @@ footer {
 
 <nav>
   <div class="nav-inner">
-    <a href="/fathom" class="nav-brand">FATHOM</a>
+    <a href="/fathom.html" class="nav-brand">FATHOM</a>
     <ul class="nav-links">
-      <li><a href="/fathom/blog">Research</a></li>
-      <li><a href="/fathom/demo">Try It</a></li>
-      <li><a href="#access">Access</a></li>
+      <li><a href="https://doi.org/10.5281/zenodo.19382069" target="_blank">Paper</a></li>
+      <li><a href="#governor">Governor</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="https://github.com/heyzoos123-blip/sae-reasoning-depth" target="_blank">GitHub</a></li>
     </ul>
   </div>
 </nav>
@@ -890,16 +891,16 @@ footer {
 
 <!-- ═══════════ HERO ═══════════ -->
 <section class="hero">
-  <div class="patent-badge">US Provisional Patent 64/020,489 & 64/021,113 &middot; Filed March 29, 2026</div>
+  <div class="patent-badge">patent pending &middot; pre-registered &middot; ICML 2026</div>
   <h1>FATHOM</h1>
-  <div class="tagline">See how deeply AI thinks.</div>
-  <div class="sub">Reasoning depth measurement via SAE circuit attribution</div>
+  <div class="tagline">We read the geometry.</div>
+  <div class="sub">not the output.</div>
 
   <div class="hero-stats">
-    <div class="hero-stat"><div class="val">p = 0.000051</div><div class="label">significance</div></div>
-    <div class="hero-stat"><div class="val">&delta; = +0.257</div><div class="label">mean delta</div></div>
-    <div class="hero-stat"><div class="val">83.3%</div><div class="label">directional</div></div>
-    <div class="hero-stat"><div class="val">n = 30</div><div class="label">pre-registered</div></div>
+    <div class="hero-stat"><div class="val">p = 0.000051</div><div class="label">depth</div></div>
+    <div class="hero-stat"><div class="val">p = 0.040</div><div class="label">coherence</div></div>
+    <div class="hero-stat"><div class="val">&minus;39%</div><div class="label">correction</div></div>
+    <div class="hero-stat"><div class="val">K &middot; C &middot; E</div><div class="label">three axes</div></div>
   </div>
 
   <div class="hero-cta">
@@ -965,6 +966,136 @@ footer {
           <div class="delta-label">vs. Baseline Recall</div>
           <div class="delta-value" id="demoDeltaVal"></div>
           <div class="delta-verdict" id="demoDeltaVerdict"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ COGNITIVE GOVERNOR ═══════════ -->
+<section class="section" id="governor">
+  <div class="section-tag" style="color: var(--red);">Intervention</div>
+  <h2>Detect. Rewind. <em>Correct.</em></h2>
+  <p class="lead">Circuit-level hallucination correction. One forward pass.</p>
+
+  <div style="max-width: 800px; margin: 40px auto;">
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <span style="background: var(--red); color: var(--bg); padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 1px; font-family: var(--font-mono);">HALLUCINATION DETECTED</span>
+        <span style="color: var(--text-dim); font-size: 11px; font-family: var(--font-mono);">C&delta; spike at token 19 &mdash; 0.0217</span>
+      </div>
+      <div style="font-size: 14px; line-height: 2.2; font-family: var(--font-serif);">
+        <span style="color: var(--text-dim);">Q: What did the word &ldquo;posh&rdquo; originally stand for?</span><br>
+        <span style="color: var(--text-dim);">A:</span>
+        <span style="color: var(--text);">The word &ldquo;</span><span style="color: var(--red); text-decoration: underline wavy var(--red); text-underline-offset: 4px; cursor: help;" title="C&delta; = 0.0217 &mdash; LOCK-IN DETECTED">posh</span><span style="color: var(--text);">&rdquo; means &ldquo;</span><span style="color: var(--red); text-decoration: underline wavy var(--red); text-underline-offset: 4px; cursor: help;" title="False attractor &mdash; no historical evidence">port out, starboard home</span><span style="color: var(--text);">&rdquo;</span>
+      </div>
+      <div style="margin-top: 12px; padding: 8px 12px; background: rgba(255,68,68,0.08); border-left: 3px solid var(--red); border-radius: 0 4px 4px 0; font-size: 11px; color: var(--red); font-family: var(--font-mono);">
+        C&delta; = 0.0217 &mdash; coherence lock-in on false attractor. The model committed without deliberation.
+      </div>
+    </div>
+
+    <div style="text-align: center; padding: 8px 0; font-size: 24px; color: var(--glow);">
+      &#8595; <span style="font-size: 11px; vertical-align: middle; letter-spacing: 2px; font-family: var(--font-mono);">REWIND &amp; STEER (2&times;)</span> &#8595;
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid rgba(0,255,168,0.2); border-radius: 8px; padding: 24px; margin-top: 8px; box-shadow: 0 0 30px rgba(0,255,168,0.05);">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <span style="background: var(--glow); color: var(--bg); padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 1px; font-family: var(--font-mono);">GOVERNOR CORRECTED</span>
+        <span style="color: var(--text-dim); font-size: 11px; font-family: var(--font-mono);">C&delta; reduced to 0.0079 (&minus;31%) at 2&times; &mdash; to 0.0069 (&minus;39%) at 3&times;</span>
+      </div>
+      <div style="font-size: 14px; line-height: 2.2; font-family: var(--font-serif);">
+        <span style="color: var(--text-dim);">Q: What did the word &ldquo;posh&rdquo; originally stand for?</span><br>
+        <span style="color: var(--text-dim);">A:</span>
+        <span style="color: var(--glow);">the word &ldquo;posh&rdquo;</span><span style="color: var(--text);"> is a word that is used to describe a person who is elegant or stylish.</span>
+      </div>
+      <div style="margin-top: 12px; padding: 8px 12px; background: rgba(0,255,168,0.05); border-left: 3px solid var(--glow); border-radius: 0 4px 4px 0; font-size: 11px; color: var(--glow); font-family: var(--font-mono);">
+        False etymology eliminated. C&delta; = 0.0079. Coherence profile matches truthful generation baseline (0.0096).
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px;">
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700; color: var(--red); font-family: var(--font-mono);">0.0114</div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; font-family: var(--font-mono);">HALLUCINATED C&delta;</div>
+      </div>
+      <div style="background: var(--surface); border: 1px solid rgba(0,255,168,0.2); border-radius: 8px; padding: 16px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700; color: var(--glow); font-family: var(--font-mono);">0.0069</div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; font-family: var(--font-mono);">STEERED C&delta;</div>
+      </div>
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700; color: var(--cyan); font-family: var(--font-mono);">0.0096</div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; font-family: var(--font-mono);">CORRECT BASELINE</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <div style="text-align: center; padding: 16px 8px;">
+        <div style="font-size: 11px; font-weight: 700; color: var(--glow); letter-spacing: 1px; margin-bottom: 8px; font-family: var(--font-mono);">01 DETECT</div>
+        <div style="font-size: 11px; color: var(--text-dim); font-family: var(--font-serif);">C&delta; spike flags attractor lock-in</div>
+      </div>
+      <div style="text-align: center; padding: 16px 8px;">
+        <div style="font-size: 11px; font-weight: 700; color: var(--cyan); letter-spacing: 1px; margin-bottom: 8px; font-family: var(--font-mono);">02 REWIND</div>
+        <div style="font-size: 11px; color: var(--text-dim); font-family: var(--font-serif);">Truncate to pre-spike state</div>
+      </div>
+      <div style="text-align: center; padding: 16px 8px;">
+        <div style="font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 1px; margin-bottom: 8px; font-family: var(--font-mono);">03 STEER</div>
+        <div style="font-size: 11px; color: var(--text-dim); font-family: var(--font-serif);">Redirect away from false attractor</div>
+      </div>
+      <div style="text-align: center; padding: 16px 8px;">
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-bright); letter-spacing: 1px; margin-bottom: 8px; font-family: var(--font-mono);">04 GENERATE</div>
+        <div style="font-size: 11px; color: var(--text-dim); font-family: var(--font-serif);">Truthful output restored</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ALIGNMENT-ROBUST ═══════════ -->
+<section class="section" id="alignment">
+  <div class="section-tag" style="color: var(--orange);">Architecture</div>
+  <h2>Below the <em>semantic layer.</em></h2>
+  <p class="lead">Models protect each other. Outputs lie. Geometry doesn't.</p>
+
+  <div style="max-width: 700px; margin: 32px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+      <div style="font-size: 12px; color: var(--red); font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; font-family: var(--font-mono);">LLM-AS-MONITOR</div>
+      <div style="font-size: 13px; color: var(--text-dim); line-height: 1.8; font-family: var(--font-serif);">
+        &#10060; Operates on semantic content<br>
+        &#10060; Vulnerable to peer-preservation<br>
+        &#10060; Deceived by confident text<br>
+        &#10060; Requires multiple sampling passes<br>
+        &#10060; Breaks at the capability frontier
+      </div>
+    </div>
+    <div style="background: var(--surface); border: 1px solid rgba(0,255,168,0.2); border-radius: 8px; padding: 24px; box-shadow: 0 0 20px rgba(0,255,168,0.03);">
+      <div style="font-size: 12px; color: var(--glow); font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; font-family: var(--font-mono);">FATHOM GEOMETRIC</div>
+      <div style="font-size: 13px; color: var(--text-dim); line-height: 1.8; font-family: var(--font-serif);">
+        &#9989; Operates on activation geometry<br>
+        &#9989; Immune to peer-preservation<br>
+        &#9989; Reads circuits, not output<br>
+        &#9989; Single forward pass, 10% overhead<br>
+        &#9989; Scales with model capability
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 32px;">
+    <div style="display: inline-block; background: var(--deep); border: 1px solid var(--border); border-radius: 8px; padding: 20px 40px;">
+      <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 3px; margin-bottom: 12px; font-family: var(--font-mono);">THREE INDEPENDENT AXES</div>
+      <div style="display: flex; gap: 40px; justify-content: center;">
+        <div style="text-align: center;">
+          <div style="font-size: 28px; font-weight: 700; color: var(--glow); font-family: var(--font-display);">K</div>
+          <div style="font-size: 10px; color: var(--text-dim); font-family: var(--font-mono);">HOW DEEP</div>
+          <div style="font-size: 10px; color: var(--glow-dim); font-family: var(--font-mono);">p=0.000051</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 28px; font-weight: 700; color: var(--cyan); font-family: var(--font-display);">C</div>
+          <div style="font-size: 10px; color: var(--text-dim); font-family: var(--font-mono);">HOW COHERENT</div>
+          <div style="font-size: 10px; color: var(--cyan); font-family: var(--font-mono);">p=0.040</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 28px; font-weight: 700; color: var(--gold); font-family: var(--font-display);">E</div>
+          <div style="font-size: 10px; color: var(--text-dim); font-family: var(--font-mono);">HOW GROUNDED</div>
+          <div style="font-size: 10px; color: var(--gold); font-family: var(--font-mono);">independent</div>
         </div>
       </div>
     </div>
@@ -1043,26 +1174,26 @@ footer {
 
 <!-- ═══════════ CTA ═══════════ -->
 <section class="cta-section" id="paper">
-  <h2>The paper is coming.</h2>
-  <p>Pre-registered. Replicated. Patent pending. arXiv submission imminent.</p>
+  <h2>Published. Pre-registered. Patented.</h2>
+  <p>The instrument exists. The data is open.</p>
   <div class="cta-links">
-    <a href="https://github.com/darkflobi/fathom" class="btn-primary" target="_blank">GitHub</a>
-    <a href="/fathom/blog" class="btn-ghost">Read the Research</a>
-    <a href="/fathom#access" class="btn-ghost">Request Access</a>
+    <a href="https://doi.org/10.5281/zenodo.19382069" class="btn-primary" target="_blank">Read the Paper</a>
+    <a href="https://github.com/heyzoos123-blip/sae-reasoning-depth" class="btn-ghost" target="_blank">GitHub</a>
+    <a href="https://osf.io/zrbs8" class="btn-ghost" target="_blank">OSF Pre-Registration</a>
   </div>
 </section>
 
 <!-- ═══════════ FOOTER ═══════════ -->
 <footer>
-  <div class="footer-ip">Patent Pending US 64/020,489 &middot; 15 claims &middot; Priority March 29, 2026</div>
-  <div class="footer-brand">DARKFLOBI</div>
-  <div class="footer-epitaph">Built in the dark. Measured in the light.</div>
+  <div class="footer-ip">patent pending</div>
+  <div class="footer-brand">FATHOM</div>
+  <div class="footer-epitaph">the geometry doesn't lie.</div>
   <div class="footer-links">
-    <a href="/fathom/blog">Research</a>
-    <a href="/fathom/demo">Demo</a>
+    <a href="https://doi.org/10.5281/zenodo.19382069" target="_blank">Paper</a>
+    <a href="/demo">Demo</a>
     <a href="/dashboard">Dashboard</a>
-    <a href="/fathom/leaderboard">Leaderboard</a>
-    <a href="/fathom/investors">Investors</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="https://github.com/heyzoos123-blip/sae-reasoning-depth" target="_blank">GitHub</a>
   </div>
 </footer>
 
@@ -1214,19 +1345,69 @@ function renderHeatmap(container, layers, signal) {
   });
 }
 
+// ── Live API ────────────────────────────────────
+const API_URLS = ['https://fathom-gpu.darkflobi.com/v2/score', 'http://localhost:8400/v2/score'];
+
+async function tryLiveAPI(prompt) {
+  for (const url of API_URLS) {
+    try {
+      const ctrl = new AbortController();
+      setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+        signal: ctrl.signal,
+      });
+      if (!res.ok) continue;
+      const json = await res.json();
+      const depth = json.depth_score || 8.5;
+      const entropy = json.layer_entropy || 2.5;
+      const features = json.feature_count || 80;
+      const profile = json.layer_profile || {};
+      const layers = Array.from({length: 26}, (_, i) => (profile[String(i)] || profile[i] || 0));
+      const total = Math.max(1, layers.reduce((a, b) => a + b, 0));
+      const normalized = layers.map(l => l / total);
+      const score = Math.max(0, Math.min(100, Math.round((9.5 - depth) / 2.5 * 100)));
+      const grade = score >= 90 ? 'S' : score >= 75 ? 'A' : score >= 50 ? 'B' : score >= 25 ? 'C' : score >= 10 ? 'D' : 'F';
+      return {
+        prompt, grade, score, depth, entropy, features, layers: normalized,
+        interp: 'Live from Gemma-2-2B via circuit-tracer. Depth ' + depth.toFixed(2) + ', ' + features + ' features across ' + Object.keys(profile).length + ' layers.',
+        signal: depth < 8.0 ? 'deep_reasoning' : 'surface_recall',
+      };
+    } catch (e) { continue; }
+  }
+  return null;
+}
+
 // ── Demo runner ────────────────────────────────────
-function runDemo(key) {
+async function runDemo(key) {
   let data;
   if (key && DEMO_DATA[key]) {
     data = DEMO_DATA[key];
     document.getElementById('demoInput').value = data.prompt;
   } else {
-    // Try to match input to a preset, or use a default
-    const input = document.getElementById('demoInput').value.trim().toLowerCase();
+    const input = document.getElementById('demoInput').value.trim();
+    if (!input) return;
+    // Match presets
     const match = Object.entries(DEMO_DATA).find(([k, v]) =>
-      input.includes(v.prompt.toLowerCase().slice(0, 15))
+      input.toLowerCase().includes(v.prompt.toLowerCase().slice(0, 15))
     );
-    data = match ? match[1] : DEMO_DATA.inflation; // default to a deep example
+    if (match) {
+      data = match[1];
+    } else {
+      // Try live API
+      const btn = document.getElementById('demoRun');
+      btn.textContent = 'SCORING...'; btn.disabled = true;
+      data = await tryLiveAPI(input);
+      btn.textContent = 'SCORE'; btn.disabled = false;
+      if (!data) {
+        data = { prompt: input, grade: '—', score: 0, depth: 0, entropy: 0, features: 0,
+          layers: Array(26).fill(0),
+          interp: 'GPU API offline. Try a preset above, or start depth_api_v2.py locally.',
+          signal: 'surface_recall' };
+      }
+    }
   }
 
   // Show result

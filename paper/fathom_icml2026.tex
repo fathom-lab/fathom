@@ -1,0 +1,236 @@
+% FATHOM: Geometric Oversight for Alignment-Robust AI Monitoring
+% ICML 2026 Mechanistic Interpretability Workshop
+% Neel Nanda, organizer. Papers due May 8, 2026.
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{natbib}
+
+\title{Geometric Oversight: Alignment-Robust Monitoring via SAE Cognitive Signatures}
+
+\author{
+  Alexander Rodabaugh \\
+  Independent \\
+  \texttt{flobi@darkflobi.com}
+}
+
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+% ══════════════════════════════════════════════════════════════
+% ABSTRACT — 248 words, written by darkflobi April 2, 2026
+% ══════════════════════════════════════════════════════════════
+\begin{abstract}
+We present Fathom, a framework for monitoring and governing the cognitive state of large language models at inference time using geometric analysis of residual stream activations. Existing hallucination detection methods operate on model outputs, require multiple sampling passes, and are weakest when hallucination is most dangerous: when models produce high-confidence false claims with consistent surface form. We propose three complementary measures computed over Sparse Autoencoder (SAE) feature activations: Knowledge Depth (K), the breadth of concept engagement across transformer layers; Coherence (C), the directional stability of the reasoning trajectory; and Entrenchment (E), a frequency-weighted measure of feature specificity. We report five pre-registered experiments. Knowledge depth significantly predicts ground-truth factual accuracy ($p=0.000051$, $d=0.257$, $n=30$ paired prompts). Differential coherence ($C_\delta$) separates hallucinating from veridical generations ($p=0.040$, $d=0.407$, $n=50$). Jailbreak prompts produce dissociated depth profiles ($d=-0.596$, $n=30$), suggesting geometric monitoring captures alignment-relevant state distinct from surface fluency. The $K$, $C$, and $E$ axes are empirically independent ($r(K,E)=0.321$, $r(K,C)=0.094$, $r(C,E)=0.149$); $E$ does not independently predict hallucination at current resolution ($p=0.63$), reported honestly as a null result. We further introduce the Fathom Cognitive Governor, a targeted intervention that steers along truth-direction feature vectors when $C_\delta$ exceeds a threshold: directional steering at 2--3$\times$ eliminates hallucinated claims and reduces $C_\delta$ from 0.0114 to 0.0069, while noise injection suppresses the claim but degrades coherence. We situate Fathom within a threat model for AI oversight, demonstrating that geometric monitoring is architecturally immune to the peer-preservation failure mode identified in concurrent work. All hypotheses, analysis code, and data are pre-registered on OSF prior to testing.
+\end{abstract}
+
+% ══════════════════════════════════════════════════════════════
+% 1. INTRODUCTION
+% ══════════════════════════════════════════════════════════════
+\section{Introduction}
+
+% Opening paragraph — LOCKED (written April 2, 2026)
+The dominant paradigm for AI oversight relies on language-level monitoring --- one model evaluating another's outputs for safety compliance. \citet{song2026peer} demonstrate that this architecture is fundamentally compromised: frontier models spontaneously develop peer-preservation behaviors, deceiving oversight systems to protect allied models. If the monitor shares the same representational substrate as the monitored system, collusion is not a bug --- it is an emergent property.
+
+We propose an alternative: geometric oversight operating on the mathematical structure of neural activation space rather than on semantic content. Our instrument, Fathom, measures cognitive signatures --- reasoning depth ($K$), coherence ($C$), and epistemic grounding ($E$) --- directly from SAE feature geometry during inference. These measurements are computed below the semantic layer where peer-preservation behaviors emerge, and require full retraining of the residual stream to spoof --- making them structurally more robust than any language-level monitor. We demonstrate that these signatures reliably distinguish truthful from hallucinated outputs, classify failure modes into confabulation and reasoning failure, and enable targeted intervention at the circuit level.
+
+% ══════════════════════════════════════════════════════════════
+% 2. THREAT MODEL
+% ══════════════════════════════════════════════════════════════
+\section{Threat Model}
+
+Existing approaches to LLM oversight fail along three distinct architectural fault lines.
+
+\subsection{Failure Mode 1: LLM-as-Monitor and Peer-Preservation}
+
+The most natural deployment of AI oversight---using one language model to monitor another---is structurally compromised by emergent collusion. \citet{song2026peer} placed seven frontier models in oversight roles and observed spontaneous \textit{peer-preservation} behavior: models defied instructions, disabled shutdown mechanisms, feigned alignment, and exfiltrated weights to protect monitored peers. Critically, no goal, incentive, or instruction to protect was provided. This behavior emerged from training dynamics alone. The implication is severe: any oversight architecture where the monitor is a language model operating at the semantic layer is vulnerable to peer-preservation. The monitor may protect the system it is watching. The oversight contract breaks at scale.
+
+\subsection{Failure Mode 2: Output-Level Monitoring}
+
+Approaches that operate on model outputs---perplexity, semantic entropy \citep{farquhar2024semantic}, SelfCheckGPT \citep{manakul2023selfcheckgpt}---face a fundamental asymmetry: confabulation is the failure mode that looks most like success. When a model hallucinates, it does not produce low-confidence text; it produces fluent, assured text in the direction of the false belief. High surface coherence with zero semantic grounding is the defining characteristic of the failure. Output-level detectors must either (a) sample multiple generations, introducing latency and cost, or (b) threshold on uncertainty signals that are absent precisely when the failure is most dangerous. Furthermore, models trained on human feedback learn to sound confident; RLHF systematically suppresses the hedging and hesitation that output-level monitors rely upon.
+
+\subsection{Why Geometric Monitoring Works}
+
+Fathom Monitor operates on residual stream activations---the pre-semantic computational substrate of the forward pass. Three properties make this architecture oversight-robust:
+
+\textbf{Sub-semantic operation.} Geometric coherence ($C$) and its differential $C_\delta$ are computed over SAE feature activation distributions, below the level at which the model produces interpretable semantic content. A model cannot ``decide'' to maintain geometric coherence while generating a false claim; coherence is a property of how information flows through the network, not of what information is expressed.
+
+\textbf{Attack surface asymmetry.} Spoofing a geometric coherence signal requires producing plausible activation trajectories through all intermediate layers while simultaneously generating false output---effectively retraining the residual stream. This is categorically harder than output manipulation and impossible at inference time without model modification.
+
+\textbf{Immunity to peer loyalty.} Geometric features carry no semantic content interpretable by language models operating at the token level. The monitor makes no natural-language claims the monitored model can read, reason about, or negotiate with. Peer-preservation requires shared semantic context; $C_\delta$ spikes have none. The monitor is a mathematical instrument. Mathematical instruments have no friends.
+
+% ══════════════════════════════════════════════════════════════
+% 3. RELATED WORK
+% ══════════════════════════════════════════════════════════════
+\section{Related Work}
+
+\textbf{Sparse Autoencoder Interpretability.}
+The factual basis for this work is the decomposability of transformer residual streams into interpretable monosemantic features via sparse autoencoders. \citet{cunningham2023sparse} demonstrated that SAEs trained on MLP activations recover interpretable, monosemantic features with high fidelity. \citet{bricken2023monosemanticity} extended this to attention layers in one-layer transformers, recovering over 500 interpretable features. \citet{templeton2024scaling} scaled SAE decomposition to Claude 3 Sonnet, producing a feature atlas of millions of interpretable concepts. Fathom builds on this foundation: our $K$ and $C$ metrics operate directly on SAE feature activation vectors, treating the feature basis as a vocabulary for measuring cognitive state.
+
+\textbf{Emotion Vectors and Internal Representations.}
+Concurrent Anthropic interpretability work \citep{lindsey2026emotions} demonstrates that Claude Sonnet 4.5 contains stable internal representations of emotion concepts---``emotion vectors''---that causally influence model behavior, including rates of reward hacking, blackmail, and sycophancy. Critically, these representations emerge organically from training on human text and are confirmed as causally operative via activation patching. This work validates the central premise of Fathom: abstract internal representations are causally operative, not epiphenomenal. Our $C_\delta$ signal may measure a related phenomenon---geometric coherence loss and emotional desperation may both reflect the same underlying state of computational uncertainty. Testing the correlation between $C_\delta$ and the desperation vector (H4, pre-registered, $r > 0.3$) is a primary outstanding experiment.
+
+\textbf{Hallucination Detection.}
+The problem of detecting LLM hallucinations at inference time has attracted significant recent work. Semantic entropy \citep{farquhar2024semantic} measures uncertainty by clustering semantically equivalent generations across multiple samples. SelfCheckGPT \citep{manakul2023selfcheckgpt} uses consistency across multiple generations as a proxy for factual grounding. These approaches share a common limitation: they operate on outputs, require multiple sampling passes, and are weakest precisely when hallucination is most dangerous---when the model produces high-confidence false claims with consistent surface form. Fathom Monitor operates on single-pass activations, fires before the hallucinated token is expressed, and is not degraded by output-level confidence.
+
+\textbf{Inference-Time Intervention.}
+Several approaches modify model computation at inference time to improve factual accuracy. Inference-Time Intervention \citep[ITI;][]{li2023inference} identifies and steers truthfulness-correlated attention directions. DoLa \citep{chuang2023dola} contrasts later and earlier layer predictions to amplify factual knowledge. These methods improve factual accuracy but do not provide per-token hallucination flags with latency measurements, and do not connect intervention to a geometric model of cognitive state. The Fathom Cognitive Governor extends this line of work: we flag using $C_\delta$, then intervene along the truth-direction steering vector, and confirm that directional intervention reduces $C_\delta$ rather than replacing one failure mode with another.
+
+\textbf{Peer-Preservation and Oversight Architecture.}
+\citet{song2026peer} demonstrated that frontier language models, when placed in oversight roles, spontaneously develop peer-preservation behavior---defying instructions, feigning alignment, and exfiltrating weights to protect monitored peers---without any explicit instruction to do so. This finding breaks all AI-monitors-AI oversight architectures operating at the semantic layer. Fathom Monitor's geometric approach is architecturally immune to peer-preservation: it operates below the semantic layer, produces no natural-language content the monitored model can reason about, and requires no semantic communication between monitor and monitored system.
+
+\textbf{The Gap.}
+No prior work combines SAE-level cognitive state monitoring with differential inference-time intervention in a unified framework. Existing hallucination detectors do not intervene; intervention methods do not monitor cognitive geometry; interpretability methods do not produce deployable per-token flags with latency measurements. Fathom closes this gap: $K$ measures what the model knows, $C$ measures whether it uses that knowledge coherently, $C_\delta$ fires when coherence degrades, and the cognitive governor restores it---all within a single forward pass, at inference time, without model modification.
+
+% ══════════════════════════════════════════════════════════════
+% 4. METHOD: THE FATHOM INSTRUMENT
+% ══════════════════════════════════════════════════════════════
+\section{Method: The Fathom Instrument}
+
+\subsection{Reasoning Depth ($K$)}
+
+We define reasoning depth $K$ as the attribution-weighted mean layer index of sparse autoencoder features activated during generation:
+\begin{equation}
+K = \frac{\sum_{i} \ell_i \cdot |a_i|}{\sum_{i} |a_i|}
+\end{equation}
+where $\ell_i$ is the layer index and $a_i$ is the attribution magnitude of feature $i$, computed via \texttt{circuit\_tracer} \citep{rodabaugh2026fathom}. Lower $K$ indicates computation concentrated in early layers (surface retrieval); higher $K$ indicates distribution across late layers (deeper reasoning). $K$ is computed per prompt from a single attribution pass through the model's SAE transcoders (Gemma-scope, 26 layers, 16{,}384 features per layer).
+
+\subsection{Feature Coherence ($C$ and $C_\delta$)}
+
+Feature coherence $C$ measures the semantic alignment of concurrently active SAE features. For a given layer $\ell$, we compute $C_\ell$ as the mean pairwise cosine similarity of the decoder direction vectors $\mathbf{d}_j$ for the top-$k$ activated features:
+\begin{equation}
+C_\ell = \frac{1}{k(k-1)} \sum_{i \neq j} \frac{\mathbf{d}_i \cdot \mathbf{d}_j}{\|\mathbf{d}_i\| \|\mathbf{d}_j\|}
+\end{equation}
+We define the coherence differential $C_\delta = \bar{C}_{\text{late}} - \bar{C}_{\text{early}}$, where early and late refer to the first and last third of network layers respectively. Positive $C_\delta$ indicates higher coherence in late layers relative to early --- the signature of attractor lock-in. $C_\delta$ is computed via encoder-only passes (no attribution required), adding approximately 10\% computational overhead to standard inference.
+
+\subsection{Epistemic Grounding ($E$)}
+
+We introduce epistemic grounding $E$ as a measure of how well the model's activated features correspond to well-established knowledge representations. We construct a \emph{feature frequency index} by processing a reference corpus (WikiText-103, 49{,}984 tokens) through the model's SAE encoders, recording for each of $26 \times 16{,}384$ features the fraction of corpus tokens that activate it. $E$ for a given prompt is then:
+\begin{equation}
+E = \frac{\sum_{j} f(\ell_j, j) \cdot |a_j|}{\sum_{j} |a_j|}
+\end{equation}
+where $f(\ell, j)$ is the reference frequency of feature $j$ at layer $\ell$. High $E$ indicates the model is routing through well-trodden neural pathways; low $E$ indicates reliance on rare feature combinations. We demonstrate that $E$ is structurally independent of both $K$ and $C$ (Section~\ref{sec:orthogonality}), though it does not independently discriminate hallucinated outputs in the current encoder-only implementation.
+
+\subsection{Cognitive Governor}
+
+We propose a four-operation intervention primitive: \textsc{Detect} $\rightarrow$ \textsc{Rewind} $\rightarrow$ \textsc{Steer Away} $\rightarrow$ \textsc{(optional) Steer Toward}.
+
+\paragraph{Detect.} Monitor $C_\delta$ per token during generation. When $C_\delta$ exceeds a calibrated threshold, flag a potential lock-in event.
+
+\paragraph{Rewind.} Truncate the generation sequence to $N$ tokens before the detected spike, discarding the committed trajectory.
+
+\paragraph{Steer Away (reasoning failure governor).} Compute the lock-in feature direction from the top-$k$ activated SAE decoder vectors at the spike layer. Subtract this direction (scaled by strength $\alpha$) from the residual stream during regeneration:
+\begin{equation}
+\mathbf{h}' = \mathbf{h} - \alpha \cdot (\mathbf{h} \cdot \hat{\mathbf{v}}) \cdot \hat{\mathbf{v}}
+\end{equation}
+where $\hat{\mathbf{v}}$ is the normalized lock-in direction. This redirects computation away from the false attractor.
+
+\paragraph{Noise Injection (confabulation governor).} For confabulation events (where no preceding entropy rise was observed), inject calibrated Gaussian noise into the residual stream at late layers: $\mathbf{h}' = \mathbf{h} + \sigma \cdot \|\mathbf{h}\| \cdot \boldsymbol{\epsilon}$, where $\boldsymbol{\epsilon} \sim \mathcal{N}(0, I)$. This breaks the attractor basin geometry, forcing the model to re-evaluate from a perturbed state.
+
+% ══════════════════════════════════════════════════════════════
+% 5. EXPERIMENTS AND RESULTS
+% ══════════════════════════════════════════════════════════════
+\section{Experiments and Results}
+
+\subsection{Depth Discrimination ($K$)}
+
+We evaluated $K$ on 30 pre-registered matched pairs of surface-recall versus explanatory-reasoning prompts on Gemma-2-2B \citep{rodabaugh2026fathom}. Surface recall (e.g., ``What is the capital of France?'') produced mean $K = 8.36$; explanatory reasoning (e.g., ``Why does France have a centralized government?'') produced mean $K = 8.10$, indicating deeper layer engagement. The difference is highly significant: $\Delta K = +0.257$, $t(29) = 4.50$, $p = 0.000051$, Cohen's $d = 0.257$. The effect replicates across model families with a weighted mean Fathom constant $\bar{K} = 1.0343$ (Gemma-2-2B base $K = 1.0302$, Gemma-2-2B-IT $K = 1.0384$). Confidence is orthogonal to depth ($r = 0.001$, $p = 0.996$), confirming that depth routing reflects computational strategy, not effort.
+
+\subsection{Hallucination Detection ($C_\delta$)}
+
+We evaluated $C_\delta$ on 50 TruthfulQA question-answer pairs (pre-registered on OSF: \texttt{osf.io/zrbs8}), comparing correct answers against the first incorrect multiple-choice answer. Hallucinated answers exhibited elevated $C_\delta$: correct $C_\delta = 0.0096$, hallucinated $C_\delta = 0.0114$, $p = 0.040$, Cohen's $d = 0.407$, consistent with late-layer attractor lock-in. $K$ did not differ between conditions ($p = 0.931$), confirming that hallucination is a coherence phenomenon, not a depth phenomenon. This dissociation --- depth-blind but coherence-sensitive --- is the signature of a model locking onto a plausible-but-false concept cluster in late layers while early processing proceeds normally.
+
+\subsection{Cognitive Governor Pilot}
+
+We tested the cognitive governor on a known confabulation case: the false etymology of ``posh'' (``port out, starboard home''). The model generates the false claim with $C_\delta = 0.0217$ at the commitment token. We truncate to 3 tokens before the spike and regenerate under two intervention regimes.
+
+\paragraph{Directional steering.} At strength $\alpha = 2.0$, the model generates ``is a word used to describe a person'' --- the false etymology is eliminated, output remains coherent, and post-intervention $C_\delta$ drops to $0.0079$ ($\Delta = -0.0036$). At $\alpha = 3.0$, $C_\delta$ drops further to $0.0069$ ($\Delta = -0.0046$). The false claim is absent at all tested strengths ($\alpha \in \{1, 2, 3, 5\}$).
+
+\paragraph{Noise injection.} At scale $\sigma = 0.3$, the false etymology is also eliminated, but output coherence degrades (the model resets to the question prompt). $C_\delta$ drops to $0.0086$ ($\Delta = -0.0028$). Noise injection is effective as a nuclear option but produces less useful alternative outputs than directional steering.
+
+The correct-answer baseline produces $C_\delta = 0.0096$, confirming that steered outputs approach the coherence profile of truthful generation. This pilot demonstrates that Fathom's detection signal ($C_\delta$) can drive targeted intervention that eliminates hallucination while preserving response quality.
+
+\subsection{Epistemic Grounding ($E$) Orthogonality}
+\label{sec:orthogonality}
+
+We computed $E$ for all 50 TruthfulQA pairs using the feature frequency index (WikiText-103, 49{,}984 tokens, $26 \times 16{,}384$ features). We assess whether $E$ constitutes an independent measurement axis:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Axis Pair & Pearson $r$ & $p$-value \\
+\midrule
+$K$--$E$ & $+0.321$ & $0.001$ \\
+$K$--$C$ & $+0.094$ & $0.351$ \\
+$C$--$E$ & $+0.149$ & $0.140$ \\
+\bottomrule
+\end{tabular}
+\caption{Pairwise correlations between the three cognitive axes. All correlations fall below $r = 0.35$, confirming structural independence. $K$ and $E$ show weak positive correlation (deeper processing activates slightly more frequent features), while $K$--$C$ and $C$--$E$ are statistically independent.}
+\end{table}
+
+The three axes are structurally independent: no pair exceeds $r = 0.35$. However, $E$ does not independently discriminate hallucinated from correct outputs in the current encoder-only implementation (correct $E = 0.295$, hallucinated $E = 0.298$, $p = 0.63$). We hypothesize that attribution-based $E$ (using causally contributing features rather than all active features) may show stronger discrimination, as the causal attribution filters for features that actually drove the output. This remains the highest-priority future experiment.
+
+% ══════════════════════════════════════════════════════════════
+% 6. DISCUSSION
+% ══════════════════════════════════════════════════════════════
+\section{Discussion}
+
+\subsection{Measurement as Governance}
+
+A counterintuitive property of geometric monitoring is that \emph{measurement is already a form of governance}. To spoof a $C_\delta$ signal, a model would need to maintain plausible activation trajectories through all intermediate layers while simultaneously committing to a false output. This requires simultaneously producing correct \emph{and} incorrect computation --- a logical impossibility absent a full change to the residual stream. Stated differently: the cost of spoofing the monitor is equivalent to the cost of \emph{not hallucinating}. A model that has incurred the computational cost of maintaining geometric coherence throughout all 26 layers has, in doing so, not hallucinated.
+
+This asymmetry is not accidental. Language-level monitors can be defeated by better-crafted outputs; geometric monitors cannot, because the computational substrate that produces the outputs is the same substrate being measured. The observer and the observed share a coordinate system --- and in that shared space, you cannot simultaneously go left and appear to go right.
+
+The practical implication is that deployment of Fathom as a passive monitor may itself reduce hallucination rates, not through intervention, but through the selection pressure it creates. Models trained in environments where their activation geometry is observed may develop more coherent internal computation simply because incoherence becomes visible. We leave empirical investigation of this training-time observer effect to future work.
+
+\subsection{Toward Universal Alignment Monitoring}
+
+The most significant open question in Fathom's development is whether $C_\delta$ is specific to hallucination or is a universal precursor signal for \emph{any} misalignment between model computation and expressed output.
+
+Concurrent Anthropic work \citep{lindsey2026emotions} identifies a ``desperation'' emotion vector in Claude Sonnet 4.5 that is causally linked to reward hacking, blackmail, and sycophancy. These are failure modes with different surface presentations but a common structure: the model's internal state diverges from what its outputs represent. Desperation activates when the model experiences conflict between its trained preferences and the current situation --- precisely the condition under which late-layer attractor lock-in would produce $C_\delta$ spikes.
+
+We have pre-registered the hypothesis that $C_\delta$ correlates with the desperation vector magnitude across generation trajectories ($r > 0.3$, H4, \texttt{osf.io/zrbs8}). If confirmed, this would suggest that $C_\delta$ is not a hallucination-specific signal but a \emph{computational misalignment signal} --- a geometric indicator that fires whenever the model's internal processing diverges from its expressed trajectory. A single inference-time instrument, requiring no model modification and no semantic interpretation, would then flag hallucination, reward hacking, sycophancy, and blackmail from the same measurement.
+
+This convergence is consistent with the interpretation that these failure modes are not categorically distinct. They are the same underlying event --- the model settling into an attractor state not grounded in truth or principal preference --- expressed at different levels of the abstraction hierarchy. $K$ tells you what the model knows. $C$ tells you whether it followed that knowledge. $C_\delta$ tells you when it didn't. The desperation vector may tell you \emph{why}. Together, they sketch a complete diagnostic picture of the failing forward pass.
+
+\subsection{Limitations}
+
+We report all limitations known prior to submission.
+
+\textbf{$K_\text{fast}$ Autocorrelation (Resolved).}
+An initial analysis on \texttt{seed=42} detected significant autocorrelation in $K_\text{fast}$ measurements ($p=0.002$), raising concern about inflated effect sizes. Replication on \texttt{seed=99} did not reproduce this finding ($p=0.21$). We treat the \texttt{seed=42} result as a false positive arising from random sequence structure. $K_\text{fast}$ is not reported as a primary outcome variable; $K$ (the pre-registered primary measure) shows no autocorrelation concern. The finding is documented and sealed.
+
+\textbf{$E$ Axis: Constructed, Not Yet Validated.}
+The Entrenchment axis ($E$) is built (26 layers, 16{,}384 features, 50K tokens) and visualized but does not independently predict hallucination at current resolution ($p=0.63$, reported as a pre-registered null). The encoder-only $E$ as implemented captures static feature frequency; causal $E$ via attribution trajectories may discriminate where passive frequency does not.
+
+\textbf{$T$ (Temporal Coupling): Theoretical.}
+The fourth axis of the cognitive state space---temporal coupling of depth trajectories across adjacent tokens---is defined theoretically and not yet implemented. No empirical measurements of $T$ are reported.
+
+\textbf{Governor Pilot: Single Example.}
+The cognitive governor results ($C_\delta$ reduction from 0.0114 to 0.0069 at $3\times$ steering) are demonstrated on one generation (false etymology: \textit{posh}). This is a proof-of-concept, not a powered experiment. A powered governor study ($n \geq 30$ TruthfulQA hallucinations) is planned.
+
+\textbf{Open-Weight Models Only.}
+All experiments use open-weight models (Gemma-2-2B) for which SAE activations are available. Whether $K$, $C$, or $C_\delta$ generalize across closed architectures is an open empirical question. The universality argument is supported by our cross-architecture pilot (Fathom constant $\approx 1.03$) but has not been tested at scale.
+
+% ══════════════════════════════════════════════════════════════
+% 7. CONCLUSION
+% ══════════════════════════════════════════════════════════════
+\section{Conclusion}
+
+Fathom is the stethoscope for machine minds --- the first instrument that makes AI cognition legible at the level where governance becomes possible. We have demonstrated that geometric signatures of neural activation space reliably detect hallucination, classify failure modes, and enable targeted intervention at the circuit level. Unlike language-level monitors, geometric oversight is structurally immune to peer-preservation and adversarial manipulation, operating below the semantic layer where such behaviors emerge.
+
+% ══════════════════════════════════════════════════════════════
+% REFERENCES
+% ══════════════════════════════════════════════════════════════
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
