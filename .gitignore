@@ -70,3 +70,5 @@ truthfulqa_results/*_pilot*.json
 
 # Resume/personal
 resume_rodabaugh.html
+paper/icml2026.zip
+paper/icml_template/
