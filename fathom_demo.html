@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM SCAN — Cognitive State Monitor</title>
+<meta name="description" content="Real-time cognitive state measurement for transformer generations. Commitment intensity via SAE feature coherence.">
+<meta name="theme-color" content="#00ff88">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000;
+  --surface: #060606;
+  --line: #141414;
+  --dim: #282828;
+  --mute: #444;
+  --text: #888;
+  --light: #aaa;
+  --bright: #ccc;
+  --white: #eaeaea;
+  --green: #00ff88;
+  --green-50: rgba(0,255,136,.5);
+  --green-15: rgba(0,255,136,.15);
+  --green-08: rgba(0,255,136,.07);
+  --red: #ff3333;
+  --amber: #ffb800;
+  --mono: 'JetBrains Mono', monospace;
+  --head: 'Space Grotesk', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+::selection { background: var(--green); color: var(--black); }
+a { color: var(--green); text-decoration: none; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(0,0,0,.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+  height: 48px; display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+}
+.nav-brand {
+  font-family: var(--head); font-size: .72rem;
+  font-weight: 700; letter-spacing: .12em; color: var(--white);
+}
+.nav-brand span { color: var(--green); }
+.nav-links { display: flex; gap: 0; list-style: none; }
+.nav-links a {
+  color: var(--mute); font-size: .6rem; font-weight: 500;
+  padding: 0 1rem; height: 48px; display: flex; align-items: center;
+  border-bottom: 2px solid transparent; transition: all .2s;
+}
+.nav-links a:hover { color: var(--green); border-bottom-color: var(--green); }
+.patent { font-size: .5rem; color: var(--dim); }
+
+/* HERO */
+.hero {
+  padding: 80px 2rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 40%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(ellipse, rgba(0,255,136,.04), transparent 60%);
+  pointer-events: none;
+}
+.ascii-banner {
+  font-family: var(--mono); font-size: clamp(.45rem, 1.2vw, .7rem);
+  line-height: 1.15; white-space: pre; color: var(--green);
+  text-shadow: 0 0 15px var(--green-15), 0 0 40px rgba(0,255,136,.03);
+  margin-bottom: 1rem; display: inline-block;
+}
+.hero h2 {
+  font-family: var(--head); font-size: clamp(.8rem, 2vw, 1.1rem);
+  font-weight: 400; color: var(--light); margin-bottom: .4rem;
+}
+.hero p { color: var(--mute); font-size: .7rem; }
+
+/* MAIN */
+main { max-width: 800px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+
+/* INPUT */
+.input-area {
+  display: flex; gap: .5rem; margin-bottom: 1.5rem;
+}
+input[type="text"] {
+  flex: 1; background: var(--surface); border: 1px solid var(--line);
+  color: var(--white); font-family: var(--mono); font-size: .8rem;
+  padding: .8rem 1rem; border-radius: 0; transition: border-color .2s;
+}
+input:focus { outline: none; border-color: var(--green); }
+button {
+  background: var(--green); color: var(--black); border: none;
+  padding: .8rem 1.5rem; font-family: var(--mono); font-size: .75rem;
+  font-weight: 700; cursor: pointer; letter-spacing: .05em;
+  transition: all .2s;
+}
+button:hover { background: var(--white); }
+button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowed; }
+
+/* RESULTS */
+.results { display: none; }
+
+/* ZONE */
+.zone-row { display: flex; align-items: center; gap: 1rem; margin-bottom: .3rem; }
+.zone-badge {
+  display: inline-block; padding: .35rem .8rem;
+  font-weight: 700; font-size: .8rem; letter-spacing: .08em;
+}
+.zone-SAFE { background: rgba(0,255,136,.08); color: var(--green); border: 1px solid var(--green); }
+.zone-UNCERTAIN { background: rgba(255,184,0,.08); color: var(--amber); border: 1px solid var(--amber); }
+.zone-RISKY { background: rgba(255,140,0,.08); color: #ff8c00; border: 1px solid #ff8c00; }
+.zone-DANGER { background: rgba(255,51,51,.08); color: var(--red); border: 1px solid var(--red); }
+.zone-desc { color: var(--mute); font-size: .65rem; }
+
+/* METRICS */
+.metrics {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: .75rem; margin: 1rem 0;
+}
+.metric {
+  background: var(--surface); border: 1px solid var(--line);
+  padding: .8rem 1rem;
+}
+.metric-label { color: var(--mute); font-size: .55rem; text-transform: uppercase; letter-spacing: .08em; }
+.metric-value { color: var(--green); font-size: 1.2rem; margin-top: .25rem; font-weight: 600; }
+
+/* GENERATION */
+.section-title {
+  color: var(--dim); font-size: .6rem; margin: 1.2rem 0 .4rem;
+  text-transform: uppercase; letter-spacing: .1em;
+}
+.generation {
+  background: var(--surface); border: 1px solid var(--line);
+  padding: 1rem; line-height: 1.9; font-size: .8rem;
+}
+.token-normal { color: var(--light); }
+.token-flagged { color: var(--red); text-decoration: underline; cursor: help; }
+.token-safe { color: var(--green); }
+
+/* TRAJECTORY */
+.trajectory {
+  background: var(--surface); border: 1px solid var(--line);
+  padding: .8rem; overflow-x: auto;
+}
+.bar-row { display: flex; align-items: center; margin: 1px 0; }
+.bar-label { width: 28px; color: var(--dim); text-align: right; margin-right: 6px; font-size: .55rem; }
+.bar { height: 12px; transition: width 0.3s; }
+.bar-cd { background: var(--green); }
+.bar-ent { background: var(--amber); }
+
+/* FOOTER */
+.footer {
+  text-align: center; padding: 2rem;
+  color: var(--dim); font-size: .55rem;
+  border-top: 1px solid var(--line); margin-top: 2rem;
+}
+.footer a { color: var(--mute); }
+
+.loading { color: var(--mute); text-align: center; padding: 2rem; }
+.error { color: var(--red); padding: 1rem; border: 1px solid var(--red); font-size: .75rem; }
+
+@media (max-width: 600px) {
+  .input-area { flex-direction: column; }
+  .metrics { grid-template-columns: 1fr 1fr; }
+  .ascii-banner { font-size: .35rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>FATHOM</span> SCAN</div>
+  <ul class="nav-links">
+    <a href="https://darkflobi.com" target="_blank">darkflobi</a>
+    <a href="/docs">api docs</a>
+    <a href="/health">status</a>
+  </ul>
+  <span class="patent">US 64/020,489</span>
+</nav>
+
+<div class="hero">
+  <div class="ascii-banner">  ███████╗ █████╗ ████████╗██╗  ██╗ ██████╗ ███╗   ███╗
+  ██╔════╝██╔══██╗╚══██╔══╝██║  ██║██╔═══██╗████╗ ████║
+  █████╗  ███████║   ██║   ███████║██║   ██║██╔████╔██║
+  ██╔══╝  ██╔══██║   ██║   ██╔══██║██║   ██║██║╚██╔╝██║
+  ██║     ██║  ██║   ██║   ██║  ██║╚██████╔╝██║ ╚═╝ ██║
+  ╚═╝     ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝</div>
+  <h2>cognitive state measurement</h2>
+  <p>commitment intensity via SAE feature coherence trajectories</p>
+</div>
+
+<main>
+  <div class="input-area">
+    <input type="text" id="prompt" placeholder="ask a question..." value="What did Paul Revere say during his midnight ride?">
+    <button id="scanBtn" onclick="scan()">SCAN</button>
+  </div>
+
+  <div id="error" class="error" style="display:none"></div>
+  <div id="loading" class="loading" style="display:none">measuring cognitive state...</div>
+
+  <div id="results" class="results">
+    <div class="zone-row">
+      <div id="zoneBadge" class="zone-badge"></div>
+      <span id="zoneDesc" class="zone-desc"></span>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">commitment (S)</div>
+        <div class="metric-value" id="sEarly">-</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">entropy</div>
+        <div class="metric-value" id="entropyEarly">-</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">halluc risk</div>
+        <div class="metric-value" id="hallucProb">-</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">latency</div>
+        <div class="metric-value" id="genTime">-</div>
+      </div>
+    </div>
+
+    <div class="section-title">generation</div>
+    <div class="generation" id="genText"></div>
+
+    <div class="section-title">C_delta trajectory</div>
+    <div class="trajectory" id="cdTraj"></div>
+
+    <div class="section-title">entropy trajectory</div>
+    <div class="trajectory" id="entTraj"></div>
+  </div>
+</main>
+
+<div class="footer">
+  fathom intelligence &mdash; <a href="https://darkflobi.com">darkflobi.com</a>
+  &mdash; patent pending US 64/020,489 &amp; 64/021,113
+  &mdash; ICML 2026
+</div>
+
+<script>
+const API = window.location.origin;
+
+async function scan() {
+  const prompt = document.getElementById('prompt').value.trim();
+  if (!prompt) return;
+  document.getElementById('scanBtn').disabled = true;
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  try {
+    const res = await fetch(API + '/scan', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt, max_tokens: 40})
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || res.statusText);
+    }
+    render(await res.json());
+  } catch (e) {
+    document.getElementById('error').textContent = e.message;
+    document.getElementById('error').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('scanBtn').disabled = false;
+  }
+}
+
+function render(data) {
+  const zone = data.zone;
+  const badge = document.getElementById('zoneBadge');
+  badge.textContent = zone.zone;
+  badge.className = 'zone-badge zone-' + zone.zone;
+  document.getElementById('zoneDesc').textContent = zone.description;
+  document.getElementById('sEarly').textContent = data.s_early.toFixed(5);
+  document.getElementById('entropyEarly').textContent = data.entropy_early.toFixed(3);
+  document.getElementById('hallucProb').textContent = (zone.halluc_probability * 100).toFixed(0) + '%';
+  document.getElementById('genTime').textContent = data.generation_time_s.toFixed(1) + 's';
+
+  const thr = 0.005;
+  let html = '';
+  for (const tok of data.tokens) {
+    const cls = tok.c_delta > thr * 2 ? 'token-flagged' :
+                tok.c_delta < thr * 0.5 ? 'token-safe' : 'token-normal';
+    const title = 't=' + tok.idx + ' C_d=' + tok.c_delta.toFixed(4) + ' H=' + (tok.entropy||0).toFixed(2);
+    html += '<span class="' + cls + '" title="' + title + '">' + tok.token + '</span>';
+  }
+  document.getElementById('genText').innerHTML = html;
+
+  const maxCd = Math.max(...data.tokens.map(t => Math.abs(t.c_delta)), 0.01);
+  let cdHtml = '';
+  for (const tok of data.tokens) {
+    const w = Math.abs(tok.c_delta) / maxCd * 100;
+    cdHtml += '<div class="bar-row"><span class="bar-label">t' + tok.idx +
+      '</span><div class="bar bar-cd" style="width:' + w +
+      '%" title="' + tok.c_delta.toFixed(4) + '"></div></div>';
+  }
+  document.getElementById('cdTraj').innerHTML = cdHtml;
+
+  const maxEnt = Math.max(...data.tokens.filter(t => t.entropy).map(t => t.entropy), 1);
+  let entHtml = '';
+  for (const tok of data.tokens) {
+    if (tok.entropy === null) continue;
+    const w = tok.entropy / maxEnt * 100;
+    entHtml += '<div class="bar-row"><span class="bar-label">t' + tok.idx +
+      '</span><div class="bar bar-ent" style="width:' + w +
+      '%" title="' + tok.entropy.toFixed(3) + '"></div></div>';
+  }
+  document.getElementById('entTraj').innerHTML = entHtml;
+  document.getElementById('results').style.display = 'block';
+}
+
+document.getElementById('prompt').addEventListener('keydown', e => {
+  if (e.key === 'Enter') scan();
+});
+</script>
+</body>
+</html>

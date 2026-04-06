@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "fathom-site",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["http-server", ".", "-p", "3334", "-c-1"],
+      "name": "fathom-demo",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3334", "--directory", "C:\\Users\\heyzo\\clawd\\sae-reasoning-depth"],
       "port": 3334
     }
   ]

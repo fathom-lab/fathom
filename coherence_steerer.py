@@ -92,13 +92,27 @@ class CoherenceSteerer:
         # Load model
         print(f"[CoherenceSteerer] Loading {model_name}...")
         from circuit_tracer import ReplacementModel
+        # Detect architecture from model name
+        name_lower = model_name.lower()
+        if "gemma" in name_lower:
+            arch = "gemma"
+        elif "llama" in name_lower:
+            arch = "llama"
+        elif "qwen" in name_lower:
+            arch = "qwen"
+        else:
+            arch = "gemma"  # fallback
         self._model = ReplacementModel.from_pretrained(
-            model_name, "gemma", dtype=torch.bfloat16
+            model_name, arch, dtype=torch.bfloat16
         )
         self._inner = self._get_inner_model()
         self._tc = self._model.transcoders
         self._tc_list = self._tc.transcoders
-        self._n_layers = len(self._tc_list)
+        # Use model's actual layer count, not transcoder count
+        if self._inner is not None and hasattr(self._inner, 'cfg'):
+            self._n_layers = self._inner.cfg.n_layers
+        else:
+            self._n_layers = len(self._tc_list)
 
         # Layer bands
         if early_layers is None:

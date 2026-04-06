@@ -10,3 +10,29 @@ figures/.claude/worktrees/
 
 # Local Netlify folder
 .netlify
+
+# Checkpoints (regenerable)
+truthfulqa_results/*_checkpoint.json
+truthfulqa_results/n200_checkpoint.json
+truthfulqa_results/n200_run.log
+truthfulqa_results/governor_v2_log.txt
+
+# Temp files
+tmp_*.py
+tmp_*.txt
+texput.log
+*.aux
+*.log
+*.blg
+*.out
+
+# Large binary results (keep JSONs but not HTML cards)
+truthfulqa_results/*_cards.html
+
+# Logs
+logs/
+
+# Cache
+.fathom_cache/
+__pycache__/
+*.pyc
