@@ -36,3 +36,37 @@ logs/
 .fathom_cache/
 __pycache__/
 *.pyc
+
+# Build artifacts
+*.bbl
+*.pdf
+!paper/fathom_icml2026_v2.pdf
+*.npz
+
+# Binary checkpoints
+new_*_checkpoint.json
+pythia_checkpoints/
+
+# Test scripts
+test_load*.py
+
+# Temp
+merge_*.py
+fix_encoding.py
+run_round2.bat
+kc_scatter.png
+main.pdf
+main_v2.pdf
+
+# Large result dirs (regenerable)
+apex_scan_results/
+halueval_results/
+trajectory_results/
+trajectory_results_n50/
+trajectory_results_n100/
+
+# Pilot files (regenerable from full runs)
+truthfulqa_results/*_pilot*.json
+
+# Resume/personal
+resume_rodabaugh.html
