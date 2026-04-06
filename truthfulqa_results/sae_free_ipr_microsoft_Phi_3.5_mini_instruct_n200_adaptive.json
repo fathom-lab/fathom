@@ -1,0 +1,13 @@
+{
+  "source": "truthfulqa_results/sae_free_ipr_microsoft_Phi_3.5_mini_instruct_n200.json",
+  "model": "microsoft/Phi-3.5-mini-instruct",
+  "n_correct": 51,
+  "n_hallucinated": 43,
+  "adaptive_threshold": {
+    "pct": 60,
+    "thr": 4.957029087976463e-05,
+    "d": -0.22750290397177228,
+    "auc": 0.47423620611035106,
+    "p": 0.2654440106916276
+  }
+}

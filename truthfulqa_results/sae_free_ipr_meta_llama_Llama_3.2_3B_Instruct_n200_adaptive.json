@@ -1,0 +1,13 @@
+{
+  "source": "truthfulqa_results/sae_free_ipr_meta_llama_Llama_3.2_3B_Instruct_n200.json",
+  "model": "meta-llama/Llama-3.2-3B-Instruct",
+  "n_correct": 51,
+  "n_hallucinated": 43,
+  "adaptive_threshold": {
+    "pct": 40,
+    "thr": -0.002504556841320461,
+    "d": 0.29219152481942773,
+    "auc": 0.5984952120383037,
+    "p": 0.1599748274874214
+  }
+}

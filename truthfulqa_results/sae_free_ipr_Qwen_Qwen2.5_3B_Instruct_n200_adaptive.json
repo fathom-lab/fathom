@@ -1,0 +1,13 @@
+{
+  "source": "truthfulqa_results/sae_free_ipr_Qwen_Qwen2.5_3B_Instruct_n200.json",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "n_correct": 51,
+  "n_hallucinated": 43,
+  "adaptive_threshold": {
+    "pct": 70,
+    "thr": 0.14991268049925566,
+    "d": 0.28534833995243414,
+    "auc": 0.5574555403556771,
+    "p": 0.174156992995177
+  }
+}
