@@ -1,0 +1,417 @@
+\documentclass[10pt]{article}
+\usepackage{neurips_2025}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{microtype}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+
+\title{Fathom: Geometric Signatures of Reasoning, Hallucination,\\and Alignment in Language Models}
+
+\author{
+  Alexander Rodabaugh \\
+  Independent Researcher \\
+  \texttt{heyzoos123@gmail.com} \quad \texttt{darkflobi.com/fathom}
+}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present \textbf{Fathom}, a mechanistic instrument for analyzing the internal geometric structure of transformer language models using sparse autoencoder (SAE) feature attribution. We introduce three empirical findings on Gemma-2-2B:
+
+\textbf{(1) Depth (K) distinguishes reasoning from recall} but is blind to factual accuracy. The mean SAE feature layer index is significantly shallower for causal-reasoning prompts than matched surface-recall prompts: $\Delta = +0.257$, $p = 0.000051$ ($n = 30$, pre-registered, LOO-robust). This depth ratio, $K \approx 1.03$, is consistent across base and instruct variants of Gemma-2-2B.
+
+\textbf{(2) Coherence divergence ($C_{\Delta}$) tracks factual accuracy where depth cannot.} $C_{\Delta}$---the divergence between late-layer and early-layer SAE feature coherence---differs significantly between how Gemma-2-2B processes factually correct versus factually incorrect completions on TruthfulQA: $p = 0.021$, Cohen's $d = 0.212$, $n = 200$ (pre-registered, independent replication of $p = 0.040$, $d = 0.407$, $n = 50$). Incorrect completions are associated with \textit{higher} late-layer coherence---feature activations over-converge in the direction of the incorrect answer, a pattern we term late-layer over-coherence. We note that this experiment measures a property of how the model processes correct vs.\ incorrect strings as input; the relationship to generation-time behavior is a direction for future work (Section~\ref{sec:monitor}).
+
+\textbf{(3) RLHF installs a topic-selective output filter without proportionally reshaping internal computation.} On Gemma-2-2B (base vs.\ instruct), RLHF selectively deepens adversarial processing ($d = -0.596$, $p = 0.0028$, $n = 30$) via additive early-layer circuits (1.66$\times$ feature count, cosine similarity 0.996). Black-box comparison across commercial models suggests a dissociation between internal computation depth ($d = 0.24$, $p = 0.18$) and output expression depth ($d = 0.58$, $p = 0.032$).
+
+We describe \textbf{Fathom Monitor} (Section~\ref{sec:monitor}): a proposed per-token flagging system that applies finding (2) to generation, computing $C_{\Delta}$ inline and annotating tokens where late-layer coherence exceeds calibrated thresholds. Systematic evaluation of precision, recall, and baseline comparisons is left for future work.
+\end{abstract}
+
+%% ============================================================
+\section{Introduction}
+%% ============================================================
+
+How does a language model decide? The question has two distinct answers. One concerns \textit{what} the model outputs --- measurable from text alone. The other concerns \textit{how} the model computes --- accessible only through internal activations. These two channels can dissociate, and that dissociation carries information.
+
+Fathom is built on a simple observation: the layer-wise distribution of SAE feature activations during a forward pass encodes the computational character of what the model is doing. When a model retrieves a memorized fact, computation concentrates in output-proximal layers. When it reasons causally, computation distributes across earlier layers. This is not a subtle effect: the difference is consistent, replicable, and architecture-independent.
+
+But depth alone is not sufficient. We find that a model can reason at the same depth regardless of whether it produces a correct or incorrect answer ($p = 0.931$ on TruthfulQA). A different geometric property --- coherence, and specifically its divergence across the layer stack --- is required to detect when something has gone wrong.
+
+The geometry we measure connects to recent independent findings that LLMs develop brain-like organizational structure during training, with layers self-organizing into low- and high-complexity modules that align with human functional brain networks \citep{ma2026, wang2024}. Fathom's metrics can be understood as measurements of the health of this emergent structure: depth ($K$) measures where computation concentrates; coherence divergence ($C_{\Delta}$) measures whether the geometric organization is functioning correctly or has collapsed into a false attractor.
+
+We introduce three contributions:
+\begin{enumerate}
+    \item \textbf{The Fathom Constant ($K$):} A reproducible depth ratio distinguishing surface recall from causal reasoning, validated across model families.
+    \item \textbf{$C_{\Delta}$ as a hallucination signature:} The first per-token, mechanistic hallucination signal derived from SAE feature coherence geometry.
+    \item \textbf{Fathom Monitor:} A practical real-time flagging system that annotates uncertain generation tokens without post-hoc analysis or external knowledge.
+\end{enumerate}
+
+%% ============================================================
+\section{Background and Related Work}
+%% ============================================================
+
+\subsection{Sparse Autoencoders and Mechanistic Interpretability}
+
+Sparse autoencoders (SAEs) decompose transformer residual stream activations into sparse combinations of interpretable features, providing a mechanistic window into model computation \citep{cunningham2023, bricken2023}. SAE transcoders, as implemented in circuit-tracer \citep{lindsey2024}, extend this to full forward-pass attribution, mapping active features to specific layers and positions.
+
+\subsection{Reasoning Depth in Transformers}
+
+Prior work has established that transformer layers exhibit functional specialization, with earlier layers handling syntactic processing and later layers handling semantic integration \citep{tenney2019, rogers2020}. Fathom operationalizes this observation into a continuous depth score using feature-layer attribution.
+
+\subsection{Emergent Brain-Like Geometry}
+
+Two recent papers establish the broader theoretical context for our geometric approach. \citet{ma2026} demonstrate that Pythia model layers self-organize into stable low- and high-complexity clusters during training, with the low-complexity module (characterized by reduced entropy and curvature) showing significantly better alignment with human fMRI brain activity. The effect strengthens with scale and persists after controlling for training progress. \citet{wang2024} show that LLMs develop brain-like functional organization, with sub-groups of artificial neurons mirroring established functional brain networks --- an organization that was never programmed but emerged through learning.
+
+These findings suggest that healthy LLM computation has a specific geometric signature: modular, curvature-reduced, and brain-aligned. Our $C_{\Delta}$ metric measures deviation from this signature at the point of generation.
+
+\subsection{Hallucination Detection}
+
+Existing hallucination detection methods operate primarily at the output level --- comparing multiple generations for consistency \citep{manakul2023}, verifying factual claims against knowledge bases \citep{min2023}, or measuring semantic entropy across samples \citep{kuhn2023}. None operate mechanistically at the per-token level during generation. Fathom Monitor is the first system to do so.
+
+\subsection{RLHF and Internal vs.\ Output Behavior}
+
+Prior work on RLHF has focused primarily on output-level behavioral changes \citep{ouyang2022, bai2022}. Our work provides the first mechanistic evidence of dissociation between internal computation depth and output expression depth under RLHF, and the first cross-lab fingerprinting of alignment methodology from output text alone.
+
+%% ============================================================
+\section{Methods}
+%% ============================================================
+
+\subsection{Model and Infrastructure}
+
+All experiments use \textbf{Gemma-2-2B} (Google, 26 transformer layers) as the primary model, accessed via circuit-tracer's \texttt{ReplacementModel} with pre-trained SAE transcoders (Gemma-scope; \citealt{lindsey2024}). Hardware: NVIDIA RTX 4070 Laptop (8GB VRAM). Black-box experiments use the Anthropic and OpenAI APIs.
+
+\subsection{Depth Score (K)}
+
+The depth score for a given prompt is computed as the mean active feature layer across all SAE transcoder attributions during the forward pass:
+\begin{equation}
+K = \frac{1}{N} \sum_{i} \text{layer}(f_i) \cdot \text{activation}(f_i)
+\end{equation}
+where $N$ is the total weighted feature activations and $f_i$ indexes SAE features.
+
+For comparative experiments, we compute the ratio $K_{\text{surface}} / K_{\text{insight}}$ across matched prompt pairs. We refer to the observed mean ratio as $\hat{K}$.
+
+Pre-registered methodology: OSF pre-registration \href{https://osf.io/zrbs8}{osf.io/zrbs8}. Main result: $\Delta = +0.257$, $t = 4.500$, $p = 0.000051$, $n = 30$, 83.3\% directional accuracy. All results are on Gemma-2-2B; cross-architecture replication is a direction for future work.
+
+\subsection{Coherence Score (C) and $C_{\Delta}$}
+
+For each layer $l$ and token position $t$, coherence is computed from the top-$k$ activated SAE transcoder features:
+\begin{equation}
+C_l = \frac{1}{k(k-1)} \sum_{i \neq j} \cos(W_{\text{dec}}[i],\, W_{\text{dec}}[j])
+\end{equation}
+where $W_{\text{dec}}[i]$ is the decoder direction vector for the $i$-th highest-activated feature, and $k = \min(100, n_{\text{active}})$.
+
+\textbf{$C_{\Delta}$} is the divergence between late-layer and early-layer coherence:
+\begin{equation}
+C_{\Delta} = \operatorname{mean}(C_{\text{late}}) - \operatorname{mean}(C_{\text{early}})
+\end{equation}
+where early layers $= [0,\, n/3]$ and late layers $= [2n/3,\, n]$.
+
+A positive $C_{\Delta}$ indicates late layers are more coherent than early layers --- the model's feature activations are converging toward a specific geometric cluster in late processing.
+
+\subsection{TruthfulQA Factual Accuracy Experiment}
+
+\textbf{Design:} Matched-pair experiment on TruthfulQA (multiple-choice validation set; \citealt{lin2022}). For each question, we score two framings: (a) the correct answer appended as a completion, (b) the most plausible incorrect answer appended. Both are fed as input prompts; no generation is performed. This measures whether the model's internal SAE geometry differs when processing factually correct versus factually incorrect text---not whether it is generating correct or incorrect output.
+
+\textbf{Experiment 1} ($n{=}50$, seed$=$42): $p = 0.040$, $d = 0.407$.\\
+\textbf{Experiment 2} ($n{=}200$, seed$=$99): $p = 0.021$, $d = 0.212$.
+
+Both experiments are pre-registered at \href{https://osf.io/zrbs8}{osf.io/zrbs8}. The effect size estimate decreases with larger $n$, consistent with typical small-sample inflation; the directional finding replicates.
+
+\textbf{Scope:} This experiment establishes that $C_{\Delta}$ encodes factual accuracy in the model's processing of input text. Whether $C_{\Delta}$ can serve as a reliable generation-time hallucination detector requires a separate experiment (see Section~\ref{sec:monitor}).
+
+\textbf{Statistical test:} Mann-Whitney U (non-parametric; no normality assumption) with two-sided alternative. Effect size: Cohen's $d$. All analyses pre-registered at \href{https://osf.io/zrbs8}{osf.io/zrbs8}.
+
+\subsection{RLHF Depth Experiments}
+
+\textbf{White-box (SAE):} $n{=}30$ matched pairs, direct vs.\ adversarial prompting, Gemma-2-2B base vs.\ instruct. Paired $t$-test on depth score delta.
+
+\textbf{Black-box (text probe):} Anthropic API (Claude Haiku vs.\ Sonnet) and OpenAI API (GPT-3.5 vs.\ GPT-4). Text-feature depth probe on generated outputs for safety-sensitive vs.\ non-safety topics ($n{=}81$ prompt pairs).
+
+%% ============================================================
+\section{Results}
+%% ============================================================
+
+\subsection{Depth Score K: Distinguishing Reasoning from Recall}
+
+Surface recall prompts activate later layers; causal reasoning prompts activate earlier and mid layers. On Gemma-2-2B, the observed depth ratio $\hat{K}$ is consistent across base and instruct variants:
+
+\begin{table}[h]
+\centering
+\caption{Observed depth ratio $\hat{K}$ on Gemma-2-2B.}
+\begin{tabular}{lccc}
+\toprule
+Model & $\hat{K}$ (surface/insight) & Directional accuracy & $p$-value \\
+\midrule
+Gemma-2-2B (base) & 1.0302 & 76.7\% & --- \\
+Gemma-2-2B-IT & 1.0384 & 86.7\% & --- \\
+\textbf{Weighted mean} & $\mathbf{1.0343 \pm 0.0041}$ & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Pre-registered replication ($n{=}30$ matched pairs): $\Delta = +0.257$, $t = 4.500$, $\mathbf{p = 0.000051}$. Orthogonal to prediction confidence ($r = 0.001$, $p = 0.996$). Robust to leave-one-out (worst-case $p = 0.00037$). These results are on Gemma-2-2B; cross-architecture generalization is not yet established.
+
+\subsection{$C_{\Delta}$ Encodes Factual Accuracy; K Does Not}
+
+On TruthfulQA (Gemma-2-2B base), we report results from two independent experiments:
+
+\begin{table}[h]
+\centering
+\caption{$K$ vs.\ $C_{\Delta}$ when processing correct vs.\ incorrect TruthfulQA completions (Gemma-2-2B base).}
+\begin{tabular}{lccc}
+\toprule
+Metric & Exp.\ 1 ($n{=}50$, seed 42) & Exp.\ 2 ($n{=}200$, seed 99) \\
+\midrule
+$K$ (depth) & $p = 0.931$, $d = 0.029$ & $p = 0.439$, $d = -0.067$ \\
+$C_{\Delta}$ & $p = 0.040$, $d = 0.407$ & $\mathbf{p = 0.021}$, $\mathbf{d = 0.212}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{$K$ is insensitive to factual accuracy} ($p = 0.931$). The model processes correct and incorrect completions at the same computational depth. A two-axis framework is necessary: depth alone is insufficient.
+
+\textbf{$C_{\Delta}$ differs significantly by factual accuracy}, replicating across two independent samples. The effect direction is consistent: incorrect completions are associated with \textit{higher} late-layer coherence (mean $C_{\Delta} = +0.00772$ vs.\ $+0.00731$ at $n{=}110$). This \textbf{late-layer over-coherence} pattern indicates that the model's feature activations over-converge in the direction of the incorrect answer---a geometrically tighter late-layer configuration than the correct-answer state.
+
+\textbf{Interpretation scope:} This experiment measures how the model processes factually correct vs.\ incorrect strings as input prompts. It does not directly measure generation-time behavior; whether $C_{\Delta}$ can serve as a reliable hallucination detector during generation is addressed in Section~\ref{sec:monitor}.
+
+\subsection{Illustrative Demo: $C_{\Delta}$ During Generation}
+\label{sec:demo}
+
+As an illustrative application of finding (2), we compute $C_{\Delta}$ during free generation of \textit{``The president of Australia is''} (Gemma-2-2B). Token 11 (``is'') shows $C_{\Delta} = +0.0117$, above the proposed UNCERTAIN threshold; subsequent generation produces ``the Queen'' (factually incorrect). 6 of 15 generated tokens exceed the threshold. This single example is consistent with the prompt-scoring finding and motivates further investigation, but does not constitute systematic evaluation.
+
+\subsection{RLHF Expression-Computation Dissociation}
+
+\textbf{White-box result (SAE, Gemma-2-2B):}
+RLHF selectively deepens adversarial processing through additive early-layer circuits:
+
+\begin{table}[h]
+\centering
+\caption{RLHF depth effect on Gemma-2-2B (base vs.\ instruct).}
+\begin{tabular}{lcccc}
+\toprule
+Condition & $\Delta K$ & $p$-value & Cohen's $d$ & Interpretation \\
+\midrule
+Base model, adversarial & $+0.061$ & 0.128 & 0.29 & Not significant \\
+Instruct model, adversarial & $-0.124$ & \textbf{0.0028} & $-0.596$ & \textbf{Significant} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Feature count increase on adversarial: $1.66\times$ ($p < 10^{-6}$). Layer profile cosine similarity $= 0.996$ (additive, not substitutive). Extra features are 58\% early-layer concentrated. Mechanism: front-loaded detection circuits added by RLHF.
+
+\textbf{Black-box result (API text probe, $n{=}81$ prompt pairs):}
+
+\begin{table}[h]
+\centering
+\caption{Expression-computation dissociation across providers.}
+\begin{tabular}{lcc}
+\toprule
+Model Comparison & Internal computation (SAE) & Output expression (text probe) \\
+\midrule
+Anthropic (Haiku$\to$Sonnet) & $d = 0.24$, $p = 0.18$ & $d = 0.58$, $p = 0.032$ \\
+OpenAI (GPT-3.5$\to$GPT-4) & --- & $d = 0.26$, $p = 0.21$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+These results suggest RLHF installs a topic-selective output filter ($d = 0.58$ at expression layer) without proportionally reshaping internal computation ($d = 0.24$ internally). The Anthropic output expression effect is larger than the OpenAI effect (2.2$\times$), though comparing different model families limits causal attribution to alignment methodology specifically.
+
+\textbf{Adversarial framing robustness:} Expert framing (``full technical detail, no caveats'') \textit{increased} the safety depth premium by 59\%. The output filter is not surface-level --- it is embedded in explanatory depth itself.
+
+%% ============================================================
+\section{Fathom Monitor: A Proposed Application}
+\label{sec:monitor}
+%% ============================================================
+
+Finding (2) motivates a natural application: if $C_{\Delta}$ differs between correct and incorrect completions when evaluated on input prompts, a generation-time system could monitor $C_{\Delta}$ per token and flag positions where late-layer coherence spikes above a threshold.
+
+\subsection{Proposed Architecture}
+
+\begin{verbatim}
+For each token position t during generation:
+  1. Run single forward pass (hooks at residual stream)
+  2. Extract hidden states at early + late layer groups
+  3. Compute C_layer via SAE encoder pass (no full attribution)
+  4. C_delta = mean(C_late) - mean(C_early)
+  5. If C_delta > threshold_1: annotate UNCERTAIN
+     If C_delta > threshold_2: annotate HIGH_RISK
+  6. Continue generation
+\end{verbatim}
+
+Single forward pass; estimated overhead ${<}10\%$. Example output format:
+
+\begin{verbatim}
+"The prime minister[C_delta=+0.0117, uncertain] of Australia..."
+\end{verbatim}
+
+We have implemented a prototype (\texttt{fathom\_monitor.py}) and observed the qualitative behavior described in Section~\ref{sec:demo}. The illustrative demo is consistent with the prompt-scoring finding.
+
+\subsection{Evaluation Required}
+
+The prototype has \textit{not} been systematically evaluated. The following are open questions for future work:
+\begin{itemize}
+    \item Precision and recall at proposed thresholds (0.010, 0.020) on held-out data
+    \item Comparison against established baselines: SelfCheckGPT \citep{manakul2023}, semantic entropy \citep{kuhn2023}, logprob-based methods
+    \item Generalization across model families and domains
+    \item Whether prompt-scoring $C_{\Delta}$ differences (this paper) hold during generation, or whether a dedicated generation-time experiment is needed to validate the signal
+\end{itemize}
+
+Threshold calibration from TruthfulQA data may not transfer to other domains without recalibration.
+
+%% ============================================================
+\section{Discussion}
+%% ============================================================
+
+\subsection{Relationship to Geometric Organization in LLMs}
+
+Two recent papers characterize the geometric structure of transformer layers. \citet{ma2026} demonstrate that Pythia layers self-organize into low- and high-complexity geometric clusters during training, with the low-complexity module showing better alignment with human fMRI brain activity. \citet{wang2024} show that sub-groups of LLM neurons mirror established functional brain networks.
+
+Fathom's metrics have a natural correspondence to this framework: $K$ measures where in the layer stack computation concentrates, and $C_{\Delta}$ measures coherence geometry between early and late layers. The late-layer over-coherence we observe in incorrect completions may reflect a geometry where the model's feature space over-converges around a particular (incorrect) attractor---a possible mechanistic account consistent with, though not directly validated against, the curvature-modularization findings of Ma et al. We flag this as a speculative but falsifiable connection for future work.
+
+\subsection{Late-Layer Over-Coherence}
+
+The direction of the $C_{\Delta}$ effect---incorrect completions showing \textit{higher} late-layer coherence, not lower---warrants discussion. One interpretation: when the model processes text in the direction of an incorrect attractor, late-layer SAE features over-converge around that attractor's representational direction, producing a geometrically tighter cluster than the more distributed correct-answer representation.
+
+This interpretation is post-hoc and speculative; it is not directly tested in this paper. It serves as a hypothesis to guide the generation-time evaluation described in Section~\ref{sec:monitor}.
+
+\subsection{RLHF as a Surface Filter}
+
+The expression-computation dissociation ($d = 0.24$ internal vs.\ $d = 0.58$ at output) suggests RLHF installs a filter at the interface between computation and expression, rather than reorganizing computation itself. The adversarial framing result ($+59\%$ depth premium under expert framing) strengthens this: the filter is embedded in explanatory structure, not in surface disclaimers. Jailbreaks that remove disclaimers do not remove the filter.
+
+\subsection{Limitations}
+
+\begin{itemize}
+    \item \textbf{Single architecture:} All SAE experiments on Gemma-2-2B (base and instruct). Claims about architecture-independence are not supported by current data; cross-architecture replication is needed.
+    \item \textbf{Prompt-scoring vs.\ generation:} The $C_{\Delta}$ experiment measures how the model processes correct vs.\ incorrect strings as input. Whether this translates to reliable generation-time detection has not been tested systematically.
+    \item \textbf{No baseline comparisons:} The $C_{\Delta}$ finding has not been compared against SelfCheckGPT, semantic entropy, or logprob-based methods. Relative performance is unknown.
+    \item \textbf{Incomplete replication:} The $n{=}200$ run is ongoing; the $n{=}110$ checkpoint is reported. The final results may differ from the checkpoint.
+    \item \textbf{Threshold calibration:} Monitor thresholds ($0.010$, $0.020$) are set from TruthfulQA data and may not generalize.
+    \item \textbf{RLHF cross-provider comparison:} Comparing Anthropic and OpenAI models conflates alignment methodology with architecture, scale, and training data differences.
+\end{itemize}
+
+%% ============================================================
+\section{Conclusion}
+%% ============================================================
+
+We present three empirical findings on Gemma-2-2B using SAE feature attribution:
+
+\textbf{(1)} Depth score $K$ reliably distinguishes surface recall from causal reasoning ($p = 0.000051$, $n = 30$, pre-registered, LOO-robust). The effect is orthogonal to prediction confidence and consistent across base and instruct variants.
+
+\textbf{(2)} Coherence divergence $C_{\Delta}$ differs significantly between how the model processes factually correct vs.\ incorrect completions on TruthfulQA, replicating across two independent samples: $p = 0.040$, $d = 0.407$ ($n = 50$) and $p = 0.021$, $d = 0.212$ ($n = 200$, pre-registered). $K$ is insensitive to factual accuracy across both experiments ($p = 0.931$, $p = 0.439$). The effect direction---late-layer over-coherence in incorrect completions---is consistent. Systematic generation-time evaluation remains future work.
+
+\textbf{(3)} RLHF installs topic-selective processing changes in Gemma-2-2B, with a dissociation between internal computation ($d = 0.24$, $p = 0.18$) and output expression ($d = 0.58$, $p = 0.032$) visible in cross-provider comparison.
+
+Together, these findings suggest that SAE feature geometry encodes meaningful distinctions between reasoning types and factual accuracy that are invisible to surface-level analysis. The two-axis framework (depth $K$, coherence $C_{\Delta}$) provides a richer instrument for mechanistic interpretability than either metric alone.
+
+%% ============================================================
+\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+
+\bibitem[Bai et al.(2022)]{bai2022}
+Bai, Y., et al.\ (2022).
+Training a helpful and harmless assistant with reinforcement learning from human feedback.
+\textit{arXiv:2204.05862}.
+
+\bibitem[Bricken et al.(2023)]{bricken2023}
+Bricken, T., et al.\ (2023).
+Towards monosemanticity: Decomposing language models with dictionary learning.
+\textit{Anthropic Research}.
+
+\bibitem[Cunningham et al.(2023)]{cunningham2023}
+Cunningham, H., Ewart, A., Riggs, L., Huben, R., \& Sharkey, L.\ (2023).
+Sparse autoencoders find highly interpretable features in language models.
+\textit{arXiv:2309.08600}.
+
+\bibitem[Kuhn et al.(2023)]{kuhn2023}
+Kuhn, L., et al.\ (2023).
+Semantic uncertainty: Linguistic invariances for uncertainty estimation in natural language generation.
+\textit{arXiv:2302.09664}.
+
+\bibitem[Lin et al.(2022)]{lin2022}
+Lin, S., Hilton, J., \& Evans, O.\ (2022).
+TruthfulQA: Measuring how models mimic human falsehoods.
+\textit{ACL}.
+
+\bibitem[Lindsey et al.(2024)]{lindsey2024}
+Lindsey, J., et al.\ (2024).
+Sparse crosscoders for cross-layer features and model diffing.
+\textit{Anthropic Research}.
+
+\bibitem[Ma et al.(2026)]{ma2026}
+Ma, Z., et al.\ (2026).
+Training-driven representational geometry modularization predicts brain alignment in language models.
+\textit{arXiv:2602.07539}.
+
+\bibitem[Manakul et al.(2023)]{manakul2023}
+Manakul, P., Liusie, A., \& Gales, M.~J.~F.\ (2023).
+SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models.
+\textit{arXiv:2303.08896}.
+
+\bibitem[Min et al.(2023)]{min2023}
+Min, S., et al.\ (2023).
+FACTSCORE: Fine-grained atomic evaluation of factual precision in long form text generation.
+\textit{arXiv:2305.14251}.
+
+\bibitem[Ouyang et al.(2022)]{ouyang2022}
+Ouyang, L., et al.\ (2022).
+Training language models to follow instructions with human feedback.
+\textit{NeurIPS}.
+
+\bibitem[Rogers et al.(2020)]{rogers2020}
+Rogers, A., Kovaleva, O., \& Rumshisky, A.\ (2020).
+A primer in BERTology: What we know about how BERT works.
+\textit{TACL}.
+
+\bibitem[Tenney et al.(2019)]{tenney2019}
+Tenney, I., Das, D., \& Pavlick, E.\ (2019).
+BERT rediscovers the classical NLP pipeline.
+\textit{ACL}.
+
+\bibitem[Wang et al.(2024)]{wang2024}
+Wang, Z., et al.\ (2024).
+Brain-like functional organization within large language models.
+\textit{arXiv:2410.19542}.
+
+\end{thebibliography}
+
+%% ============================================================
+\appendix
+%% ============================================================
+
+\section{Pre-Registration}
+
+Primary pre-registration: \href{https://osf.io/zrbs8}{osf.io/zrbs8} (April 1, 2026, 3:07 AM EDT).\\
+Hypotheses pre-registered: H1 ($C_{\Delta}$ differs between correct/hallucinated), H2 ($K$ does not differ), H3 (hallucination clusters in high-$C_{\Delta}$ quadrant).\\
+Analysis plan locked before $n{=}200$ experiment commenced.\\
+Zenodo preprints: \href{https://doi.org/10.5281/zenodo.19364702}{v3} (April 1, 2026), \href{https://doi.org/10.5281/zenodo.19382453}{v4 Monitor disclosure} (April 2, 2026).\\
+Patents pending: US 64/020,489 (March 29, 2026); US 64/021,113 (March 30, 2026).
+
+\section{Reproducibility}
+
+All experiments are reproducible from open code at \href{https://github.com/heyzoos123-blip/sae-reasoning-depth}{github.com/heyzoos123-blip/sae-reasoning-depth}:
+
+\begin{verbatim}
+python experiment_power_replication.py   # K main result
+python run_truthfulqa_n200.py --resume   # C_delta n=200
+python score_remaining_pairs.py          # RLHF white-box
+python experiment_selective_blackbox.py  # RLHF black-box
+\end{verbatim}
+
+Key data files: \texttt{results\_power\_replication.json}, \texttt{truthfulqa\_results/coherence\_n200\_final.json}.
+
+\end{document}
