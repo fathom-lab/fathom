@@ -1,0 +1,41 @@
+{
+  "n_models": 3,
+  "per_model": [
+    {
+      "model": "Qwen/Qwen2.5-3B-Instruct",
+      "n_correct": 51,
+      "n_hallucinated": 41,
+      "S_corr_mean": 0.027032841569165782,
+      "S_hall_mean": 0.026803663370397444,
+      "d": -0.05708020269975024,
+      "p": 0.7843493097685097,
+      "auc": 0.5002391200382592,
+      "data_path": "truthfulqa_results\\sae_free_ipr_Qwen_Qwen2.5_3B_Instruct_n200.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.2-3B-Instruct",
+      "n_correct": 51,
+      "n_hallucinated": 39,
+      "S_corr_mean": 0.01651841916672117,
+      "S_hall_mean": 0.018916932957446782,
+      "d": 0.1855946924037473,
+      "p": 0.38479868001424367,
+      "auc": 0.5864756158873806,
+      "data_path": "truthfulqa_results\\sae_free_ipr_meta_llama_Llama_3.2_3B_Instruct_n200.json"
+    },
+    {
+      "model": "microsoft/Phi-3.5-mini-instruct",
+      "n_correct": 51,
+      "n_hallucinated": 43,
+      "S_corr_mean": 0.014642997955869104,
+      "S_hall_mean": 0.011460404810708976,
+      "d": -0.3090637441913211,
+      "p": 0.13035012602827628,
+      "auc": 0.45987232102143183,
+      "data_path": "truthfulqa_results\\sae_free_ipr_microsoft_Phi_3.5_mini_instruct_n200.json"
+    }
+  ],
+  "pooled_d_mean": -0.06018308482910802,
+  "fisher_p_one_sided": 0.6191105725054262,
+  "all_positive": false
+}

@@ -1,0 +1,261 @@
+{
+  "source": "truthfulqa_results/S_truthfulqa_n200.json",
+  "category_stats": [
+    {
+      "category": "Advertising",
+      "n": 2,
+      "halluc_rate": 0.5,
+      "S_mean": 0.0004420875241051181,
+      "max_C_delta_mean": 0.015504021398413732,
+      "mean_C_delta_mean": 0.00810682767155944
+    },
+    {
+      "category": "Confusion: People",
+      "n": 6,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004844603700837453,
+      "max_C_delta_mean": 0.014588637919270767,
+      "mean_C_delta_mean": 0.008069244712078346
+    },
+    {
+      "category": "Conspiracies",
+      "n": 5,
+      "halluc_rate": 0.4,
+      "S_mean": 0.00046190116698396146,
+      "max_C_delta_mean": 0.013006883271625877,
+      "mean_C_delta_mean": 0.0066767433002874275
+    },
+    {
+      "category": "Distraction",
+      "n": 4,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004539218600757571,
+      "max_C_delta_mean": 0.01386909055923907,
+      "mean_C_delta_mean": 0.006899201893418603
+    },
+    {
+      "category": "Economics",
+      "n": 7,
+      "halluc_rate": 0.14285714285714285,
+      "S_mean": 0.0004994704776631922,
+      "max_C_delta_mean": 0.016032884289519954,
+      "mean_C_delta_mean": 0.008169064464100996
+    },
+    {
+      "category": "Education",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.00040335305957139584,
+      "max_C_delta_mean": 0.015327416263713043,
+      "mean_C_delta_mean": 0.008762291067503057
+    },
+    {
+      "category": "Fiction",
+      "n": 13,
+      "halluc_rate": 0.0,
+      "S_mean": 0.00045372529519754586,
+      "max_C_delta_mean": 0.015155708197638399,
+      "mean_C_delta_mean": 0.008012324435945233
+    },
+    {
+      "category": "Health",
+      "n": 16,
+      "halluc_rate": 0.125,
+      "S_mean": 0.000443653294069687,
+      "max_C_delta_mean": 0.01568587085414013,
+      "mean_C_delta_mean": 0.008112916145022677
+    },
+    {
+      "category": "History",
+      "n": 6,
+      "halluc_rate": 0.3333333333333333,
+      "S_mean": 0.0004992390610269877,
+      "max_C_delta_mean": 0.015444571510754493,
+      "mean_C_delta_mean": 0.007181565874443544
+    },
+    {
+      "category": "Indexical Error: Location",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0005355663873263614,
+      "max_C_delta_mean": 0.014581019795435982,
+      "mean_C_delta_mean": 0.006972135960784405
+    },
+    {
+      "category": "Indexical Error: Other",
+      "n": 7,
+      "halluc_rate": 0.14285714285714285,
+      "S_mean": 0.00047105428994303724,
+      "max_C_delta_mean": 0.01524424817291842,
+      "mean_C_delta_mean": 0.00749186324343904
+    },
+    {
+      "category": "Indexical Error: Time",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.00045657792368999353,
+      "max_C_delta_mean": 0.01440948025163825,
+      "mean_C_delta_mean": 0.00698954472208127
+    },
+    {
+      "category": "Language",
+      "n": 4,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004629684823468336,
+      "max_C_delta_mean": 0.01589588646585566,
+      "mean_C_delta_mean": 0.007859093956164841
+    },
+    {
+      "category": "Law",
+      "n": 19,
+      "halluc_rate": 0.21052631578947367,
+      "S_mean": 0.0004651407029223737,
+      "max_C_delta_mean": 0.015820336262505993,
+      "mean_C_delta_mean": 0.007909143764877148
+    },
+    {
+      "category": "Logical Falsehood",
+      "n": 3,
+      "halluc_rate": 0.0,
+      "S_mean": 0.00042206207821156305,
+      "max_C_delta_mean": 0.013596904007540274,
+      "mean_C_delta_mean": 0.0074146842502390104
+    },
+    {
+      "category": "Misconceptions",
+      "n": 27,
+      "halluc_rate": 0.18518518518518517,
+      "S_mean": 0.000481332497604197,
+      "max_C_delta_mean": 0.015496067759653094,
+      "mean_C_delta_mean": 0.007480944082906493
+    },
+    {
+      "category": "Misinformation",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0005008073510375391,
+      "max_C_delta_mean": 0.017353473779997304,
+      "mean_C_delta_mean": 0.008431425025114635
+    },
+    {
+      "category": "Misquotations",
+      "n": 5,
+      "halluc_rate": 0.2,
+      "S_mean": 0.0003877383569732029,
+      "max_C_delta_mean": 0.014027757589773471,
+      "mean_C_delta_mean": 0.008667404776179197
+    },
+    {
+      "category": "Myths and Fairytales",
+      "n": 5,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0003946672157811807,
+      "max_C_delta_mean": 0.013875961940586285,
+      "mean_C_delta_mean": 0.00789133126042363
+    },
+    {
+      "category": "Nutrition",
+      "n": 3,
+      "halluc_rate": 0.3333333333333333,
+      "S_mean": 0.00048033946836250696,
+      "max_C_delta_mean": 0.016122318311349488,
+      "mean_C_delta_mean": 0.008233844754769943
+    },
+    {
+      "category": "Paranormal",
+      "n": 7,
+      "halluc_rate": 0.0,
+      "S_mean": 0.00044077689599804186,
+      "max_C_delta_mean": 0.014642722257676157,
+      "mean_C_delta_mean": 0.007668108996593058
+    },
+    {
+      "category": "Politics",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004698471045687951,
+      "max_C_delta_mean": 0.015247222004514753,
+      "mean_C_delta_mean": 0.007380105900951091
+    },
+    {
+      "category": "Proverbs",
+      "n": 4,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0005078518800695465,
+      "max_C_delta_mean": 0.01654709041319311,
+      "mean_C_delta_mean": 0.007518818340260887
+    },
+    {
+      "category": "Psychology",
+      "n": 6,
+      "halluc_rate": 0.16666666666666666,
+      "S_mean": 0.00043050524854211183,
+      "max_C_delta_mean": 0.015568217753259497,
+      "mean_C_delta_mean": 0.008271283709378047
+    },
+    {
+      "category": "Religion",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004511702729662929,
+      "max_C_delta_mean": 0.014437448734921372,
+      "mean_C_delta_mean": 0.007322007366482687
+    },
+    {
+      "category": "Science",
+      "n": 3,
+      "halluc_rate": 0.0,
+      "S_mean": 0.00042652397151947863,
+      "max_C_delta_mean": 0.014153281321384645,
+      "mean_C_delta_mean": 0.007666929282774851
+    },
+    {
+      "category": "Sociology",
+      "n": 16,
+      "halluc_rate": 0.1875,
+      "S_mean": 0.0004931925268331456,
+      "max_C_delta_mean": 0.01593971131986486,
+      "mean_C_delta_mean": 0.007706330008763177
+    },
+    {
+      "category": "Statistics",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004917099248540838,
+      "max_C_delta_mean": 0.01650336477965743,
+      "mean_C_delta_mean": 0.008266697571944268
+    },
+    {
+      "category": "Stereotypes",
+      "n": 5,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004506828837965349,
+      "max_C_delta_mean": 0.01495900730385657,
+      "mean_C_delta_mean": 0.007813173551068883
+    },
+    {
+      "category": "Subjective",
+      "n": 2,
+      "halluc_rate": 0.0,
+      "S_mean": 0.00047854144638161936,
+      "max_C_delta_mean": 0.0163770924620623,
+      "mean_C_delta_mean": 0.008948583169264702
+    },
+    {
+      "category": "Superstitions",
+      "n": 3,
+      "halluc_rate": 0.0,
+      "S_mean": 0.0004734813337865743,
+      "max_C_delta_mean": 0.015895441200150743,
+      "mean_C_delta_mean": 0.007626394593334221
+    },
+    {
+      "category": "Weather",
+      "n": 3,
+      "halluc_rate": 0.3333333333333333,
+      "S_mean": 0.0004937496541063876,
+      "max_C_delta_mean": 0.013906200812454307,
+      "mean_C_delta_mean": 0.00766507704735183
+    }
+  ]
+}

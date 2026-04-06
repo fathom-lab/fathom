@@ -1,0 +1,5 @@
+{
+  "source": "truthfulqa_results/S_truthfulqa_n200.json",
+  "n_correct": 41,
+  "n_hallucinated": 25
+}
