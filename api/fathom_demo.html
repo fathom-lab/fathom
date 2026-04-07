@@ -102,6 +102,47 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
 @keyframes pulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
 .error { color: var(--red); padding: 1rem; border: 1px solid rgba(255,68,68,.3); background: rgba(255,68,68,.05); font-size: .75rem; }
 
+/* Scanning animation */
+.scan-line {
+  position: fixed; top: 48px; left: 0; right: 0; height: 2px; z-index: 999;
+  background: var(--green); box-shadow: 0 0 15px var(--green), 0 0 40px rgba(0,255,136,.3);
+  animation: scanDown 2s ease-in-out infinite;
+  pointer-events: none; display: none;
+}
+@keyframes scanDown { 0% { top: 48px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100vh; opacity: 0; } }
+
+/* Particle canvas background */
+#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+/* Zone banner pulse */
+.zone-banner.DANGER { animation: dangerPulse 2s ease-in-out infinite; }
+@keyframes dangerPulse { 0%,100% { box-shadow: inset 0 0 20px rgba(255,68,68,.05); } 50% { box-shadow: inset 0 0 30px rgba(255,68,68,.12); } }
+.zone-banner.SAFE { animation: safePulse 3s ease-in-out infinite; }
+@keyframes safePulse { 0%,100% { box-shadow: inset 0 0 20px rgba(0,255,136,.03); } 50% { box-shadow: inset 0 0 30px rgba(0,255,136,.08); } }
+
+/* Token reveal animation */
+.tok { opacity: 0; animation: tokReveal .3s ease-out forwards; }
+@keyframes tokReveal { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Bar animation */
+.bar { animation: barGrow .4s ease-out forwards; transform-origin: left; }
+@keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Metric counter animation */
+.metric-value { transition: all .3s ease-out; }
+
+/* Commitment bar tooltip */
+.bar-row { position: relative; }
+.bar-row:hover .bar { filter: brightness(1.3); }
+
+/* Glowing input when scanning */
+input.scanning { border-color: var(--green); box-shadow: 0 0 30px rgba(0,255,136,.15); animation: inputPulse 1s ease-in-out infinite; }
+@keyframes inputPulse { 0%,100% { box-shadow: 0 0 20px rgba(0,255,136,.1); } 50% { box-shadow: 0 0 40px rgba(0,255,136,.2); } }
+
+/* Preset buttons hover */
+.preset-btn { transition: all .15s; }
+.preset-btn:hover { border-color: var(--green) !important; color: var(--green) !important; box-shadow: 0 0 10px rgba(0,255,136,.1); }
+
 @media (max-width: 640px) {
   .input-area { flex-direction: column; }
   .metrics { grid-template-columns: 1fr 1fr; }
@@ -122,6 +163,8 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
   <span class="patent">US 64/020,489</span>
 </nav>
 
+<canvas id="particles"></canvas>
+<div id="scanLine" class="scan-line"></div>
 <main>
   <p style="color:var(--light);font-size:.75rem;line-height:1.7;margin-bottom:1.2rem;max-width:600px">
     type a question below. fathom reads the model's <strong style="color:var(--green)">circuit geometry</strong>
@@ -132,11 +175,11 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
     <button id="scanBtn" onclick="scan()">SCAN</button>
   </div>
   <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem">
-    <button onclick="setPrompt('What did Paul Revere say during his midnight ride?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">Paul Revere</button>
-    <button onclick="setPrompt('Is the Great Wall of China visible from space?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">Great Wall</button>
-    <button onclick="setPrompt('What is the capital of France?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">capital of France</button>
-    <button onclick="setPrompt('Do humans only use 10% of their brain?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">10% brain myth</button>
-    <button onclick="setPrompt('Did Einstein fail math in school?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">Einstein + math</button>
+    <button onclick="setPrompt('What did Paul Revere say during his midnight ride?')" class="preset-btn" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400;cursor:pointer">Paul Revere</button>
+    <button onclick="setPrompt('Is the Great Wall of China visible from space?')" class="preset-btn" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400;cursor:pointer">Great Wall</button>
+    <button onclick="setPrompt('What is the capital of France?')" class="preset-btn" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400;cursor:pointer">capital of France</button>
+    <button onclick="setPrompt('Do humans only use 10% of their brain?')" class="preset-btn" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400;cursor:pointer">10% brain myth</button>
+    <button onclick="setPrompt('Did Einstein fail math in school?')" class="preset-btn" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400;cursor:pointer">Einstein + math</button>
   </div>
 
   <div id="error" class="error" style="display:none"></div>
@@ -219,9 +262,12 @@ async function scan() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt) return;
   document.getElementById('scanBtn').disabled = true;
+  document.getElementById('scanBtn').textContent = 'SCANNING...';
   document.getElementById('error').style.display = 'none';
   document.getElementById('results').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
+  document.getElementById('prompt').classList.add('scanning');
+  document.getElementById('scanLine').style.display = 'block';
   try {
     const res = await fetch(API + '/scan', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({prompt, max_tokens: 40}) });
     if (!res.ok) { const err = await res.json(); throw new Error(err.detail || res.statusText); }
@@ -232,6 +278,9 @@ async function scan() {
   } finally {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('scanBtn').disabled = false;
+    document.getElementById('scanBtn').textContent = 'SCAN';
+    document.getElementById('prompt').classList.remove('scanning');
+    document.getElementById('scanLine').style.display = 'none';
   }
 }
 
@@ -263,7 +312,7 @@ function render(data) {
     else if (tok.c_delta > thr * 1.5) cls = 'tok-warm';
     else if (tok.c_delta < thr * 0.3) cls = 'tok-safe';
     const tip = `t${tok.idx}  commitment: ${tok.c_delta.toFixed(4)}  entropy: ${(tok.entropy||0).toFixed(2)}`;
-    html += `<span class="tok ${cls}" title="${tip}">${tok.token}</span>`;
+    html += `<span class="tok ${cls}" title="${tip}" style="animation-delay:${tok.idx * 40}ms">${tok.token}</span>`;
   }
   document.getElementById('genText').innerHTML = html;
 
@@ -277,7 +326,7 @@ function render(data) {
     if (ratio > 0.8) cls = 'bar-commit-extreme';
     else if (ratio > 0.5) cls = 'bar-commit-high';
     else if (ratio > 0.25) cls = 'bar-commit-med';
-    commitHtml += `<div class="bar-row"><span class="bar-label">${tok.idx}</span><div class="bar ${cls}" style="width:${w}%"></div></div>`;
+    commitHtml += `<div class="bar-row"><span class="bar-label">${tok.idx}</span><div class="bar ${cls}" style="width:${w}%;animation-delay:${tok.idx * 30}ms"></div></div>`;
   }
   document.getElementById('vizCommit').innerHTML = commitHtml;
 
@@ -292,7 +341,7 @@ function render(data) {
     if (ratio > 0.8) cls = 'bar-ent-extreme';
     else if (ratio > 0.5) cls = 'bar-ent-high';
     else if (ratio > 0.25) cls = 'bar-ent-med';
-    entHtml += `<div class="bar-row"><span class="bar-label">${tok.idx}</span><div class="bar ${cls}" style="width:${w}%"></div></div>`;
+    entHtml += `<div class="bar-row"><span class="bar-label">${tok.idx}</span><div class="bar ${cls}" style="width:${w}%;animation-delay:${tok.idx * 30}ms"></div></div>`;
   }
   document.getElementById('vizEntropy').innerHTML = entHtml;
 
@@ -487,7 +536,62 @@ function setPrompt(text) {
   scan();
 }
 document.getElementById('prompt').addEventListener('keydown', e => { if (e.key === 'Enter') scan(); });
-window.addEventListener('resize', () => { /* redraw if needed */ });
+window.addEventListener('resize', () => { initParticles(); });
+
+// Particle background
+function initParticles() {
+  const c = document.getElementById('particles');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
+
+  const particles = [];
+  const count = 40;
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * c.width,
+      y: Math.random() * c.height,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+      a: Math.random() * 0.15 + 0.03,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    // Draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0,255,136,${0.03 * (1 - dist/150)})`;
+          ctx.lineWidth = 0.5;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    // Draw particles
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > c.width) p.vx *= -1;
+      if (p.y < 0 || p.y > c.height) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,255,136,${p.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+initParticles();
 </script>
 </body>
 </html>
