@@ -20,7 +20,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Note: The measurement methods described in this repository are covered by
-US Provisional Patents 64/020,489, 64/021,113, and 64/026,964. The MIT
-license covers the software implementation; commercial use of the patented
-methods may require a separate license.
+PATENT NOTICE: The measurement methods described in this repository are
+covered by US Provisional Patents 64/020,489, 64/021,113, and 64/026,964.
