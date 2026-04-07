@@ -6,7 +6,7 @@ module.exports = {
       name: "fathom-api",
       script: "uvicorn",
       args: "fathom_api_v2:app --host 0.0.0.0 --port 8500 --workers 1",
-      cwd: "C:\\Users\\heyzo\\clawd\\sae-reasoning-depth",
+      cwd: "C:\\Users\\heyzo\\clawd\\sae-reasoning-depth\\api",
       interpreter: "none",
       env: {
         FATHOM_MODEL: "google/gemma-2-2b-it",

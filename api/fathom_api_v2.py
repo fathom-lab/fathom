@@ -29,7 +29,11 @@ from contextlib import asynccontextmanager
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-sys.path.insert(0, os.path.dirname(__file__))
+_here = os.path.dirname(os.path.abspath(__file__))
+_root = os.path.dirname(_here)
+sys.path.insert(0, _here)
+sys.path.insert(0, _root)
+sys.path.insert(0, os.path.join(_root, 'probes'))
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
