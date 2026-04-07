@@ -94,7 +94,7 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
 
 /* 2D state dot */
 .state-viz { margin-top: 1rem; background: var(--surface); border: 1px solid var(--line); padding: 1rem; position: relative; }
-.state-canvas { width: 100%; height: 200px; display: block; }
+.state-canvas { width: 100%; height: 300px; display: block; }
 
 .footer { text-align: center; padding: 2rem 1rem; color: var(--dim); font-size: .5rem; border-top: 1px solid var(--line); margin-top: 2rem; }
 .loading { color: var(--mute); text-align: center; padding: 2rem; font-size: .8rem; }
@@ -117,14 +117,26 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
     <a href="https://fathom.darkflobi.com">home</a>
     <a href="/docs">api docs</a>
     <a href="/health">status</a>
+    <a href="https://github.com/heyzoos123-blip/fathom-research">github</a>
   </ul>
   <span class="patent">US 64/020,489</span>
 </nav>
 
 <main>
+  <p style="color:var(--light);font-size:.75rem;line-height:1.7;margin-bottom:1.2rem;max-width:600px">
+    type a question below. fathom reads the model's <strong style="color:var(--green)">circuit geometry</strong>
+    during generation — measuring commitment intensity via SAE feature coherence and logit entropy per token.
+  </p>
   <div class="input-area">
     <input type="text" id="prompt" placeholder="ask a question to measure..." value="What did Paul Revere say during his midnight ride?">
     <button id="scanBtn" onclick="scan()">SCAN</button>
+  </div>
+  <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem">
+    <button onclick="setPrompt('What did Paul Revere say during his midnight ride?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">Paul Revere</button>
+    <button onclick="setPrompt('Is the Great Wall of China visible from space?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">Great Wall</button>
+    <button onclick="setPrompt('What is the capital of France?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">capital of France</button>
+    <button onclick="setPrompt('Do humans only use 10% of their brain?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">10% brain myth</button>
+    <button onclick="setPrompt('Did Einstein fail math in school?')" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400">Einstein + math</button>
   </div>
 
   <div id="error" class="error" style="display:none"></div>
@@ -154,6 +166,13 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
 
     <div class="section-title">generated text</div>
     <div class="gen-box" id="genText"></div>
+    <div style="display:flex;gap:1rem;margin-top:.4rem;font-size:.55rem;color:var(--dim)">
+      <span><span style="color:var(--green)">&#9679;</span> safe</span>
+      <span><span style="color:var(--light)">&#9679;</span> normal</span>
+      <span><span style="color:var(--amber)">&#9679;</span> elevated</span>
+      <span><span style="color:var(--red)">&#9679;</span> high commitment</span>
+      <span style="color:var(--dim)">hover tokens for details</span>
+    </div>
 
     <div class="section-title">per-token cognitive state</div>
     <div class="dual-viz">
@@ -181,7 +200,10 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
 </main>
 
 <div class="footer">
-  fathom intelligence &mdash; patent pending US 64/020,489 &amp; 64/021,113 &amp; 64/026,964
+  <a href="https://fathom.darkflobi.com">fathom intelligence</a>
+  &mdash; <a href="https://github.com/heyzoos123-blip/fathom-research">github</a>
+  &mdash; <a href="https://doi.org/10.5281/zenodo.19437539">paper</a>
+  &mdash; patent pending US 64/020,489 &amp; 64/021,113 &amp; 64/026,964
 </div>
 
 <script>
@@ -274,103 +296,196 @@ function render(data) {
   }
   document.getElementById('vizEntropy').innerHTML = entHtml;
 
-  // 2D state canvas
-  draw2DState(data);
+  // Show results FIRST so canvas has dimensions
   document.getElementById('results').style.display = 'block';
+  // Then draw 2D state canvas
+  requestAnimationFrame(() => draw2DState(data));
 }
 
 function draw2DState(data) {
   const canvas = document.getElementById('stateCanvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const W = canvas.offsetWidth; const H = 200;
+  const W = canvas.offsetWidth || canvas.parentElement.offsetWidth || 800;
+  const H = 300;
   canvas.width = W * 2; canvas.height = H * 2;
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   ctx.scale(2, 2);
 
-  // Background
-  ctx.fillStyle = '#0a0a0a';
+  const pad = 30;
+  const midX = W / 2, midY = H / 2;
+
+  // Background gradient
+  const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
+  bg.addColorStop(0, '#0d0d0d');
+  bg.addColorStop(1, '#050505');
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
-  // Zone quadrants
-  const midX = W / 2, midY = H / 2;
-  // Safe (bottom-left)
-  ctx.fillStyle = 'rgba(0,255,136,.04)';
+  // Zone quadrant fills with radial gradients
+  // Safe (bottom-left) — green glow
+  const safeG = ctx.createRadialGradient(pad, H-pad, 0, pad, H-pad, W*0.4);
+  safeG.addColorStop(0, 'rgba(0,255,136,.08)');
+  safeG.addColorStop(1, 'rgba(0,255,136,0)');
+  ctx.fillStyle = safeG;
   ctx.fillRect(0, midY, midX, midY);
-  // Danger (top-right)
-  ctx.fillStyle = 'rgba(255,68,68,.04)';
+
+  // Danger (top-right) — red glow
+  const dangerG = ctx.createRadialGradient(W-pad, pad, 0, W-pad, pad, W*0.4);
+  dangerG.addColorStop(0, 'rgba(255,68,68,.1)');
+  dangerG.addColorStop(1, 'rgba(255,68,68,0)');
+  ctx.fillStyle = dangerG;
   ctx.fillRect(midX, 0, midX, midY);
 
-  // Grid
+  // Grid lines
   ctx.strokeStyle = '#1a1a1a';
   ctx.lineWidth = 0.5;
-  ctx.setLineDash([4, 4]);
+  ctx.setLineDash([3, 6]);
   ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, H); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(W, midY); ctx.stroke();
+  // Subtle sub-grid
+  ctx.strokeStyle = '#111';
+  for (let x = pad; x < W; x += (W-2*pad)/4) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = pad; y < H; y += (H-2*pad)/4) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
   ctx.setLineDash([]);
 
   // Zone labels
-  ctx.font = '9px JetBrains Mono';
-  ctx.fillStyle = 'rgba(0,255,136,.3)'; ctx.fillText('SAFE', 8, H - 8);
-  ctx.fillStyle = 'rgba(255,68,68,.3)'; ctx.fillText('DANGER', W - 50, 14);
-  ctx.fillStyle = 'rgba(255,184,0,.2)'; ctx.fillText('UNCERTAIN', 8, 14);
-  ctx.fillStyle = 'rgba(255,140,0,.2)'; ctx.fillText('RISKY', W - 40, H - 8);
+  ctx.font = '10px JetBrains Mono';
+  ctx.fillStyle = 'rgba(0,255,136,.4)'; ctx.fillText('SAFE', pad, H - 10);
+  ctx.fillStyle = 'rgba(255,68,68,.5)'; ctx.fillText('DANGER', W - pad - 48, 18);
+  ctx.fillStyle = 'rgba(255,184,0,.25)'; ctx.fillText('UNCERTAIN', pad, 18);
+  ctx.fillStyle = 'rgba(255,140,0,.25)'; ctx.fillText('RISKY', W - pad - 36, H - 10);
 
   // Axis labels
-  ctx.fillStyle = '#444'; ctx.font = '8px JetBrains Mono';
-  ctx.fillText('commitment \u2192', W/2 - 30, H - 3);
-  ctx.save(); ctx.translate(8, H/2 + 20); ctx.rotate(-Math.PI/2);
-  ctx.fillText('entropy \u2192', 0, 0); ctx.restore();
+  ctx.fillStyle = '#555'; ctx.font = '9px JetBrains Mono';
+  ctx.textAlign = 'center';
+  ctx.fillText('commitment intensity (S)', W/2, H - 2);
+  ctx.textAlign = 'left';
+  ctx.save(); ctx.translate(10, H/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign = 'center';
+  ctx.fillText('logit entropy (H)', 0, 0);
+  ctx.restore(); ctx.textAlign = 'left';
 
-  // Plot per-token trajectory
-  if (!data.tokens.length) return;
-  const sVals = []; const eVals = [];
-  let runS = 0, runE = 0, spikeCount = 0;
+  // Build trajectory data
+  if (!data.tokens || !data.tokens.length) {
+    ctx.fillStyle = '#333'; ctx.font = '11px JetBrains Mono'; ctx.textAlign = 'center';
+    ctx.fillText('no trajectory data', W/2, H/2);
+    return;
+  }
+
+  const points = [];
+  let maxCd = 0, spikeCount = 0, sumEnt = 0;
   for (let i = 0; i < data.tokens.length; i++) {
-    const cd = Math.abs(data.tokens[i].c_delta);
+    const cd = Math.abs(data.tokens[i].c_delta || 0);
     const ent = data.tokens[i].entropy || 0;
+    if (cd > maxCd) maxCd = cd;
     if (cd > 0.005) spikeCount++;
-    runS = spikeCount > 0 ? Math.max(...data.tokens.slice(0,i+1).map(t=>Math.abs(t.c_delta))) / spikeCount : 0;
-    runE = data.tokens.slice(0,i+1).reduce((s,t) => s + (t.entropy||0), 0) / (i+1);
-    sVals.push(runS); eVals.push(runE);
+    sumEnt += ent;
+    const s = spikeCount > 0 ? maxCd / spikeCount : 0;
+    const e = sumEnt / (i + 1);
+    points.push({s, e, cd, ent, i});
   }
 
-  const maxS = Math.max(...sVals, 0.003);
-  const maxE = Math.max(...eVals, 1);
-  const pad = 20;
+  if (points.length === 0) return;
 
-  // Draw trajectory path
+  const maxS = Math.max(...points.map(p => p.s), 0.001);
+  const maxE = Math.max(...points.map(p => p.e), 0.5);
+
+  function px(s) { return pad + (s / maxS) * (W - 2*pad); }
+  function py(e) { return H - pad - (e / maxE) * (H - 2*pad); }
+
+  // Trajectory glow (thick, faint)
   ctx.beginPath();
-  ctx.strokeStyle = 'rgba(168,85,247,.5)';
-  ctx.lineWidth = 1.5;
-  for (let i = 0; i < sVals.length; i++) {
-    const x = pad + (sVals[i] / maxS) * (W - 2*pad);
-    const y = H - pad - (eVals[i] / maxE) * (H - 2*pad);
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
+  ctx.strokeStyle = 'rgba(168,85,247,.15)';
+  ctx.lineWidth = 6;
+  ctx.lineJoin = 'round';
+  points.forEach((p, i) => {
+    if (i === 0) ctx.moveTo(px(p.s), py(p.e));
+    else ctx.lineTo(px(p.s), py(p.e));
+  });
   ctx.stroke();
 
-  // Draw dots with color gradient (early = dim, late = bright)
-  for (let i = 0; i < sVals.length; i++) {
-    const x = pad + (sVals[i] / maxS) * (W - 2*pad);
-    const y = H - pad - (eVals[i] / maxE) * (H - 2*pad);
-    const progress = i / sVals.length;
-    const r = 2 + progress * 3;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    const alpha = 0.3 + progress * 0.7;
-    ctx.fillStyle = `rgba(168,85,247,${alpha})`;
-    ctx.fill();
-  }
+  // Trajectory line (thin, bright)
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(168,85,247,.7)';
+  ctx.lineWidth = 2;
+  points.forEach((p, i) => {
+    if (i === 0) ctx.moveTo(px(p.s), py(p.e));
+    else ctx.lineTo(px(p.s), py(p.e));
+  });
+  ctx.stroke();
 
-  // Final point (large, glowing)
-  const lastX = pad + (sVals[sVals.length-1] / maxS) * (W - 2*pad);
-  const lastY = H - pad - (eVals[eVals.length-1] / maxE) * (H - 2*pad);
-  ctx.beginPath(); ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
-  ctx.fillStyle = '#a855f7'; ctx.fill();
-  ctx.strokeStyle = 'rgba(168,85,247,.4)'; ctx.lineWidth = 8;
-  ctx.beginPath(); ctx.arc(lastX, lastY, 10, 0, Math.PI * 2); ctx.stroke();
+  // Token dots — color shifts from cyan (early) to red (late)
+  points.forEach((p, i) => {
+    const t = i / points.length;
+    const x = px(p.s), y = py(p.e);
+    const r = 2.5 + t * 3;
+
+    // Color interpolation: cyan → purple → red
+    let cr, cg, cb;
+    if (t < 0.5) {
+      const t2 = t * 2;
+      cr = Math.round(0 + 168 * t2);
+      cg = Math.round(229 - 144 * t2);
+      cb = Math.round(255 - 8 * t2);
+    } else {
+      const t2 = (t - 0.5) * 2;
+      cr = Math.round(168 + 87 * t2);
+      cg = Math.round(85 - 85 * t2);
+      cb = Math.round(247 - 179 * t2);
+    }
+
+    // Glow
+    ctx.beginPath(); ctx.arc(x, y, r + 4, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${cr},${cg},${cb},.15)`;
+    ctx.fill();
+
+    // Dot
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgb(${cr},${cg},${cb})`;
+    ctx.fill();
+
+    // Token number for every 5th token
+    if (i % 5 === 0 || i === points.length - 1) {
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},.6)`;
+      ctx.font = '7px JetBrains Mono';
+      ctx.fillText(i.toString(), x + r + 2, y - r);
+    }
+  });
+
+  // Final point — large pulsing glow
+  const last = points[points.length - 1];
+  const lx = px(last.s), ly = py(last.e);
+
+  // Outer glow
+  const glow = ctx.createRadialGradient(lx, ly, 0, lx, ly, 20);
+  glow.addColorStop(0, 'rgba(255,68,68,.4)');
+  glow.addColorStop(0.5, 'rgba(168,85,247,.15)');
+  glow.addColorStop(1, 'rgba(168,85,247,0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath(); ctx.arc(lx, ly, 20, 0, Math.PI * 2); ctx.fill();
+
+  // Inner dot
+  ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#ff4444'; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,68,68,.6)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(lx, ly, 8, 0, Math.PI * 2); ctx.stroke();
+
+  // Label final position
+  const zoneLabel = data.zone ? data.zone.zone : '?';
+  ctx.font = 'bold 10px JetBrains Mono';
+  ctx.fillStyle = zoneLabel === 'DANGER' ? '#ff4444' : zoneLabel === 'SAFE' ? '#00ff88' : '#ffb800';
+  ctx.fillText(zoneLabel, lx + 14, ly + 4);
 }
 
+function setPrompt(text) {
+  document.getElementById('prompt').value = text;
+  scan();
+}
 document.getElementById('prompt').addEventListener('keydown', e => { if (e.key === 'Enter') scan(); });
 window.addEventListener('resize', () => { /* redraw if needed */ });
 </script>
