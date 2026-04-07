@@ -16,6 +16,10 @@
 > **SAEs are not interpretability aids. They are the spectroscopes of artificial cognition.**
 
 <p align="center">
+  <img src="figures/cognitive_state_map.png" width="600" alt="2D Cognitive State Map — commitment intensity vs logit entropy"/>
+</p>
+
+<p align="center">
   <a href="https://doi.org/10.5281/zenodo.19437539"><img src="https://img.shields.io/badge/paper-Zenodo_v8-blue"/></a>
   <a href="https://fathom-gpu.darkcity.wtf/demo"><img src="https://img.shields.io/badge/demo-live-brightgreen"/></a>
   <a href="https://fathom-gpu.darkcity.wtf/docs"><img src="https://img.shields.io/badge/API-docs-orange"/></a>
