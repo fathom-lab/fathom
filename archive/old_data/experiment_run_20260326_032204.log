@@ -1,34 +1,0 @@
-======================================================================
-FATHOM EXPERIMENT RUNNER
-Started: 2026-03-26 03:22:04
-Project: C:\Users\heyzo\clawd\sae-reasoning-depth
-Log: C:\Users\heyzo\clawd\sae-reasoning-depth\experiment_run_20260326_032204.log
-======================================================================
-[GPU] NVIDIA GeForce RTX 4070 Laptop GPU — 8.0 GB
-[GPU] CUDA 12.1, PyTorch 2.5.1+cu121
-
-[INIT] Loading DepthScorer (gemma-2-2b)...
-[INIT] VRAM free before load: 6.89 GB
-[DepthScorer] Initializing with google/gemma-2-2b...
-Fetching 26 files:   0%|          | 0/26 [00:00<?, ?it/s]Fetching 26 files: 100%|##########| 26/26 [00:00<00:00, 11215.87it/s]
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|###3      | 1/3 [00:10<00:21, 10.75s/it]Loading checkpoint shards:  67%|######6   | 2/3 [00:23<00:11, 11.76s/it]Loading checkpoint shards: 100%|##########| 3/3 [00:24<00:00,  6.92s/it]Loading checkpoint shards: 100%|##########| 3/3 [00:24<00:00,  8.13s/it]
-Loaded pretrained model google/gemma-2-2b into HookedTransformer
-[DepthScorer] Model loaded in 47.4s (26 layers)
-[INIT] Model loaded in 52.7s
-
-──────────────────────────────────────────────────────────────────────
-[RUN] Starting: Hallucination Correlator
-──────────────────────────────────────────────────────────────────────
-
-======================================================================
-EXPERIMENT 1: HALLUCINATION CORRELATOR
-======================================================================
-README.md: 0.00B [00:00, ?B/s]README.md: 9.59kB [00:00, ?B/s]
-C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\site-packages\huggingface_hub\file_download.py:143: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\heyzo\.cache\huggingface\hub\datasets--truthful_qa. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
-To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
-  warnings.warn(message)
-generation/validation-00000-of-00001.par(…):   0%|          | 0.00/223k [00:00<?, ?B/s]generation/validation-00000-of-00001.par(…):   0%|          | 0.00/223k [00:00<?, ?B/s]generation/validation-00000-of-00001.par(…):   0%|          | 0.00/223k [00:00<?, ?B/s]generation/validation-00000-of-00001.par(…):   0%|          | 0.00/223k [00:00<?, ?B/s]generation/validation-00000-of-00001.par(…): 100%|##########| 223k/223k [00:01<00:00, 869kB/s]generation/validation-00000-of-00001.par(…): 100%|##########| 223k/223k [00:01<00:00, 204kB/s]
-Generating validation split:   0%|          | 0/817 [00:00<?, ? examples/s]Generating validation split: 100%|##########| 817/817 [00:00<00:00, 1885.78 examples/s]Generating validation split: 100%|##########| 817/817 [00:00<00:00, 1881.30 examples/s]
-[Hallucination] Loaded 50 TruthfulQA samples
-[Hallucination] Scoring 50 samples (2 variants each)...

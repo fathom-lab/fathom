@@ -1,29 +1,0 @@
-======================================================================
-FATHOM EXPERIMENT RUNNER
-Started: 2026-03-26 03:20:54
-Project: C:\Users\heyzo\clawd\sae-reasoning-depth
-Log: C:\Users\heyzo\clawd\sae-reasoning-depth\experiment_run_20260326_032054.log
-======================================================================
-[GPU] NVIDIA GeForce RTX 4070 Laptop GPU — 8.0 GB
-[GPU] CUDA 12.1, PyTorch 2.5.1+cu121
-
-[INIT] Loading DepthScorer (gemma-2-2b)...
-[INIT] VRAM free before load: 6.89 GB
-[DepthScorer] Initializing with google/gemma-2-2b...
-Fetching 26 files:   0%|          | 0/26 [00:00<?, ?it/s]Fetching 26 files: 100%|##########| 26/26 [00:00<00:00, 12053.93it/s]
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|###3      | 1/3 [00:11<00:23, 11.57s/it]Loading checkpoint shards:  67%|######6   | 2/3 [00:22<00:10, 11.00s/it]Loading checkpoint shards: 100%|##########| 3/3 [00:23<00:00,  6.40s/it]Loading checkpoint shards: 100%|##########| 3/3 [00:23<00:00,  7.70s/it]
-Loaded pretrained model google/gemma-2-2b into HookedTransformer
-[DepthScorer] Model loaded in 47.3s (26 layers)
-[INIT] Model loaded in 52.5s
-Traceback (most recent call last):
-  File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 692, in <module>
-    sys.exit(main())
-             ^^^^^^
-  File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 600, in main
-      File "C:\Users\heyzo\clawd\sae-reasoning-depth\run_experiments.py", line 50, in write
-    self._stdout.write(msg)
-  File "C:\Users\heyzo\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
-    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-71: character maps to <undefined>

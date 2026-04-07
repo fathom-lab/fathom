@@ -78,3 +78,8 @@ fathom_scan_cli/
 fingerprints/
 trajectory_attribution_results/
 fathom_depth.egg-info/
+
+# Internal tooling
+.claude/
+.fathom_cache/
+archive/
