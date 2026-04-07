@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM SCAN — Cognitive State Monitor</title>
+<meta name="theme-color" content="#00ff88">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000; --surface: #0a0a0a; --line: #1a1a1a; --dim: #333;
+  --mute: #666; --text: #b0b0b0; --light: #d0d0d0; --bright: #e8e8e8; --white: #f5f5f5;
+  --green: #00ff88; --cyan: #00e5ff; --amber: #ffb800; --red: #ff4444; --purple: #a855f7;
+  --mono: 'JetBrains Mono', monospace; --head: 'Space Grotesk', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--black); color: var(--text); font-family: var(--mono); font-size: 13px; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+::selection { background: var(--green); color: var(--black); }
+a { color: var(--green); text-decoration: none; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(0,0,0,.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(1rem,4vw,3rem); }
+.nav-brand { font-family: var(--head); font-size: .72rem; font-weight: 700; letter-spacing: .12em; color: var(--white); }
+.nav-brand span { color: var(--green); }
+.nav-links { display: flex; gap: 0; list-style: none; }
+.nav-links a { color: var(--mute); font-size: .6rem; padding: 0 .8rem; height: 48px; display: flex; align-items: center; transition: color .2s; }
+.nav-links a:hover { color: var(--green); }
+.patent { font-size: .5rem; color: var(--dim); }
+
+main { max-width: 860px; margin: 0 auto; padding: 64px 1.5rem 3rem; }
+
+.input-area { display: flex; gap: .5rem; margin-bottom: 1.5rem; }
+input[type="text"] { flex: 1; background: var(--surface); border: 1px solid var(--line); color: var(--white); font-family: var(--mono); font-size: .85rem; padding: .8rem 1rem; transition: border-color .2s; }
+input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 20px rgba(0,255,136,.08); }
+button { background: var(--green); color: var(--black); border: none; padding: .8rem 2rem; font-family: var(--mono); font-size: .8rem; font-weight: 700; cursor: pointer; letter-spacing: .05em; transition: all .15s; }
+button:hover { background: #33ffaa; box-shadow: 0 0 25px rgba(0,255,136,.2); }
+button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowed; box-shadow: none; }
+
+.results { display: none; animation: fadeIn .4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Zone banner */
+.zone-banner { padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.2rem; }
+.zone-banner.SAFE { background: linear-gradient(135deg, rgba(0,255,136,.06), rgba(0,255,136,.02)); border: 1px solid rgba(0,255,136,.2); }
+.zone-banner.UNCERTAIN { background: linear-gradient(135deg, rgba(255,184,0,.06), rgba(255,184,0,.02)); border: 1px solid rgba(255,184,0,.2); }
+.zone-banner.RISKY { background: linear-gradient(135deg, rgba(255,140,0,.06), rgba(255,140,0,.02)); border: 1px solid rgba(255,140,0,.2); }
+.zone-banner.DANGER { background: linear-gradient(135deg, rgba(255,68,68,.08), rgba(255,68,68,.02)); border: 1px solid rgba(255,68,68,.3); }
+.zone-icon { font-size: 2rem; line-height: 1; }
+.zone-label { font-family: var(--head); font-size: 1.2rem; font-weight: 700; letter-spacing: .06em; }
+.zone-banner.SAFE .zone-label { color: var(--green); }
+.zone-banner.UNCERTAIN .zone-label { color: var(--amber); }
+.zone-banner.RISKY .zone-label { color: #ff8c00; }
+.zone-banner.DANGER .zone-label { color: var(--red); }
+.zone-explain { font-size: .7rem; color: var(--light); line-height: 1.5; }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; margin-bottom: 1.5rem; }
+.metric { background: var(--surface); border: 1px solid var(--line); padding: .7rem .8rem; text-align: center; }
+.metric-label { font-size: .5rem; color: var(--mute); text-transform: uppercase; letter-spacing: .1em; }
+.metric-value { font-size: 1.1rem; font-weight: 600; margin-top: .2rem; }
+.metric-value.green { color: var(--green); }
+.metric-value.amber { color: var(--amber); }
+.metric-value.red { color: var(--red); }
+
+/* Generation text */
+.section-title { font-size: .6rem; color: var(--mute); text-transform: uppercase; letter-spacing: .12em; margin: 1.5rem 0 .5rem; display: flex; align-items: center; gap: .5rem; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.gen-box { background: var(--surface); border: 1px solid var(--line); padding: 1rem 1.2rem; line-height: 2; font-size: .85rem; }
+.tok { padding: 2px 0; border-radius: 2px; cursor: help; transition: background .15s; }
+.tok:hover { background: rgba(255,255,255,.05); }
+.tok-safe { color: var(--green); }
+.tok-normal { color: var(--light); }
+.tok-warm { color: var(--amber); }
+.tok-hot { color: var(--red); text-decoration: underline wavy rgba(255,68,68,.4); }
+
+/* Dual trajectory viz */
+.dual-viz { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .5rem; }
+.viz-panel { background: var(--surface); border: 1px solid var(--line); padding: .8rem; overflow: hidden; }
+.viz-title { font-size: .55rem; color: var(--mute); text-transform: uppercase; letter-spacing: .1em; margin-bottom: .5rem; display: flex; justify-content: space-between; }
+.viz-title .viz-what { color: var(--light); font-weight: 600; }
+.bar-row { display: flex; align-items: center; margin: 2px 0; }
+.bar-label { width: 24px; font-size: .5rem; color: var(--dim); text-align: right; margin-right: 4px; flex-shrink: 0; }
+.bar { height: 10px; border-radius: 1px; transition: width .3s ease-out; position: relative; }
+/* Commitment bars: gradient from green (low) to red (high) */
+.bar-commit-low { background: linear-gradient(90deg, #00ff88, #00ff88); opacity: .6; }
+.bar-commit-med { background: linear-gradient(90deg, #00ff88, #ffb800); opacity: .8; }
+.bar-commit-high { background: linear-gradient(90deg, #ffb800, #ff4444); }
+.bar-commit-extreme { background: linear-gradient(90deg, #ff4444, #ff0040); box-shadow: 0 0 8px rgba(255,0,64,.3); }
+/* Entropy bars: cool blue to hot amber */
+.bar-ent-low { background: rgba(0,229,255,.3); }
+.bar-ent-med { background: linear-gradient(90deg, #00e5ff, #ffb800); opacity: .7; }
+.bar-ent-high { background: var(--amber); opacity: .9; }
+.bar-ent-extreme { background: linear-gradient(90deg, #ffb800, #ff4444); box-shadow: 0 0 6px rgba(255,184,0,.3); }
+
+/* 2D state dot */
+.state-viz { margin-top: 1rem; background: var(--surface); border: 1px solid var(--line); padding: 1rem; position: relative; }
+.state-canvas { width: 100%; height: 200px; display: block; }
+
+.footer { text-align: center; padding: 2rem 1rem; color: var(--dim); font-size: .5rem; border-top: 1px solid var(--line); margin-top: 2rem; }
+.loading { color: var(--mute); text-align: center; padding: 2rem; font-size: .8rem; }
+.loading .pulse { display: inline-block; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+.error { color: var(--red); padding: 1rem; border: 1px solid rgba(255,68,68,.3); background: rgba(255,68,68,.05); font-size: .75rem; }
+
+@media (max-width: 640px) {
+  .input-area { flex-direction: column; }
+  .metrics { grid-template-columns: 1fr 1fr; }
+  .dual-viz { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>FATHOM</span> SCAN</div>
+  <ul class="nav-links">
+    <a href="https://fathom.darkflobi.com">home</a>
+    <a href="/docs">api docs</a>
+    <a href="/health">status</a>
+  </ul>
+  <span class="patent">US 64/020,489</span>
+</nav>
+
+<main>
+  <div class="input-area">
+    <input type="text" id="prompt" placeholder="ask a question to measure..." value="What did Paul Revere say during his midnight ride?">
+    <button id="scanBtn" onclick="scan()">SCAN</button>
+  </div>
+
+  <div id="error" class="error" style="display:none"></div>
+  <div id="loading" class="loading" style="display:none"><span class="pulse">reading circuit geometry...</span></div>
+
+  <div id="results" class="results">
+    <div id="zoneBanner" class="zone-banner"></div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">commitment (S)</div>
+        <div class="metric-value green" id="mS">-</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">entropy (H)</div>
+        <div class="metric-value amber" id="mE">-</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">halluc risk</div>
+        <div class="metric-value" id="mR">-</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">latency</div>
+        <div class="metric-value" id="mT">-</div>
+      </div>
+    </div>
+
+    <div class="section-title">generated text</div>
+    <div class="gen-box" id="genText"></div>
+
+    <div class="section-title">per-token cognitive state</div>
+    <div class="dual-viz">
+      <div class="viz-panel">
+        <div class="viz-title">
+          <span class="viz-what">commitment intensity</span>
+          <span>SAE coherence</span>
+        </div>
+        <div id="vizCommit"></div>
+      </div>
+      <div class="viz-panel">
+        <div class="viz-title">
+          <span class="viz-what">token uncertainty</span>
+          <span>logit entropy</span>
+        </div>
+        <div id="vizEntropy"></div>
+      </div>
+    </div>
+
+    <div class="section-title">2d cognitive state</div>
+    <div class="state-viz">
+      <canvas id="stateCanvas" class="state-canvas"></canvas>
+    </div>
+  </div>
+</main>
+
+<div class="footer">
+  fathom intelligence &mdash; patent pending US 64/020,489 &amp; 64/021,113 &amp; 64/026,964
+</div>
+
+<script>
+const API = window.location.origin;
+const ZONES = {
+  SAFE:      { icon: '\u2713', explain: 'low commitment + low entropy \u2014 the model retrieved confidently from grounded knowledge. safe to trust.' },
+  UNCERTAIN: { icon: '?', explain: 'low commitment + high entropy \u2014 the model is exploring, not locked onto an answer. exercise caution.' },
+  RISKY:     { icon: '\u26A0', explain: 'high commitment + low entropy \u2014 the model committed to a direction with high confidence. verify independently.' },
+  DANGER:    { icon: '\u2716', explain: 'high commitment + high entropy \u2014 the circuits locked onto something but the output layer is uncertain. this is the hallucination signature.' },
+};
+
+async function scan() {
+  const prompt = document.getElementById('prompt').value.trim();
+  if (!prompt) return;
+  document.getElementById('scanBtn').disabled = true;
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  try {
+    const res = await fetch(API + '/scan', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({prompt, max_tokens: 40}) });
+    if (!res.ok) { const err = await res.json(); throw new Error(err.detail || res.statusText); }
+    render(await res.json());
+  } catch (e) {
+    document.getElementById('error').textContent = e.message;
+    document.getElementById('error').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('scanBtn').disabled = false;
+  }
+}
+
+function render(data) {
+  const zone = data.zone;
+  const zi = ZONES[zone.zone] || ZONES.SAFE;
+
+  // Zone banner
+  const banner = document.getElementById('zoneBanner');
+  banner.className = 'zone-banner ' + zone.zone;
+  banner.innerHTML = `<div class="zone-icon">${zi.icon}</div><div><div class="zone-label">${zone.zone}</div><div class="zone-explain">${zi.explain}</div></div>`;
+
+  // Metrics
+  document.getElementById('mS').textContent = data.s_early.toFixed(5);
+  document.getElementById('mE').textContent = data.entropy_early.toFixed(3);
+  const riskEl = document.getElementById('mR');
+  const riskPct = (zone.halluc_probability * 100).toFixed(0) + '%';
+  riskEl.textContent = riskPct;
+  riskEl.className = 'metric-value ' + (zone.halluc_probability > 0.5 ? 'red' : zone.halluc_probability > 0.3 ? 'amber' : 'green');
+  document.getElementById('mT').textContent = data.generation_time_s.toFixed(1) + 's';
+  document.getElementById('mT').className = 'metric-value ' + (data.generation_time_s < 5 ? 'green' : 'amber');
+
+  // Generated text with per-token coloring
+  const thr = 0.005;
+  let html = '';
+  for (const tok of data.tokens) {
+    let cls = 'tok-normal';
+    if (tok.c_delta > thr * 3) cls = 'tok-hot';
+    else if (tok.c_delta > thr * 1.5) cls = 'tok-warm';
+    else if (tok.c_delta < thr * 0.3) cls = 'tok-safe';
+    const tip = `t${tok.idx}  commitment: ${tok.c_delta.toFixed(4)}  entropy: ${(tok.entropy||0).toFixed(2)}`;
+    html += `<span class="tok ${cls}" title="${tip}">${tok.token}</span>`;
+  }
+  document.getElementById('genText').innerHTML = html;
+
+  // Commitment bars
+  const maxCd = Math.max(...data.tokens.map(t => Math.abs(t.c_delta)), 0.005);
+  let commitHtml = '';
+  for (const tok of data.tokens) {
+    const w = Math.min(100, Math.abs(tok.c_delta) / maxCd * 100);
+    const ratio = Math.abs(tok.c_delta) / maxCd;
+    let cls = 'bar-commit-low';
+    if (ratio > 0.8) cls = 'bar-commit-extreme';
+    else if (ratio > 0.5) cls = 'bar-commit-high';
+    else if (ratio > 0.25) cls = 'bar-commit-med';
+    commitHtml += `<div class="bar-row"><span class="bar-label">${tok.idx}</span><div class="bar ${cls}" style="width:${w}%"></div></div>`;
+  }
+  document.getElementById('vizCommit').innerHTML = commitHtml;
+
+  // Entropy bars
+  const maxEnt = Math.max(...data.tokens.filter(t=>t.entropy).map(t=>t.entropy), 1);
+  let entHtml = '';
+  for (const tok of data.tokens) {
+    if (tok.entropy === null) continue;
+    const w = Math.min(100, tok.entropy / maxEnt * 100);
+    const ratio = tok.entropy / maxEnt;
+    let cls = 'bar-ent-low';
+    if (ratio > 0.8) cls = 'bar-ent-extreme';
+    else if (ratio > 0.5) cls = 'bar-ent-high';
+    else if (ratio > 0.25) cls = 'bar-ent-med';
+    entHtml += `<div class="bar-row"><span class="bar-label">${tok.idx}</span><div class="bar ${cls}" style="width:${w}%"></div></div>`;
+  }
+  document.getElementById('vizEntropy').innerHTML = entHtml;
+
+  // 2D state canvas
+  draw2DState(data);
+  document.getElementById('results').style.display = 'block';
+}
+
+function draw2DState(data) {
+  const canvas = document.getElementById('stateCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth; const H = 200;
+  canvas.width = W * 2; canvas.height = H * 2;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(2, 2);
+
+  // Background
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Zone quadrants
+  const midX = W / 2, midY = H / 2;
+  // Safe (bottom-left)
+  ctx.fillStyle = 'rgba(0,255,136,.04)';
+  ctx.fillRect(0, midY, midX, midY);
+  // Danger (top-right)
+  ctx.fillStyle = 'rgba(255,68,68,.04)';
+  ctx.fillRect(midX, 0, midX, midY);
+
+  // Grid
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.lineWidth = 0.5;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(W, midY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Zone labels
+  ctx.font = '9px JetBrains Mono';
+  ctx.fillStyle = 'rgba(0,255,136,.3)'; ctx.fillText('SAFE', 8, H - 8);
+  ctx.fillStyle = 'rgba(255,68,68,.3)'; ctx.fillText('DANGER', W - 50, 14);
+  ctx.fillStyle = 'rgba(255,184,0,.2)'; ctx.fillText('UNCERTAIN', 8, 14);
+  ctx.fillStyle = 'rgba(255,140,0,.2)'; ctx.fillText('RISKY', W - 40, H - 8);
+
+  // Axis labels
+  ctx.fillStyle = '#444'; ctx.font = '8px JetBrains Mono';
+  ctx.fillText('commitment \u2192', W/2 - 30, H - 3);
+  ctx.save(); ctx.translate(8, H/2 + 20); ctx.rotate(-Math.PI/2);
+  ctx.fillText('entropy \u2192', 0, 0); ctx.restore();
+
+  // Plot per-token trajectory
+  if (!data.tokens.length) return;
+  const sVals = []; const eVals = [];
+  let runS = 0, runE = 0, spikeCount = 0;
+  for (let i = 0; i < data.tokens.length; i++) {
+    const cd = Math.abs(data.tokens[i].c_delta);
+    const ent = data.tokens[i].entropy || 0;
+    if (cd > 0.005) spikeCount++;
+    runS = spikeCount > 0 ? Math.max(...data.tokens.slice(0,i+1).map(t=>Math.abs(t.c_delta))) / spikeCount : 0;
+    runE = data.tokens.slice(0,i+1).reduce((s,t) => s + (t.entropy||0), 0) / (i+1);
+    sVals.push(runS); eVals.push(runE);
+  }
+
+  const maxS = Math.max(...sVals, 0.003);
+  const maxE = Math.max(...eVals, 1);
+  const pad = 20;
+
+  // Draw trajectory path
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(168,85,247,.5)';
+  ctx.lineWidth = 1.5;
+  for (let i = 0; i < sVals.length; i++) {
+    const x = pad + (sVals[i] / maxS) * (W - 2*pad);
+    const y = H - pad - (eVals[i] / maxE) * (H - 2*pad);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Draw dots with color gradient (early = dim, late = bright)
+  for (let i = 0; i < sVals.length; i++) {
+    const x = pad + (sVals[i] / maxS) * (W - 2*pad);
+    const y = H - pad - (eVals[i] / maxE) * (H - 2*pad);
+    const progress = i / sVals.length;
+    const r = 2 + progress * 3;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    const alpha = 0.3 + progress * 0.7;
+    ctx.fillStyle = `rgba(168,85,247,${alpha})`;
+    ctx.fill();
+  }
+
+  // Final point (large, glowing)
+  const lastX = pad + (sVals[sVals.length-1] / maxS) * (W - 2*pad);
+  const lastY = H - pad - (eVals[eVals.length-1] / maxE) * (H - 2*pad);
+  ctx.beginPath(); ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
+  ctx.fillStyle = '#a855f7'; ctx.fill();
+  ctx.strokeStyle = 'rgba(168,85,247,.4)'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.arc(lastX, lastY, 10, 0, Math.PI * 2); ctx.stroke();
+}
+
+document.getElementById('prompt').addEventListener('keydown', e => { if (e.key === 'Enter') scan(); });
+window.addEventListener('resize', () => { /* redraw if needed */ });
+</script>
+</body>
+</html>

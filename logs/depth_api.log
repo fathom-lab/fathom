@@ -1,7 +1,0 @@
-[DepthScorer] Initializing with google/gemma-2-2b...
-Loaded pretrained model google/gemma-2-2b into HookedTransformer
-[DepthScorer] Model loaded in 194.3s (26 layers)
-[Fathom API] Model loaded in 201.7s
-[Fathom API] Correctness predictor initialized (untrained)
-[Fathom API] Adversarial detector initialized (no baseline)
-[Fathom API] GPU memory released on shutdown

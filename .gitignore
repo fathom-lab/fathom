@@ -72,3 +72,9 @@ truthfulqa_results/*_pilot*.json
 resume_rodabaugh.html
 paper/icml2026.zip
 paper/icml_template/
+
+# Old experiment directories
+fathom_scan_cli/
+fingerprints/
+trajectory_attribution_results/
+fathom_depth.egg-info/
