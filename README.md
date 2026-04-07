@@ -1,82 +1,125 @@
-# Fathom — Cognitive State Measurement for Transformers
+```
+  ███████╗ █████╗ ████████╗██╗  ██╗ ██████╗ ███╗   ███╗
+  ██╔════╝██╔══██╗╚══██╔══╝██║  ██║██╔═══██╗████╗ ████║
+  █████╗  ███████║   ██║   ███████║██║   ██║██╔████╔██║
+  ██╔══╝  ██╔══██║   ██║   ██╔══██║██║   ██║██║╚██╔╝██║
+  ██║     ██║  ██║   ██║   ██║  ██║╚██████╔╝██║ ╚═╝ ██║
+  ╚═╝     ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝
+```
 
-**Commitment intensity via SAE feature coherence trajectories.**
+### cognitive state measurement for transformers
 
-A physics-grounded (IPR) measurement of how transformer models commit to outputs during generation. Cross-architecture validated on Gemma-2-2B-IT and Llama-3.2-1B-Instruct.
+> SAE feature decomposition reveals a cognitive property — **commitment intensity** — that is
+> statistically significant, beats standard uncertainty baselines, and is completely invisible
+> to three independent raw-activation probes across four transformer architectures.
+>
+> **SAEs are not interpretability aids. They are the spectroscopes of artificial cognition.**
 
-| | |
-|---|---|
-| **Cross-arch effect** | d = 0.58, Fisher p = 0.00018 |
-| **Beats logit entropy** | AUC 0.663 vs 0.607 (p = 0.013) |
-| **Architectures** | Gemma-2-2B-IT, Llama-3.2-1B-Instruct |
-| **2D cognitive state map** | 65% halluc in danger zone vs 22% in safe zone |
-| **SAE necessity** | 3 SAE-free probes across 4 architectures all fail |
-
-[Paper (Zenodo v8)](https://doi.org/10.5281/zenodo.19437539) | [Live Demo](https://fathom-gpu.darkcity.wtf/demo) | [API Docs](https://fathom-gpu.darkcity.wtf/docs) | [OSF Pre-registration](https://osf.io/wtkzg) | [Product Page](https://fathom.darkflobi.com)
-
-US Provisional Patents 64/020,489 & 64/021,113 & 64/026,964
+<p align="center">
+  <a href="https://doi.org/10.5281/zenodo.19437539"><img src="https://img.shields.io/badge/paper-Zenodo_v8-blue"/></a>
+  <a href="https://fathom-gpu.darkcity.wtf/demo"><img src="https://img.shields.io/badge/demo-live-brightgreen"/></a>
+  <a href="https://fathom-gpu.darkcity.wtf/docs"><img src="https://img.shields.io/badge/API-docs-orange"/></a>
+  <a href="https://osf.io/wtkzg"><img src="https://img.shields.io/badge/OSF-pre--registered-lightgrey"/></a>
+  <a href="https://fathom.darkflobi.com"><img src="https://img.shields.io/badge/site-fathom.darkflobi.com-black"/></a>
+</p>
 
 ---
 
-## Key Finding
-
-SAE feature decomposition reveals a cognitive property — **commitment intensity** — that discriminates hallucinated from correct generations, beats standard uncertainty baselines head-to-head, and is completely invisible to three independent raw-activation probes across four transformer architectures.
-
-**SAEs are not interpretability aids. They are the spectroscopes of artificial cognition.**
-
-## Commitment Intensity (S)
+## results at a glance
 
 ```
-S = max(C_delta) / spike_count
+ cross-architecture     d = 0.584      Fisher p = 0.00018
+ beats logit entropy    AUC 0.663      vs 0.607 (p = 0.013)
+ 2D cognitive map       65% halluc     danger zone vs 22% safe
+ SAE necessity          3 probes       4 architectures — all null
+ architectures          Gemma-2-2B     Llama-3.2-1B confirmed
+ patents                3 filed        US 64/020,489 · 64/021,113 · 64/026,964
 ```
 
-Where `C_delta(t) = mean_coherence_late(t) - mean_coherence_early(t)` is the per-token SAE feature coherence divergence. S is mathematically equivalent to `M × IPR(event_locations)`, where IPR is the inverse participation ratio from condensed-matter physics (verified to machine precision).
+---
 
-High S = few intense commitment events (attractor lock-in).
-Low S = many distributed events (exploration).
+## what is commitment intensity?
 
-## Results
+```
+                    ┌─────────────────────────────────────────┐
+                    │          S = max(C∆) / K_τ              │
+                    │                                         │
+                    │   C∆(t) = coherence_late - coherence_early   │
+                    │   K_τ   = count of spikes above threshold    │
+                    │                                         │
+                    │   mathematically equivalent to:         │
+                    │   S = M × IPR(event_locations)          │
+                    │                                         │
+                    │   IPR = inverse participation ratio     │
+                    │   (condensed-matter physics, 70+ years) │
+                    └─────────────────────────────────────────┘
 
-### Cross-Architecture Replication
+     high S ──► few intense commitment events ──► attractor lock-in
+     low  S ──► many distributed events      ──► exploration
+```
 
-| Model | Layers | Window | d | AUC | p |
-|---|---|---|---|---|---|
-| Gemma-2-2B-IT | 26 | [0, 7) | +0.535 | 0.663 | 0.013 |
-| Llama-3.2-1B-Instruct | 16 | [0, 20) | +0.635 | 0.641 | 0.005 |
-| **Pooled** | | | **+0.584** | | **0.00018** |
+---
 
-Commitment window scales with model depth (settling time hypothesis).
+## cross-architecture replication
 
-### Head-to-Head vs Standard Methods
+```
+  MODEL                    LAYERS    WINDOW     d        AUC      p
+  ─────────────────────────────────────────────────────────────────
+  Gemma-2-2B-IT              26     [0, 7)    +0.535    0.663    0.013
+  Llama-3.2-1B-Instruct      16     [0, 20)   +0.635    0.641    0.005
+  ─────────────────────────────────────────────────────────────────
+  POOLED                                      +0.584             0.00018
+```
 
-| Signal | AUC | p | Source |
-|---|---|---|---|
-| **S_early (ours)** | **0.663** | **0.013** | SAE coherence |
-| logit entropy | 0.607 | 0.053 | standard |
-| logprob | 0.559 | 0.291 | standard |
-| top-2 margin | 0.477 | 0.624 | standard |
+commitment window scales with model depth. fewer layers → more tokens to settle.
 
-S_early is the only feature reaching significance. r(S, entropy) = -0.17 (nearly independent).
+## head-to-head vs standard methods
 
-### SAE Necessity
+```
+  SIGNAL                AUC      p          SOURCE
+  ──────────────────────────────────────────────────
+  S_early (ours)       0.663    0.013  ◄── SAE coherence
+  logit entropy        0.607    0.053      standard
+  logprob              0.559    0.291      standard
+  top-2 margin         0.477    0.624      standard
+  ──────────────────────────────────────────────────
+  S is the ONLY feature reaching significance.
+  r(S, entropy) = -0.17 — nearly independent signals.
+```
 
-| Probe | Architectures | Fisher p | Result |
-|---|---|---|---|
-| Top-k IPR | 4 | 0.619 | Null |
-| Cross-layer cosine | 4 | 0.948 | Null |
-| Cognitive fingerprint | 4 | — | AUC 0.566 |
-| **SAE-based S** | **2** | **0.00018** | **Confirmed** |
+## SAE necessity — the probes that failed
 
-## Quick Start
+```
+  PROBE                  ARCHITECTURES    FISHER p    RESULT
+  ─────────────────────────────────────────────────────────
+  top-k IPR                    4           0.619      null
+  cross-layer cosine           4           0.948      null
+  cognitive fingerprint        4             —        AUC 0.566
+  ─────────────────────────────────────────────────────────
+  SAE-based S (Gemma)          1           0.013      ✓ confirmed
+  SAE-based S (Llama)          1           0.005      ✓ confirmed
+  ─────────────────────────────────────────────────────────
+  SAE decomposition is doing irreplaceable work.
+```
+
+---
+
+## quick start
 
 ```python
 from coherence_steerer_ext import CoherenceSteererExt
 
 steerer = CoherenceSteererExt(model_name="google/gemma-2-2b-it")
-result = steerer.generate_with_entropy("Q: What is the capital of France?\nA:", max_tokens=20)
+result = steerer.generate_with_entropy(
+    "Q: What is the capital of France?\nA:",
+    max_tokens=20
+)
 
-# Per-token commitment + entropy
-for i, (cd, ent) in enumerate(zip(result.c_delta_trajectory, result.entropy_trajectory)):
+# per-token commitment + entropy
+for i, (cd, ent) in enumerate(zip(
+    result.c_delta_trajectory,
+    result.entropy_trajectory
+)):
     print(f"  t={i}: C_delta={cd:+.4f}  entropy={ent:.3f}")
 ```
 
@@ -88,48 +131,72 @@ curl -X POST https://fathom-gpu.darkcity.wtf/scan \
   -d '{"prompt": "What did Paul Revere say?", "max_tokens": 20}'
 ```
 
-Returns per-token `c_delta`, `entropy`, `logprob` + cognitive zone classification (SAFE/UNCERTAIN/RISKY/DANGER).
-
-## Repository Structure
+returns per-token `c_delta`, `entropy`, `logprob` + cognitive zone classification:
 
 ```
-paper/                    ICML 2026 workshop paper (LaTeX)
-analyze_*.py              28 analysis scripts
-truthfulqa_results/       Experimental data (JSON)
-figures/                  Publication figures (PDF + PNG)
-osf_prereg_*.md           Pre-registrations (locked before data)
-findings_*.md             Findings documentation
-fathom_api_v2.py          Production API
-fathom_demo.html          Interactive demo
-coherence_steerer.py      Core SAE measurement engine
-coherence_steerer_ext.py  Extended with entropy capture
-sae_free_*.py             SAE-free probes (negative results)
-verify_all_claims.py      Reproducibility verification (17 assertions)
+  SAFE       low commitment + low entropy      grounded retrieval
+  UNCERTAIN  low commitment + high entropy     exploring
+  RISKY      high commitment + low entropy     confident — verify
+  DANGER     high commitment + high entropy    hallucination signature
 ```
-
-## Reproducibility
-
-```bash
-python verify_all_claims.py   # 17 assertions, all verified from raw data
-python verify_s_axis.py       # 14 S-axis specific assertions
-```
-
-## Citation
-
-```bibtex
-@article{rodabaugh2026fathom,
-  title={Commitment Intensity: A Physics-Grounded Cognitive Measurement
-         from SAE Feature Coherence Trajectories},
-  author={Rodabaugh, Alexander},
-  year={2026},
-  note={Zenodo. doi:10.5281/zenodo.19437539}
-}
-```
-
-## License
-
-Research code. Patent pending (US 64/020,489, 64/021,113, 64/026,964).
 
 ---
 
-**Fathom Intelligence** — [fathom.darkflobi.com](https://fathom.darkflobi.com) — Alexander Rodabaugh, 2026
+## repository structure
+
+```
+  fathom-research/
+  │
+  ├── README.md                  you are here
+  ├── coherence_steerer.py       core SAE measurement engine
+  ├── depth_scorer.py            depth scoring via circuit attribution
+  ├── requirements.txt           dependencies
+  │
+  ├── paper/                     ICML 2026 workshop submission (LaTeX)
+  ├── analysis/                  28 analysis scripts
+  ├── runners/                   experiment drivers
+  ├── probes/                    SAE-free cross-architecture probes
+  ├── verification/              reproducibility (17 + 14 assertions)
+  ├── viz/                       figure generators
+  ├── api/                       Fathom Scan API v2 + interactive demo
+  │
+  ├── findings/                  documented results
+  ├── prereg/                    OSF pre-registrations (locked before data)
+  ├── docs/                      strategy, vision, applications
+  │
+  ├── figures/                   publication figures (PDF + PNG)
+  └── truthfulqa_results/        experimental data (JSON)
+```
+
+## reproducibility
+
+```bash
+python verification/verify_all_claims.py   # 17 assertions from raw data
+python verification/verify_s_axis.py       # 14 S-axis specific assertions
+```
+
+all claims in the paper verified to reproduce exactly from saved JSON data.
+
+---
+
+## citation
+
+```bibtex
+@article{rodabaugh2026fathom,
+  title   = {Commitment Intensity: A Physics-Grounded Cognitive
+             Measurement from SAE Feature Coherence Trajectories},
+  author  = {Rodabaugh, Alexander},
+  year    = {2026},
+  note    = {Zenodo. doi:10.5281/zenodo.19437539}
+}
+```
+
+## license
+
+research code — patent pending (US 64/020,489 · 64/021,113 · 64/026,964)
+
+---
+
+<p align="center">
+  <strong>Fathom Intelligence</strong> · <a href="https://fathom.darkflobi.com">fathom.darkflobi.com</a> · Alexander Rodabaugh · 2026
+</p>
