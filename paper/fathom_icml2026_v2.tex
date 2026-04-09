@@ -1,5 +1,4 @@
-% Commitment Intensity: SAE Feature Coherence Reveals Cognitive States
-% Invisible to Raw Activation Analysis
+% Fathom: Cognitive Geometry of Language Model Reasoning
 % ICML 2026 Mechanistic Interpretability Workshop
 % Neel Nanda, organizer. Papers due May 8, 2026.
 
@@ -13,8 +12,8 @@
 \usepackage{natbib}
 \usepackage{xcolor}
 
-\title{Commitment Intensity: A Physics-Grounded Cognitive Measurement \\
-from SAE Feature Coherence Trajectories}
+\title{Fathom: Cognitive Measurement Instruments for Transformer Internals \\
+via SAE Feature Coherence Geometry}
 
 \author{
   Alexander Rodabaugh \\
@@ -29,30 +28,43 @@ from SAE Feature Coherence Trajectories}
 % ABSTRACT
 % ══════════════════════════════════════════════════════════════
 \begin{abstract}
-We introduce \textit{commitment intensity} ($S$), a scalar measurement of
-how concentrated a model's coherence events are during generation, computed
-from per-token SAE feature coherence trajectories. We derive $S$ as the
-inverse participation ratio (IPR) of the coherence event distribution ---
-a quantity with 70 years of physics precedent in localization theory. On
-Gemma-2-2B-IT, $S$ computed over the first 7 generated tokens ($S_\text{early}$)
-discriminates commitment from hedging and naturally hallucinated from correct
-TruthfulQA responses with a pooled effect size of $d = 0.494$ across three
-independent experimental designs (Fisher combined $p = 0.0008$). In
-head-to-head comparison, $S_\text{early}$ outperforms logit entropy
-(AUC $0.663$ vs.\ $0.607$, $p = 0.013$) while being nearly independent of
-it ($r = -0.17$). Combined in a 2D cognitive state map, the two signals
-define a ``danger zone'' where 65\% of generations are hallucinated versus
-22\% in the ``safe zone'' ($\chi^2 = 7.17$, $p = 0.007$). A streaming
-classifier achieves CV AUC $0.701$ at token 7 ($\sim$350ms). Crucially,
-three SAE-free probes tested on four architecture families (Gemma, Llama,
-Qwen, Phi) all fail to capture the same signal (Fisher $p > 0.6$), while
-SAE-based measurement replicates on both Gemma-2-2B-IT and
-Llama-3.2-1B-Instruct with architecture-adaptive windows (pooled
-$d = 0.587$, Fisher $p = 0.0006$). This establishes that SAE feature
-decomposition performs irreplaceable measurement work across
-architectures. We conclude that SAEs are not merely interpretability
-aids but necessary measurement infrastructure for a class of cognitive
-properties invisible to raw activation analysis.
+We present Fathom, a suite of cognitive measurement instruments
+for transformer internals built on sparse autoencoder (SAE) feature
+coherence geometry. Our contributions span measurement, diagnosis,
+and intervention:
+
+\textit{Measurement.} We introduce commitment intensity ($S$), derived
+as the inverse participation ratio (IPR) of per-token coherence events.
+$S_\text{early}$ (first 7 tokens) discriminates hallucination from
+correct generation with pooled $d = 0.494$ across three independent
+designs (Fisher $p = 0.0008$), outperforms logit entropy head-to-head
+(AUC $0.663$ vs.\ $0.607$), and replicates across two architecture
+families (Fisher $p = 0.0006$). Three SAE-free probes across four
+architectures all fail (Fisher $p > 0.6$).
+
+\textit{Diagnosis.} We discover that the \textit{shape} of per-layer
+coherence distributions carries discriminative information invisible
+to scalar summaries. The Gini coefficient of coherence across layers
+achieves AUC $= 0.685$ ($n = 200$, 13/16 metrics significant after
+Holm--Bonferroni correction), while scalar depth ($K$) is at chance.
+Cognitive autopsy localizes the fault: layer 11 is the primary locus
+in 63\% of hallucinations ($p = 2.7 \times 10^{-12}$), with layers
+11--12 accounting for 41\% of all excess coherence. Hallucination is
+not a depth shift but a coherence \textit{concentration}.
+
+\textit{Intervention.} Best-of-$N$ sampling scored by a Cognitive
+Health Score (Gini + spectral spread + early-layer mass) improves
+on 100\% of test prompts versus greedy decoding. Coordinated
+suppression of 220 hallucination-associated features across 22 layers
+produces 33\% first-token changes on held-out data --- the first
+demonstration of multi-layer SAE feature suppression crossing the
+argmax boundary. Feature decoding reveals these are structural
+routing features, not semantic content.
+
+We conclude that SAEs are necessary measurement infrastructure for
+a class of cognitive properties invisible to raw activation analysis,
+and that this measurement enables both diagnosis and geometry-guided
+generation.
 \end{abstract}
 
 % ══════════════════════════════════════════════════════════════
@@ -564,22 +576,34 @@ small effects.
 % ══════════════════════════════════════════════════════════════
 \section{Conclusion}
 
-We introduce commitment intensity ($S$), a physics-grounded (IPR)
-measurement of cognitive state derived from SAE feature coherence
-trajectories. $S$ replicates with $d \approx 0.5$--$0.7$ across
-three independent datasets and two architecture families
-(Gemma-2-2B-IT and Llama-3.2-1B-Instruct, Fisher combined
-$p = 0.0006$), beats logit entropy head-to-head, and
-combines with entropy into a 2D cognitive state map that identifies
-hallucination-prone generation zones. The commitment window scales
-with model depth. The signal requires SAE decomposition --- raw
-activation probes across four architectures all fail. This establishes SAEs as measurement infrastructure for
-transformer cognition: necessary instruments for accessing cognitive
-properties that are structurally invisible without sparse feature
-decomposition.
+We present Fathom, a cognitive measurement suite that progresses from
+measurement through diagnosis to intervention:
+
+\begin{enumerate}
+\item \textbf{Measurement:} Commitment intensity ($S$), grounded in
+  physics (IPR), replicates across three datasets ($d \approx 0.5$),
+  two architectures (Fisher $p = 0.0006$), and beats logit entropy
+  head-to-head. SAE decomposition is necessary --- all raw-activation
+  probes fail.
+\item \textbf{Diagnosis:} The Gini coefficient of per-layer coherence
+  discriminates hallucination at AUC $= 0.685$, while scalar depth is
+  at chance. Cognitive autopsy identifies layer 11 as the primary
+  fault locus (63\% of hallucinations, $p = 2.7 \times 10^{-12}$).
+  Hallucination is coherence concentration, not a depth shift.
+\item \textbf{Intervention:} Best-of-$N$ spectrum sampling improves
+  cognitive health on 100\% of test prompts. Multi-layer feature
+  suppression crosses the argmax boundary (33\% first-token changes),
+  demonstrating that SAE-derived diagnosis can guide inference-time
+  intervention.
+\end{enumerate}
+
+The broader implication is that SAE feature decomposition enables a
+class of cognitive instruments --- measuring not what a model says,
+but the geometry of how it computes. This geometry carries information
+the outputs alone cannot reveal.
 
 All pre-registrations, code, and data are available at
-\url{https://doi.org/10.5281/zenodo.19437539}.
+\url{https://doi.org/10.5281/zenodo.19326174}.
 
 % ══════════════════════════════════════════════════════════════
 % REFERENCES
