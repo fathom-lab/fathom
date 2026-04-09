@@ -59,6 +59,13 @@ class FeatureSurgeon:
         )
         self._tc = self._model.transcoders.transcoders[target_layer]
 
+        # Pre-cache W_dec and W_enc to avoid lazy-loading OOM on Windows
+        print(f"[FeatureSurgeon] Pre-caching transcoder weights...")
+        self._W_enc = self._tc.W_enc.data.clone()
+        self._b_enc = self._tc.b_enc.data.clone()
+        self._W_dec = self._tc.W_dec.data.clone()
+        self._b_dec = self._tc.b_dec.data.clone()
+
         # Load pre-computed hallucination features
         self.halluc_features = np.load(
             CHECKPOINT_DIR / f"halluc_features_L{target_layer}.npy"
@@ -80,21 +87,23 @@ class FeatureSurgeon:
         for step in range(max_tokens):
             if suppress:
                 hook_name = f"blocks.{self.target_layer}.hook_resid_post"
-                _tc = self._tc
+                _W_enc = self._W_enc
+                _b_enc = self._b_enc
+                _W_dec = self._W_dec
+                _b_dec = self._b_dec
                 _feats = torch.tensor(self.halluc_features, device=self.device)
                 _correct_mean = torch.tensor(
                     self.correct_mean, dtype=torch.float32, device=self.device
                 )
                 _mode = self.mode
 
-                def _suppress_hook(value, hook=None, *, _tc=_tc, _feats=_feats,
+                def _suppress_hook(value, hook=None, *, _W_enc=_W_enc, _b_enc=_b_enc,
+                                   _W_dec=_W_dec, _b_dec=_b_dec, _feats=_feats,
                                    _correct_mean=_correct_mean, _mode=_mode):
-                    # value: (batch, seq, d_model)
-                    # Get last-token hidden state
                     hs = value[0, -1].float()
 
-                    # Compute feature activations
-                    acts = F.relu(hs @ _tc.W_enc.float().T + _tc.b_enc.float())
+                    # Feature activations using pre-cached weights
+                    acts = F.relu(hs @ _W_enc.float().T + _b_enc.float())
 
                     # Suppress hallucination features
                     if _mode == "zero":
@@ -102,14 +111,14 @@ class FeatureSurgeon:
                     elif _mode == "clamp":
                         acts[_feats] = _correct_mean[_feats].clamp(min=0)
 
-                    # Reconstruct: modified output = acts @ W_dec + b_dec
-                    new_output = acts @ _tc.W_dec.float() + _tc.b_dec.float()
+                    # Reconstruct with pre-cached decoder
+                    new_output = acts @ _W_dec.float() + _b_dec.float()
 
-                    # Original transcoder output (for computing delta)
-                    orig_acts = F.relu(hs @ _tc.W_enc.float().T + _tc.b_enc.float())
-                    orig_output = orig_acts @ _tc.W_dec.float() + _tc.b_dec.float()
+                    # Original output (no suppression)
+                    orig_acts = F.relu(hs @ _W_enc.float().T + _b_enc.float())
+                    orig_output = orig_acts @ _W_dec.float() + _b_dec.float()
 
-                    # Apply delta to residual stream (replace transcoder contribution)
+                    # Apply delta
                     delta = new_output - orig_output
                     value[0, -1] = (value[0, -1].float() + delta).to(value.dtype)
                     return value

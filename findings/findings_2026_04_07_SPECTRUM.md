@@ -123,10 +123,25 @@ Built `spectrum_steerer.py`:
 - Alpha=0.5-2.0: 1-3 answers changed, 0 improved
 - Status: FAILED — single direction too blunt for hallucination
 
+### Multi-layer coordinated suppression (April 9, 2026)
+- 22 layers (4-25), top 10 halluc features per layer, 220 total
+- **33% first-token changes on held-out data** (10/30)
+- Mean KL = 0.587 (73x larger than single-layer KL=0.008)
+- "Yes"->"No" answer flips observed (items 13, 17)
+- Direction: 1 improved, 1 degraded, 8 unclear
+- Status: FIRST ARGMAX-CROSSING INTERVENTION — but not directional
+
+### Feature decoding
+- Top hallucination features decode to structural tokens (BOS, code, templates)
+- They are ROUTING features, not semantic content
+- Validates: hallucination is a computation pattern, not a factual error at feature level
+
 ### What works vs what doesn't
 - DETECTION works: Gini, autopsy, EKG, best-of-N
-- DIRECT INTERVENTION doesn't yet: needs SAE-feature-level directions
-  or proper training loop (DPO/RLHF with Gini reward)
+- MULTI-LAYER SUPPRESSION crosses argmax (33%) but isn't directional
+- The features encode HOW the model computes, not WHAT it knows
+- Next: need features that encode factual correctness, or use logit-level
+  training signal (DPO/RLHF with spectrum-derived reward)
 
 ## IP Note
 Spectrum analysis and Gini-based steering covered under existing

@@ -459,17 +459,34 @@ of hallucination-associated concentration without disturbing
 computation elsewhere.
 
 \textbf{Toward spectrum-guided generation.}
-Because the Gini coefficient can be computed from per-layer
-coherence at each token (encoder-only pass, no attribution),
-it can serve as a real-time steering signal. We implement a
-best-of-$N$ sampler that generates $N$ candidates with
-temperature sampling, scores each by a Cognitive Health Score
+We explore three intervention strategies derived from the
+spectrum diagnosis:
+
+\textit{Best-of-$N$ sampling.} Generate $N$ candidates with
+temperature sampling, score each by a Cognitive Health Score
 (CHS) derived from mean Gini, spectral spread, and early-layer
-mass, and returns the healthiest completion. On myth-completion
-prompts, best-of-5 reduces mean Gini by 0.022 and improves
-CHS on 100\% of test prompts versus greedy decoding --- the
-first generation strategy that optimizes for computational
-geometry rather than likelihood.
+mass, return the healthiest. Best-of-5 reduces mean Gini by
+0.022 and improves CHS on 100\% of test prompts versus greedy
+decoding.
+
+\textit{Single-layer feature suppression.} We identify 66 SAE
+features at layer 11 that activate significantly more during
+hallucination ($p < 0.01$, $d > 0.3$; top feature $d = 0.80$).
+Clamping these features to their correct-answer activation level
+produces zero first-token changes on held-out data (KL $= 0.008$).
+The residual stream absorbs single-layer perturbations.
+
+\textit{Multi-layer coordinated suppression.} Extending to all 22
+significant layers (4--25), suppressing the top 10
+hallucination-associated features per layer (220 total), yields
+33\% first-token changes on held-out data (KL $= 0.587$,
+73$\times$ larger than single-layer). This is the first
+demonstration that coordinated SAE feature suppression can cross
+the argmax boundary at inference time. However, the direction of
+change is not consistently toward correctness (1 improved, 1
+degraded, 8 unclear on 10 changed items), indicating that
+hallucination-associated features encode computation
+\textit{patterns}, not factual content.
 
 \begin{figure}[t]
 \centering
@@ -486,7 +503,7 @@ coherence.}
 \includegraphics[width=\linewidth]{figures/spectrum_n200_full.png}
 \caption{Coherence spectrum analysis ($n = 200$, Gemma-2-2B).
 (A) Mean spectra with 95\% CI. (B) Per-layer difference with
-significance (19/26 layers $p < 0.001$). (C) Gini coefficient
+significance (16/26 layers $p < 0.001$). (C) Gini coefficient
 distributions. (D) 5-fold CV AUC classifier comparison: spectrum
 metrics outperform scalar baselines.}
 \label{fig:spectrum}
