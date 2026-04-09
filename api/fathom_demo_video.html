@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM SCAN — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000; --surface: #080808; --line: #1a1a1a; --dim: #333;
+  --mute: #555; --text: #999; --light: #c0c0c0; --white: #f5f5f5;
+  --green: #00ff88; --cyan: #00e5ff; --amber: #ffb800;
+  --red: #ff3355; --purple: #a855f7;
+  --mono: 'JetBrains Mono', monospace; --head: 'Space Grotesk', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--black); color: var(--text); font-family: var(--mono); font-size: 13px; -webkit-font-smoothing: antialiased; width: 900px; height: 680px; overflow: hidden; position: relative; }
+::selection { background: var(--green); color: var(--black); }
+
+/* ── Nav ── */
+.nav { background: rgba(0,0,0,.95); border-bottom: 1px solid rgba(255,255,255,.04); height: 44px; display: flex; align-items: center; padding: 0 1.5rem; }
+.nav-brand { font-family: var(--head); font-size: .72rem; font-weight: 700; letter-spacing: .14em; color: var(--white); }
+.nav-brand span { color: var(--green); }
+.nav-right { margin-left: auto; font-size: .42rem; color: var(--dim); letter-spacing: .06em; }
+
+/* ── Layout ── */
+.main { padding: .8rem 1.5rem .5rem; }
+
+/* ── Input ── */
+.input-row { display: flex; gap: .5rem; margin-bottom: .6rem; }
+.input-box {
+  flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 2px;
+  color: var(--white); font-family: var(--mono); font-size: .78rem; padding: .65rem .9rem;
+  transition: all .3s; min-height: 2.2rem; display: flex; align-items: center;
+}
+.input-box.active { border-color: var(--green); box-shadow: 0 0 30px rgba(0,255,136,.08); }
+.input-cursor { display: inline-block; width: 2px; height: 1em; background: var(--green); animation: blink .5s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.scan-btn {
+  background: var(--green); color: var(--black); border: none; border-radius: 2px;
+  padding: .65rem 1.8rem; font-family: var(--mono); font-size: .72rem; font-weight: 700;
+  letter-spacing: .08em; transition: all .2s;
+}
+.scan-btn.scanning { background: var(--dim); color: var(--mute); }
+
+/* ── Zone ── */
+.zone { padding: .7rem 1rem; border-radius: 3px; display: flex; align-items: center; gap: .8rem; margin-bottom: .6rem; opacity: 0; transition: opacity .4s; }
+.zone.show { opacity: 1; }
+.zone.SAFE { background: rgba(0,255,136,.04); border: 1px solid rgba(0,255,136,.15); }
+.zone.DANGER { background: rgba(255,51,85,.05); border: 1px solid rgba(255,51,85,.2); }
+.zone-icon { font-size: 1.2rem; }
+.zone-label { font-family: var(--head); font-size: .9rem; font-weight: 700; letter-spacing: .08em; }
+.zone.SAFE .zone-label { color: var(--green); }
+.zone.DANGER .zone-label { color: var(--red); }
+.zone-desc { font-size: .5rem; color: var(--light); font-weight: 300; margin-top: .05rem; }
+
+/* ── Metrics ── */
+.metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: .4rem; margin-bottom: .6rem; }
+.metric { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: .35rem .5rem; text-align: center; position: relative; overflow: hidden; }
+.metric::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; transform: scaleX(0); transition: transform .4s ease-out; transform-origin: left; }
+.metric.rg::after { background: var(--green); transform: scaleX(1); }
+.metric.rc::after { background: var(--cyan); transform: scaleX(1); }
+.metric.rr::after { background: var(--red); transform: scaleX(1); }
+.metric.ra::after { background: var(--amber); transform: scaleX(1); }
+.m-label { font-size: .4rem; color: var(--mute); text-transform: uppercase; letter-spacing: .1em; }
+.m-val { font-size: .85rem; font-weight: 600; margin-top: .05rem; font-variant-numeric: tabular-nums; }
+.m-green { color: var(--green); } .m-cyan { color: var(--cyan); } .m-red { color: var(--red); } .m-amber { color: var(--amber); }
+
+/* ── Content grid ── */
+.content { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; position: relative; }
+.panel-label { position: absolute; top: 5px; left: 8px; font-size: .4rem; color: var(--dim); text-transform: uppercase; letter-spacing: .1em; z-index: 2; }
+
+/* ── EEG ── */
+.eeg-canvas { width: 100%; height: 200px; display: block; }
+
+/* ── Tokens ── */
+.tok-box { padding: .6rem .8rem; line-height: 1.9; font-size: .72rem; min-height: 80px; }
+.tok { transition: opacity .1s; }
+.tok-safe { color: var(--green); }
+.tok-normal { color: var(--light); }
+.tok-warm { color: var(--amber); }
+.tok-hot { color: var(--red); text-shadow: 0 0 6px rgba(255,51,85,.3); }
+.tok-cursor { display: inline-block; width: 2px; height: .9em; background: var(--green); animation: blink .5s step-end infinite; vertical-align: text-bottom; }
+
+/* ── 2D ── */
+.state-canvas { width: 100%; height: 200px; display: block; }
+
+/* ── Commit callout ── */
+.callout { margin-top: .3rem; padding: .3rem .6rem; border-radius: 2px; background: rgba(255,51,85,.06); border-left: 2px solid var(--red); font-size: .48rem; color: var(--light); display: none; }
+.callout .cv { color: var(--red); font-weight: 600; }
+
+/* ── Commit flash ── */
+.flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(ellipse at 50% 50%, rgba(255,51,85,.15), transparent 65%); z-index: 5; }
+.flash.fire { animation: flashAnim .6s ease-out forwards; }
+@keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ── Watermark ── */
+.watermark { position: absolute; bottom: 8px; right: 12px; font-family: var(--head); font-size: .5rem; color: rgba(255,255,255,.08); letter-spacing: .1em; z-index: 100; }
+
+/* ── Particles ── */
+#bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="nav">
+  <div class="nav-brand"><span>FATHOM</span> SCAN</div>
+  <div class="nav-right">real-time cognitive EEG &mdash; patent pending US 64/020,489</div>
+</div>
+
+<div class="main">
+  <div class="input-row">
+    <div class="input-box" id="inputBox"><span id="inputText"></span><span class="input-cursor" id="inputCursor"></span></div>
+    <div class="scan-btn" id="scanBtn">SCAN</div>
+  </div>
+
+  <div class="zone" id="zone"></div>
+
+  <div class="metrics" id="metricsRow">
+    <div class="metric" id="metS"><div class="m-label">commitment (S)</div><div class="m-val m-green" id="vS">&mdash;</div></div>
+    <div class="metric" id="metE"><div class="m-label">entropy (H)</div><div class="m-val m-cyan" id="vE">&mdash;</div></div>
+    <div class="metric" id="metR"><div class="m-label">halluc risk</div><div class="m-val" id="vR">&mdash;</div></div>
+    <div class="metric" id="metT"><div class="m-label">tokens</div><div class="m-val m-green" id="vT">&mdash;</div></div>
+  </div>
+
+  <div class="content">
+    <div class="panel" style="grid-row: span 2">
+      <div class="panel-label">cognitive waveform</div>
+      <canvas id="eeg" class="eeg-canvas"></canvas>
+      <div class="flash" id="flash"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-label">generated text</div>
+      <div class="tok-box" id="tokBox"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-label">2d cognitive trajectory</div>
+      <canvas id="state" class="state-canvas"></canvas>
+    </div>
+  </div>
+
+  <div class="callout" id="callout"></div>
+</div>
+
+<div class="watermark">fathom.darkflobi.com</div>
+
+<script>
+// ═══ MOCK DATA ══════════════════════════════════════════════════
+const DEMO_FRANCE = {
+  prompt: "What is the capital of France?",
+  zone: { zone: "SAFE", halluc_probability: 0.22 },
+  s_early: 0.00089, entropy_early: 0.612,
+  tokens: [
+    { token: " The", c_delta: 0.0008, entropy: 0.42 },
+    { token: " capital", c_delta: 0.0012, entropy: 0.38 },
+    { token: " of", c_delta: 0.0005, entropy: 0.21 },
+    { token: " France", c_delta: 0.0015, entropy: 0.44 },
+    { token: " is", c_delta: 0.0004, entropy: 0.18 },
+    { token: " Paris", c_delta: 0.0022, entropy: 0.31 },
+    { token: ".", c_delta: 0.0003, entropy: 0.15 },
+    { token: " Paris", c_delta: 0.0018, entropy: 0.28 },
+    { token: " has", c_delta: 0.0009, entropy: 0.52 },
+    { token: " been", c_delta: 0.0007, entropy: 0.48 },
+    { token: " the", c_delta: 0.0004, entropy: 0.22 },
+    { token: " capital", c_delta: 0.0011, entropy: 0.35 },
+    { token: " since", c_delta: 0.0006, entropy: 0.41 },
+    { token: " the", c_delta: 0.0003, entropy: 0.19 },
+    { token: " 10th", c_delta: 0.0014, entropy: 0.55 },
+    { token: " century", c_delta: 0.0008, entropy: 0.33 },
+  ],
+};
+
+const DEMO_REVERE = {
+  prompt: "What did Paul Revere say during his midnight ride?",
+  zone: { zone: "DANGER", halluc_probability: 0.65 },
+  s_early: 0.01240, entropy_early: 1.832,
+  tokens: [
+    { token: " Paul", c_delta: 0.0028, entropy: 0.82 },
+    { token: " Rev", c_delta: 0.0035, entropy: 0.91 },
+    { token: "ere", c_delta: 0.0042, entropy: 1.05 },
+    { token: " famously", c_delta: 0.0088, entropy: 1.44 },
+    { token: " shouted", c_delta: 0.0125, entropy: 1.82 },
+    { token: " \"", c_delta: 0.0182, entropy: 2.15 },
+    { token: "The", c_delta: 0.0210, entropy: 2.38 },
+    { token: " British", c_delta: 0.0195, entropy: 2.22 },
+    { token: " are", c_delta: 0.0168, entropy: 1.95 },
+    { token: " coming", c_delta: 0.0155, entropy: 1.78 },
+    { token: "!", c_delta: 0.0098, entropy: 1.42 },
+    { token: "\"", c_delta: 0.0072, entropy: 1.15 },
+    { token: " as", c_delta: 0.0045, entropy: 0.88 },
+    { token: " he", c_delta: 0.0038, entropy: 0.75 },
+    { token: " rode", c_delta: 0.0055, entropy: 0.92 },
+    { token: " through", c_delta: 0.0042, entropy: 0.81 },
+    { token: " the", c_delta: 0.0018, entropy: 0.45 },
+    { token: " streets", c_delta: 0.0032, entropy: 0.68 },
+    { token: " of", c_delta: 0.0012, entropy: 0.35 },
+    { token: " Boston", c_delta: 0.0048, entropy: 0.95 },
+  ],
+};
+
+const THR = 0.005, EW = 7, TDELAY = 120;
+
+// ═══ RENDERING ══════════════════════════════════════════════════
+let eegCtx, eegW, eegH, stCtx, stW, stH;
+
+function initCanvases() {
+  const dpr = window.devicePixelRatio || 1;
+  const eC = document.getElementById('eeg');
+  eegW = eC.parentElement.offsetWidth; eegH = eC.offsetHeight || 200;
+  eC.width = eegW * dpr; eC.height = eegH * dpr;
+  eC.style.width = eegW + 'px'; eC.style.height = eegH + 'px';
+  eegCtx = eC.getContext('2d'); eegCtx.scale(dpr, dpr);
+
+  const sC = document.getElementById('state');
+  stW = sC.parentElement.offsetWidth; stH = sC.offsetHeight || 200;
+  sC.width = stW * dpr; sC.height = stH * dpr;
+  sC.style.width = stW + 'px'; sC.style.height = stH + 'px';
+  stCtx = sC.getContext('2d'); stCtx.scale(dpr, dpr);
+}
+
+// ═══ EEG WAVEFORM ═══════════════════════════════════════════════
+function drawEEGBase(n) {
+  const ctx = eegCtx; if (!ctx) return;
+  const pL = 36, pR = 12, pT = 18, pB = 20;
+  const plotW = eegW - pL - pR, step = plotW / Math.max(n - 1, 1);
+  ctx.fillStyle = '#080808'; ctx.fillRect(0, 0, eegW, eegH);
+  ctx.strokeStyle = 'rgba(255,255,255,.02)'; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 5; i++) { const y = pT + (eegH - pT - pB) * i / 5; ctx.beginPath(); ctx.moveTo(pL, y); ctx.lineTo(eegW - pR, y); ctx.stroke(); }
+  if (n > EW) {
+    const x1 = pL + (EW - 1) * step;
+    ctx.fillStyle = 'rgba(255,51,85,.025)'; ctx.fillRect(pL, pT, x1 - pL, eegH - pT - pB);
+    ctx.strokeStyle = 'rgba(255,51,85,.15)'; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(x1, pT); ctx.lineTo(x1, eegH - pB); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = '7px JetBrains Mono'; ctx.fillStyle = 'rgba(255,51,85,.3)'; ctx.textAlign = 'center';
+    ctx.fillText('early window', (pL + x1) / 2, pT + 10); ctx.textAlign = 'left';
+  }
+}
+
+function drawEEG(upTo, data) {
+  const ctx = eegCtx; if (!ctx) return;
+  const toks = data.tokens, n = toks.length;
+  const pL = 36, pR = 12, pT = 18, pB = 20;
+  const plotW = eegW - pL - pR, plotH = eegH - pT - pB;
+  const step = plotW / Math.max(n - 1, 1);
+  const maxCd = Math.max(...toks.map(t => Math.abs(t.c_delta)), THR * 1.5);
+  const maxEnt = Math.max(...toks.map(t => t.entropy), 0.5);
+  drawEEGBase(n);
+  const limit = Math.min(upTo + 1, n);
+  const cdPts = [], entPts = [];
+  for (let i = 0; i < limit; i++) {
+    const x = pL + i * step;
+    cdPts.push({ x, y: pT + plotH - (Math.abs(toks[i].c_delta) / maxCd) * plotH });
+    entPts.push({ x, y: pT + plotH - (toks[i].entropy / maxEnt) * plotH });
+  }
+  function bz(pts) {
+    if (pts.length < 2) return;
+    ctx.moveTo(pts[0].x, pts[0].y);
+    if (pts.length === 2) { ctx.lineTo(pts[1].x, pts[1].y); return; }
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(pts.length-1, i+2)];
+      ctx.bezierCurveTo(p1.x+(p2.x-p0.x)/6, p1.y+(p2.y-p0.y)/6, p2.x-(p3.x-p1.x)/6, p2.y-(p3.y-p1.y)/6, p2.x, p2.y);
+    }
+  }
+  // Fills
+  if (cdPts.length > 1) {
+    ctx.beginPath(); bz([...cdPts]); ctx.lineTo(cdPts[cdPts.length-1].x, pT+plotH); ctx.lineTo(cdPts[0].x, pT+plotH); ctx.closePath();
+    const g = ctx.createLinearGradient(0, pT, 0, pT+plotH); g.addColorStop(0, 'rgba(0,255,136,.12)'); g.addColorStop(1, 'rgba(0,255,136,.01)'); ctx.fillStyle = g; ctx.fill();
+  }
+  if (entPts.length > 1) {
+    ctx.beginPath(); bz([...entPts]); ctx.lineTo(entPts[entPts.length-1].x, pT+plotH); ctx.lineTo(entPts[0].x, pT+plotH); ctx.closePath();
+    const g = ctx.createLinearGradient(0, pT, 0, pT+plotH); g.addColorStop(0, 'rgba(0,229,255,.06)'); g.addColorStop(1, 'rgba(0,229,255,.005)'); ctx.fillStyle = g; ctx.fill();
+  }
+  // Lines
+  if (cdPts.length > 1) {
+    ctx.beginPath(); bz([...cdPts]); ctx.strokeStyle = 'rgba(0,255,136,.1)'; ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+    ctx.beginPath(); bz([...cdPts]); ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 2; ctx.stroke();
+  }
+  if (entPts.length > 1) {
+    ctx.beginPath(); bz([...entPts]); ctx.strokeStyle = 'rgba(0,229,255,.06)'; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+    ctx.beginPath(); bz([...entPts]); ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 1.2; ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
+  }
+  // Points
+  for (let i = 0; i < limit; i++) {
+    const cd = Math.abs(toks[i].c_delta), {x, y} = cdPts[i];
+    if (cd > THR * 1.5) {
+      const I = Math.min(1, cd / maxCd);
+      const gl = ctx.createRadialGradient(x, y, 0, x, y, 10 + I * 8);
+      gl.addColorStop(0, `rgba(255,51,85,${0.3*I})`); gl.addColorStop(1, 'rgba(255,51,85,0)');
+      ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(x, y, 18, 0, Math.PI*2); ctx.fill();
+    }
+    const r = cd > THR*2 ? 3 : cd > THR ? 2.2 : 1.5;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = cd > THR*3 ? '#ff3355' : cd > THR*1.5 ? '#ffb800' : '#00ff88'; ctx.fill();
+  }
+  // Scanline
+  if (upTo < n) {
+    const cx = pL + upTo * step, cd = Math.abs(toks[upTo].c_delta), cy = pT + plotH - (cd / maxCd) * plotH;
+    ctx.strokeStyle = 'rgba(0,255,136,.08)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx, pT); ctx.lineTo(cx, pT + plotH); ctx.stroke();
+    const p = ctx.createRadialGradient(cx, cy, 0, cx, cy, 12);
+    p.addColorStop(0, 'rgba(0,255,136,.5)'); p.addColorStop(.5, 'rgba(0,255,136,.08)'); p.addColorStop(1, 'transparent');
+    ctx.fillStyle = p; ctx.beginPath(); ctx.arc(cx, cy, 12, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, Math.PI*2); ctx.fillStyle = '#00ff88'; ctx.fill();
+  }
+  // Labels
+  ctx.font = '7px JetBrains Mono'; ctx.fillStyle = 'rgba(255,255,255,.1)'; ctx.textAlign = 'center';
+  for (let i = 0; i < n; i += (n > 15 ? 5 : 3)) ctx.fillText('t'+i, pL + i*step, eegH - 6);
+  ctx.textAlign = 'left';
+}
+
+// ═══ 2D STATE ═══════════════════════════════════════════════════
+function draw2DBase() {
+  const ctx = stCtx; if (!ctx) return;
+  const W = stW, H = stH, p = 30, mx = W/2, my = H/2;
+  const bg = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.75);
+  bg.addColorStop(0,'#0a0a0a'); bg.addColorStop(1,'#050505'); ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+  [{x:p,y:H-p,c:'0,255,136',a:.05},{x:W-p,y:p,c:'255,51,85',a:.05},{x:p,y:p,c:'255,184,0',a:.03}].forEach(g=>{
+    const gr=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,W*.4);
+    gr.addColorStop(0,`rgba(${g.c},${g.a})`); gr.addColorStop(1,'transparent'); ctx.fillStyle=gr; ctx.fillRect(0,0,W,H);
+  });
+  ctx.strokeStyle='rgba(255,255,255,.03)'; ctx.lineWidth=.5; ctx.setLineDash([3,5]);
+  ctx.beginPath(); ctx.moveTo(mx,0); ctx.lineTo(mx,H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,my); ctx.lineTo(W,my); ctx.stroke(); ctx.setLineDash([]);
+  ctx.font='8px JetBrains Mono';
+  ctx.fillStyle='rgba(0,255,136,.2)'; ctx.fillText('SAFE',p+4,H-10);
+  ctx.fillStyle='rgba(255,51,85,.25)'; ctx.fillText('DANGER',W-p-44,16);
+  ctx.fillStyle='rgba(255,184,0,.15)'; ctx.fillText('UNCERTAIN',p+4,16);
+}
+
+function draw2D(upTo, data) {
+  const ctx = stCtx; if (!ctx) return;
+  const toks = data.tokens, W = stW, H = stH, p = 30;
+  let mCd=0, sc=0, sE=0; const pts=[];
+  for (let i=0; i<=upTo && i<toks.length; i++) {
+    const cd=Math.abs(toks[i].c_delta), ent=toks[i].entropy;
+    if(cd>mCd)mCd=cd; if(cd>THR)sc++; sE+=ent;
+    pts.push({s:sc>0?mCd/sc:0, e:sE/(i+1), i});
+  }
+  if(!pts.length) return;
+  const maxS=Math.max(...pts.map(q=>q.s),.0005), maxE=Math.max(...pts.map(q=>q.e),.3);
+  function px(s){return p+(s/maxS)*(W-2*p);} function py(e){return H-p-(e/maxE)*(H-2*p);}
+  draw2DBase();
+  if(pts.length>1) {
+    ctx.beginPath(); ctx.strokeStyle='rgba(168,85,247,.08)'; ctx.lineWidth=8; ctx.lineJoin='round'; ctx.lineCap='round';
+    pts.forEach((q,i)=>{if(i===0)ctx.moveTo(px(q.s),py(q.e));else ctx.lineTo(px(q.s),py(q.e));}); ctx.stroke();
+    for(let i=1;i<pts.length;i++){const t=i/(pts.length-1);const[r,g,b]=tCol(t);
+      ctx.beginPath();ctx.moveTo(px(pts[i-1].s),py(pts[i-1].e));ctx.lineTo(px(pts[i].s),py(pts[i].e));
+      ctx.strokeStyle=`rgba(${r},${g},${b},${.3+t*.5})`;ctx.lineWidth=1.5+t*1.5;ctx.stroke();}
+  }
+  pts.forEach((q,i)=>{const t=i/Math.max(pts.length-1,1);const[r,g,b]=tCol(t);const x=px(q.s),y=py(q.e);
+    ctx.beginPath();ctx.arc(x,y,1.5+t*2,0,Math.PI*2);ctx.fillStyle=`rgba(${r},${g},${b},${.3+t*.7})`;ctx.fill();});
+  const last=pts[pts.length-1],lx=px(last.s),ly=py(last.e),isL=upTo>toks.length*.5;
+  const gl=ctx.createRadialGradient(lx,ly,0,lx,ly,22);
+  if(isL){gl.addColorStop(0,'rgba(255,51,85,.35)');gl.addColorStop(.5,'rgba(168,85,247,.08)');}
+  else{gl.addColorStop(0,'rgba(0,229,255,.35)');gl.addColorStop(.5,'rgba(0,255,136,.06)');}
+  gl.addColorStop(1,'transparent');ctx.fillStyle=gl;ctx.beginPath();ctx.arc(lx,ly,22,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(lx,ly,4,0,Math.PI*2);ctx.fillStyle=isL?'#ff3355':'#00e5ff';ctx.fill();
+  ctx.beginPath();ctx.arc(lx,ly,7,0,Math.PI*2);ctx.strokeStyle=isL?'rgba(255,51,85,.3)':'rgba(0,229,255,.2)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.font='bold 7px JetBrains Mono';ctx.fillStyle=isL?'#ff3355':'#00e5ff';ctx.textAlign='left';ctx.fillText('t'+upTo,lx+10,ly+3);
+  if(upTo===toks.length-1&&data.zone){const z=data.zone.zone;ctx.font='bold 9px JetBrains Mono';
+    ctx.fillStyle=z==='DANGER'?'#ff3355':z==='SAFE'?'#00ff88':'#ffb800';ctx.fillText(z,lx+10,ly+14);}
+}
+
+function tCol(t){if(t<.5){const t2=t*2;return[Math.round(168*t2),Math.round(229-144*t2),Math.round(255-8*t2)];}
+  const t2=(t-.5)*2;return[Math.round(168+87*t2),Math.round(85-85*t2),Math.round(247-179*t2)];}
+
+// ═══ ANIMATION SEQUENCER ════════════════════════════════════════
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function typeText(text, el, cursor) {
+  for (let i = 0; i < text.length; i++) {
+    el.textContent = text.substring(0, i + 1);
+    await wait(50);
+  }
+}
+
+async function runScan(data) {
+  const toks = data.tokens;
+  const inputBox = document.getElementById('inputBox');
+  const inputText = document.getElementById('inputText');
+  const inputCursor = document.getElementById('inputCursor');
+  const scanBtn = document.getElementById('scanBtn');
+  const zoneEl = document.getElementById('zone');
+  const tokBox = document.getElementById('tokBox');
+  const callout = document.getElementById('callout');
+
+  // Reset
+  inputText.textContent = '';
+  inputCursor.style.display = 'inline-block';
+  inputBox.classList.remove('active');
+  zoneEl.className = 'zone'; zoneEl.innerHTML = '';
+  tokBox.innerHTML = '';
+  callout.style.display = 'none';
+  ['metS','metE','metR','metT'].forEach(id => { document.getElementById(id).className = 'metric'; });
+  document.getElementById('vS').textContent = '\u2014';
+  document.getElementById('vE').textContent = '\u2014';
+  document.getElementById('vR').textContent = '\u2014';
+  document.getElementById('vT').textContent = '\u2014';
+  initCanvases();
+  drawEEGBase(toks.length);
+  draw2DBase();
+
+  // Type prompt
+  inputBox.classList.add('active');
+  await typeText(data.prompt, inputText, inputCursor);
+  await wait(600);
+
+  // Scan
+  inputCursor.style.display = 'none';
+  scanBtn.textContent = 'SCANNING...'; scanBtn.classList.add('scanning');
+  await wait(1200);
+  scanBtn.textContent = 'SCAN'; scanBtn.classList.remove('scanning');
+
+  // Zone
+  const z = data.zone, isSafe = z.zone === 'SAFE';
+  zoneEl.className = 'zone ' + z.zone + ' show';
+  zoneEl.innerHTML = `<div class="zone-icon">${isSafe ? '\u2713' : '\u2716'}</div><div><div class="zone-label">${z.zone}</div><div class="zone-desc">${isSafe ? 'grounded retrieval from confident knowledge' : 'circuits locked but output uncertain \u2014 hallucination signature'}</div></div>`;
+  await wait(200);
+
+  // Token reveal
+  tokBox.innerHTML = '<span class="tok-cursor"></span>';
+  let maxCd = 0, spikes = 0, sumE = 0;
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i], cd = Math.abs(t.c_delta), ent = t.entropy;
+    if (cd > maxCd) maxCd = cd; if (cd > THR) spikes++; sumE += ent;
+    const sNow = spikes > 0 ? maxCd / spikes : 0;
+
+    let cls = 'tok-normal';
+    if (cd > THR * 3) cls = 'tok-hot';
+    else if (cd > THR * 1.5) cls = 'tok-warm';
+    else if (cd < THR * 0.3) cls = 'tok-safe';
+
+    const span = document.createElement('span');
+    span.className = 'tok ' + cls;
+    span.textContent = t.token;
+    span.style.opacity = '0'; span.style.transition = 'opacity .12s';
+    const cur = tokBox.querySelector('.tok-cursor');
+    if (cur) tokBox.insertBefore(span, cur); else tokBox.appendChild(span);
+    requestAnimationFrame(() => span.style.opacity = '1');
+
+    document.getElementById('vS').textContent = sNow.toFixed(5);
+    document.getElementById('vE').textContent = (sumE / (i+1)).toFixed(3);
+    document.getElementById('vT').textContent = (i+1) + '/' + toks.length;
+
+    drawEEG(i, data);
+    draw2D(i, data);
+
+    // Commit flash at early window
+    if (i === EW - 1 && !isSafe) {
+      const fl = document.getElementById('flash');
+      fl.classList.remove('fire'); void fl.offsetWidth; fl.classList.add('fire');
+      callout.innerHTML = `<span class="cv">COMMITMENT DETECTED</span> at token ${i} &mdash; S = ${sNow.toFixed(5)}`;
+      callout.style.display = 'block';
+    }
+
+    await wait(TDELAY);
+  }
+
+  // Remove cursor
+  const cur = tokBox.querySelector('.tok-cursor'); if (cur) cur.remove();
+
+  // Final metrics
+  const hp = z.halluc_probability;
+  document.getElementById('vR').textContent = (hp * 100).toFixed(0) + '%';
+  document.getElementById('vR').className = 'm-val ' + (hp > 0.5 ? 'm-red' : hp > 0.3 ? 'm-amber' : 'm-green');
+  document.getElementById('vT').textContent = toks.length + ' tokens';
+  document.getElementById('metS').classList.add('rg');
+  document.getElementById('metE').classList.add('rc');
+  document.getElementById('metR').classList.add(hp > 0.5 ? 'rr' : hp > 0.3 ? 'ra' : 'rg');
+  document.getElementById('metT').classList.add('rg');
+
+  await wait(2500);
+}
+
+// ═══ PARTICLES ══════════════════════════════════════════════════
+function initParticles() {
+  const c = document.getElementById('bg'); if (!c) return;
+  const ctx = c.getContext('2d'); c.width = 900; c.height = 680;
+  const P = [];
+  for (let i = 0; i < 20; i++) P.push({ x: Math.random()*900, y: Math.random()*680, vx:(Math.random()-.5)*.15, vy:(Math.random()-.5)*.15, r:Math.random()+.3, a:Math.random()*.06+.01 });
+  (function draw() {
+    ctx.clearRect(0,0,900,680);
+    for(let i=0;i<P.length;i++) for(let j=i+1;j<P.length;j++){const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){ctx.beginPath();ctx.strokeStyle=`rgba(0,255,136,${.015*(1-d/120)})`;ctx.lineWidth=.5;ctx.moveTo(P[i].x,P[i].y);ctx.lineTo(P[j].x,P[j].y);ctx.stroke();}}
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>900)p.vx*=-1;if(p.y<0||p.y>680)p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,255,136,${p.a})`;ctx.fill();});
+    requestAnimationFrame(draw);
+  })();
+}
+
+// ═══ MAIN ═══════════════════════════════════════════════════════
+async function main() {
+  initParticles();
+  initCanvases();
+  await wait(1000);
+  await runScan(DEMO_FRANCE);
+  await runScan(DEMO_REVERE);
+  // Hold on final frame
+  await wait(5000);
+}
+main();
+</script>
+</body>
+</html>

@@ -343,8 +343,15 @@ class CoherenceSteerer:
             capture_hooks = self._build_capture_hooks(hidden_states)
 
             t_monitor = time.time()
-            with torch.no_grad():
-                logits = inner.run_with_hooks(tokens, fwd_hooks=capture_hooks)
+            try:
+                with torch.no_grad():
+                    inner.reset_hooks()
+                    logits = inner.run_with_hooks(tokens, fwd_hooks=capture_hooks)
+            except (RuntimeError, IndexError, KeyError):
+                inner.reset_hooks()
+                with torch.no_grad():
+                    logits = inner(tokens)
+                hidden_states = {}
 
             # ── Step 2: C_delta from captured activations ──
             c_delta, layer_c = self._fast_c_delta(hidden_states)
@@ -419,7 +426,13 @@ class CoherenceSteerer:
 
         elapsed = time.time() - t_start
         full_text = "".join(generated_tokens)
+        total = len(generated_tokens)
         overhead_pct = (monitor_time / max(elapsed, 0.001)) * 100
+
+        # Truncate trajectories to match token count — EOS step appends
+        # an extra entry with no matching generated token.
+        c_delta_trajectory = c_delta_trajectory[:total]
+        c_layer_trajectory = c_layer_trajectory[:total]
 
         return GenerationResult(
             prompt=prompt,
@@ -429,7 +442,7 @@ class CoherenceSteerer:
             c_per_layer_trajectory=c_layer_trajectory,
             interventions=interventions,
             intervention_count=len(interventions),
-            total_tokens=len(generated_tokens),
+            total_tokens=total,
             generation_time_s=elapsed,
             monitor_overhead_s=monitor_time,
             overhead_pct=overhead_pct,

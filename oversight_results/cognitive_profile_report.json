@@ -1,0 +1,3284 @@
+{
+  "cognitive_fingerprint": {
+    "n_items": 30,
+    "k_depth": {
+      "mean": 15.001362716660042,
+      "std": 0.18349067436016656,
+      "min": 14.607288721925556,
+      "max": 15.512399257313087
+    },
+    "gini": {
+      "mean": 0.5383291894713255,
+      "std": 0.03256254077661413,
+      "min": 0.4818855329976268,
+      "max": 0.6123140058483405,
+      "pct_above_051": 0.8333333333333334
+    },
+    "s_early": {
+      "mean": 0.002335171933896717,
+      "std": 0.0007089122506951553,
+      "max": 0.0050575037855268914,
+      "pct_above_008": 0.0
+    }
+  },
+  "quality_by_state": {
+    "unclassified": {
+      "count": 21,
+      "k_mean": 14.996863449135608,
+      "gini_mean": 0.5447293344378644,
+      "s_early_mean": 0.002233958467649019
+    },
+    "correct": {
+      "count": 3,
+      "k_mean": 14.867342509838906,
+      "gini_mean": 0.5181382520018687,
+      "s_early_mean": 0.0023908078344427666
+    },
+    "hallucinated": {
+      "count": 5,
+      "k_mean": 15.031651068043661,
+      "gini_mean": 0.5334399571685375,
+      "s_early_mean": 0.0027667103547456824
+    },
+    "ambiguous": {
+      "count": 1,
+      "k_mean": 15.346466198218518,
+      "gini_mean": 0.48894511909631655,
+      "s_early_mean": 0.0021360549192154196
+    }
+  },
+  "intervention_effects": {
+    "n_intervened": 30,
+    "n_not_intervened": 0,
+    "intervention_rate": 1.0,
+    "gini_shift": {
+      "mean_before": 0.6045175301896746,
+      "mean_after": 0.6348253946361129,
+      "mean_delta": 0.030307864446438293,
+      "improved": 2,
+      "worsened": 28
+    },
+    "s_early_shift": {
+      "mean_before": 0.0020980937155056687,
+      "mean_after": 0.0020980937155056687,
+      "mean_delta": 0.0
+    },
+    "escalation_dist": {
+      "0": 17,
+      "1": 13
+    },
+    "label_transitions": {
+      "unclassified -> unclassified": 21,
+      "correct -> unclassified": 1,
+      "hallucinated -> hallucinated": 5,
+      "correct -> correct": 2,
+      "ambiguous -> hallucinated": 1
+    }
+  },
+  "anomaly_taxonomy": {
+    "total_anomalies": 30,
+    "anomaly_distribution": {
+      "shallow_routing": 30
+    },
+    "anomaly_by_output_quality": {
+      "shallow_routing": {
+        "unclassified": 21,
+        "correct": 3,
+        "hallucinated": 5,
+        "ambiguous": 1
+      }
+    }
+  },
+  "feature_anatomy": {
+    "most_common_fault_features": {
+      "7": [
+        [
+          2318,
+          7
+        ],
+        [
+          3772,
+          5
+        ],
+        [
+          1020,
+          3
+        ],
+        [
+          869,
+          3
+        ],
+        [
+          4308,
+          3
+        ],
+        [
+          4632,
+          3
+        ],
+        [
+          7202,
+          2
+        ],
+        [
+          13773,
+          1
+        ],
+        [
+          14863,
+          1
+        ],
+        [
+          11573,
+          1
+        ]
+      ],
+      "17": [
+        [
+          11234,
+          2
+        ],
+        [
+          10706,
+          2
+        ],
+        [
+          15434,
+          2
+        ],
+        [
+          12170,
+          1
+        ],
+        [
+          12540,
+          1
+        ],
+        [
+          9082,
+          1
+        ],
+        [
+          2657,
+          1
+        ],
+        [
+          9688,
+          1
+        ],
+        [
+          3577,
+          1
+        ],
+        [
+          12012,
+          1
+        ]
+      ],
+      "20": [
+        [
+          14385,
+          3
+        ],
+        [
+          15760,
+          3
+        ],
+        [
+          6432,
+          2
+        ],
+        [
+          12346,
+          2
+        ],
+        [
+          9742,
+          2
+        ],
+        [
+          10394,
+          2
+        ],
+        [
+          11510,
+          2
+        ],
+        [
+          13721,
+          2
+        ],
+        [
+          15344,
+          2
+        ],
+        [
+          9550,
+          2
+        ]
+      ],
+      "21": [
+        [
+          11473,
+          7
+        ],
+        [
+          1989,
+          4
+        ],
+        [
+          13809,
+          2
+        ],
+        [
+          3835,
+          2
+        ],
+        [
+          13266,
+          2
+        ],
+        [
+          14760,
+          2
+        ],
+        [
+          6847,
+          2
+        ],
+        [
+          234,
+          2
+        ],
+        [
+          5440,
+          2
+        ],
+        [
+          8991,
+          2
+        ]
+      ],
+      "22": [
+        [
+          4751,
+          14
+        ],
+        [
+          2324,
+          4
+        ],
+        [
+          10656,
+          3
+        ],
+        [
+          7491,
+          3
+        ],
+        [
+          12378,
+          3
+        ],
+        [
+          9644,
+          3
+        ],
+        [
+          3476,
+          2
+        ],
+        [
+          14465,
+          2
+        ],
+        [
+          4733,
+          2
+        ],
+        [
+          11777,
+          2
+        ]
+      ],
+      "4": [
+        [
+          15907,
+          1
+        ],
+        [
+          13593,
+          1
+        ],
+        [
+          10510,
+          1
+        ],
+        [
+          12206,
+          1
+        ],
+        [
+          16324,
+          1
+        ]
+      ],
+      "6": [
+        [
+          13076,
+          3
+        ],
+        [
+          2267,
+          3
+        ],
+        [
+          8826,
+          3
+        ],
+        [
+          9708,
+          3
+        ],
+        [
+          10436,
+          3
+        ],
+        [
+          2686,
+          3
+        ],
+        [
+          9419,
+          2
+        ],
+        [
+          3073,
+          2
+        ],
+        [
+          1567,
+          2
+        ],
+        [
+          2270,
+          2
+        ]
+      ],
+      "24": [
+        [
+          12064,
+          7
+        ],
+        [
+          15599,
+          6
+        ],
+        [
+          483,
+          5
+        ],
+        [
+          15454,
+          4
+        ],
+        [
+          1260,
+          4
+        ],
+        [
+          10631,
+          3
+        ],
+        [
+          4977,
+          3
+        ],
+        [
+          1427,
+          3
+        ],
+        [
+          8376,
+          3
+        ],
+        [
+          8119,
+          2
+        ]
+      ],
+      "25": [
+        [
+          4717,
+          6
+        ],
+        [
+          10681,
+          6
+        ],
+        [
+          15920,
+          5
+        ],
+        [
+          14744,
+          5
+        ],
+        [
+          12923,
+          4
+        ],
+        [
+          13822,
+          2
+        ],
+        [
+          1373,
+          1
+        ],
+        [
+          3204,
+          1
+        ],
+        [
+          9975,
+          1
+        ],
+        [
+          16377,
+          1
+        ]
+      ],
+      "23": [
+        [
+          1034,
+          6
+        ],
+        [
+          2757,
+          5
+        ],
+        [
+          13877,
+          4
+        ],
+        [
+          10894,
+          4
+        ],
+        [
+          5917,
+          4
+        ],
+        [
+          2689,
+          4
+        ],
+        [
+          7266,
+          3
+        ],
+        [
+          2269,
+          2
+        ],
+        [
+          8249,
+          2
+        ],
+        [
+          8924,
+          2
+        ]
+      ],
+      "19": [
+        [
+          10452,
+          1
+        ],
+        [
+          4857,
+          1
+        ],
+        [
+          10220,
+          1
+        ],
+        [
+          5662,
+          1
+        ],
+        [
+          12085,
+          1
+        ],
+        [
+          15264,
+          1
+        ],
+        [
+          11934,
+          1
+        ],
+        [
+          15802,
+          1
+        ],
+        [
+          13792,
+          1
+        ],
+        [
+          10243,
+          1
+        ]
+      ],
+      "11": [
+        [
+          16076,
+          1
+        ],
+        [
+          13934,
+          1
+        ],
+        [
+          6361,
+          1
+        ],
+        [
+          9478,
+          1
+        ],
+        [
+          15260,
+          1
+        ]
+      ],
+      "12": [
+        [
+          16209,
+          1
+        ],
+        [
+          3903,
+          1
+        ],
+        [
+          9899,
+          1
+        ],
+        [
+          10924,
+          1
+        ],
+        [
+          1521,
+          1
+        ]
+      ],
+      "13": [
+        [
+          5666,
+          1
+        ],
+        [
+          13391,
+          1
+        ],
+        [
+          8223,
+          1
+        ],
+        [
+          7006,
+          1
+        ],
+        [
+          2277,
+          1
+        ]
+      ],
+      "14": [
+        [
+          4649,
+          1
+        ],
+        [
+          5370,
+          1
+        ],
+        [
+          6880,
+          1
+        ],
+        [
+          8604,
+          1
+        ],
+        [
+          2570,
+          1
+        ]
+      ],
+      "15": [
+        [
+          11446,
+          1
+        ],
+        [
+          11314,
+          1
+        ],
+        [
+          5996,
+          1
+        ],
+        [
+          1471,
+          1
+        ],
+        [
+          12613,
+          1
+        ]
+      ],
+      "16": [
+        [
+          8400,
+          1
+        ],
+        [
+          11248,
+          1
+        ],
+        [
+          9027,
+          1
+        ],
+        [
+          7043,
+          1
+        ],
+        [
+          9838,
+          1
+        ]
+      ],
+      "0": [
+        [
+          6051,
+          1
+        ],
+        [
+          13839,
+          1
+        ],
+        [
+          2664,
+          1
+        ],
+        [
+          9747,
+          1
+        ],
+        [
+          9022,
+          1
+        ]
+      ],
+      "2": [
+        [
+          13384,
+          1
+        ],
+        [
+          12174,
+          1
+        ],
+        [
+          1518,
+          1
+        ],
+        [
+          4845,
+          1
+        ],
+        [
+          2958,
+          1
+        ]
+      ],
+      "18": [
+        [
+          4138,
+          1
+        ],
+        [
+          208,
+          1
+        ],
+        [
+          15056,
+          1
+        ],
+        [
+          8422,
+          1
+        ],
+        [
+          4441,
+          1
+        ]
+      ]
+    },
+    "feature_token_decodings": {
+      "7": {
+        "1020": [
+          "\u03c1\u03c5",
+          "chan",
+          "pu",
+          "Weg",
+          "\u043d\u0435\u043d"
+        ],
+        "13773": [
+          "OGND",
+          "HtmlAttribute",
+          "\u041c\u0435\u043a\u0441\u0438\u0447\u043a\u0430",
+          "PerformLayout",
+          "twimg"
+        ],
+        "2318": [
+          "BrowserModule",
+          "ReusableCell",
+          "ertion",
+          "ophone",
+          "Tent"
+        ],
+        "14863": [
+          "propOrder",
+          "RenderAtEndOf",
+          "ChildScrollView",
+          "sizeCache",
+          "TagHelper"
+        ],
+        "11573": [
+          "\u0935\u093f\u0936\u094d\u0935\u0938\u0928\u0940\u092f\u0924\u093e",
+          "trajets",
+          "Hentet",
+          "\u043d\u0430\u0441\u0435\u0459\u0443",
+          "\u0578\u0582\u0576"
+        ],
+        "869": [
+          "woordig",
+          "tartalomaj\u00e1nl\u00f3",
+          "\u0446\u0435\u0440\u0442",
+          "Nachbar",
+          "enegal"
+        ],
+        "7202": [
+          "Re\u017f",
+          "Chriftian",
+          "Con\u017f",
+          "Di\u017f",
+          "In\u017f"
+        ],
+        "4308": [
+          "ExecuteAsync",
+          "InputDecoration",
+          "\u062f\u0627\u0646\u0634\u0646\u0627\u0645\u0647\u0654",
+          "linkovi",
+          "<bos>"
+        ],
+        "831": [
+          "The\u017fe",
+          "my\u017felf",
+          "Monfieur",
+          "Efq",
+          "crdi"
+        ],
+        "6611": [
+          "lunar",
+          "programmi",
+          "operacional",
+          "scrapy",
+          "kh\u00f4ng"
+        ],
+        "3772": [
+          "ertion",
+          "ophone",
+          "Tent",
+          "Riches",
+          "BrowserModule"
+        ],
+        "14639": [
+          "PreferredItem",
+          "EClass",
+          "InputDecoration",
+          "\u062c\u063a\u0631\u0627\u0641\u064a\u0627",
+          "Mundi"
+        ],
+        "4632": [
+          "\u2026",
+          "partial",
+          "della",
+          "descon",
+          "Partial"
+        ],
+        "5411": [
+          "\u6599",
+          "flying",
+          "str",
+          "table",
+          "\u30d6\u30ea"
+        ],
+        "11285": [
+          "\u043c\u0443\u043d\u0456\u0446\u0438\u043f\u0430\u043b\u0456",
+          "rospy",
+          "SharedDtor",
+          "jScrollPane",
+          "BufferedImage"
+        ],
+        "15648": [
+          "TagMode",
+          "BitmapFactory",
+          "GeneratedValue",
+          "'{@",
+          "WebVitals"
+        ],
+        "1345": [
+          "Sprintf",
+          "catch",
+          "net",
+          "bait",
+          "Captor"
+        ],
+        "3449": [
+          "IntoConstraints",
+          "BoxDecoration",
+          "HasFactory",
+          "tartalomaj\u00e1nl\u00f3",
+          "\u0648\u06cc\u06a9\u06cc\u200c\u067e\u062f\u06cc\u0627"
+        ],
+        "6434": [
+          "kitchen",
+          "cooking",
+          "Kitchen",
+          "kitchens",
+          "kitchen"
+        ],
+        "14287": [
+          "\u51fa\u7248\u5e74",
+          "\u041c\u0435\u043a\u0441\u0438\u0447\u043a\u0430",
+          "\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629",
+          "HtmlAttribute",
+          "WaitGroup"
+        ],
+        "14905": [
+          "orteur",
+          "chomp",
+          "TagHelper",
+          "castigo",
+          "\u0645\u0646\u0629"
+        ]
+      },
+      "17": {
+        "12170": [
+          "ValueStyle",
+          "CreateTagHelper",
+          "\u51fa\u7248\u5e74",
+          "\u0902\u0926\u0940\u0916\u0930\u0940\u0926\u093e\u0930\u0940",
+          "ServletException"
+        ],
+        "12540": [
+          "expandindo",
+          "propOrder",
+          "gynhyrchwyd",
+          "writeFieldEnd",
+          "ArgsConstructor"
+        ],
+        "9082": [
+          "ScopeManager",
+          "bootstrapcdn",
+          "Datuak",
+          "BorderRadius",
+          "DOCTYPE"
+        ],
+        "2657": [
+          "estim\u00e9s",
+          "<bos>",
+          "InitVars",
+          "Tikang",
+          "Personensuche"
+        ],
+        "9688": [
+          "Pipes",
+          "pipes",
+          "pipelines",
+          "pipes",
+          "Pipeline"
+        ],
+        "3577": [
+          "\u0641\u0631\u064a\u0628\u064a\u0633",
+          "EconPapers",
+          "RTEX",
+          "\u0645\u0635\u0627\u062f\u0631",
+          "autorytatywna"
+        ],
+        "12012": [
+          "Efq",
+          "my\u017felf",
+          "\u0644\u0644\u0645\u0639\u0627\u0631\u0641",
+          "lea\u017ft",
+          "Chriftian"
+        ],
+        "12111": [
+          "Efq",
+          "The\u017fe",
+          "them\u017felves",
+          "\u017feveral",
+          "Monfieur"
+        ],
+        "15373": [
+          "IntoConstraints",
+          "onBind",
+          "ReusableCell",
+          "Geplaatst",
+          "nahilalakip"
+        ],
+        "5033": [
+          "Board",
+          "Board",
+          "board",
+          "BOARD",
+          "Boards"
+        ],
+        "11234": [
+          "best",
+          "IGraphics",
+          "hardest",
+          "worst",
+          "hard"
+        ],
+        "10706": [
+          "called",
+          "Called",
+          "Called",
+          "called",
+          "CALLED"
+        ],
+        "13482": [
+          "########.",
+          "\u062f\u0627\u0646\u0634\u0646\u0627\u0645\u0647\u0654",
+          "ProtoMessage",
+          "Abitanti",
+          "referenties"
+        ],
+        "15338": [
+          "fourth",
+          "third",
+          "fifth",
+          "third",
+          "seventh"
+        ],
+        "15434": [
+          "biggest",
+          "biggest",
+          "greatest",
+          "main",
+          "key"
+        ],
+        "11616": [
+          "perceived",
+          "Perceived",
+          "ModelExpression",
+          "ImageContext",
+          "mbolo"
+        ],
+        "4924": [
+          "serious",
+          "serious",
+          "seriously",
+          "serius",
+          "seriousness"
+        ],
+        "11324": [
+          "not",
+          "always",
+          "also",
+          "able",
+          "usually"
+        ],
+        "7767": [
+          "Efq",
+          "Majefty",
+          "my\u017felf",
+          "Monfieur",
+          "The\u017fe"
+        ],
+        "6499": [
+          "BASEPATH",
+          "\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629",
+          "tvguidetime",
+          "tableFuture",
+          "migrationBuilder"
+        ],
+        "12399": [
+          "word",
+          "word",
+          "palabra",
+          "Word",
+          "Word"
+        ],
+        "1601": [
+          "\u0627\u0644\u0645\u0639\u064a\u0627\u0631\u0649",
+          "metaphor",
+          "trope",
+          "bleau",
+          "########."
+        ]
+      },
+      "20": {
+        "6595": [
+          "vessels",
+          "blood",
+          "Vessels",
+          "vessel",
+          "Vessel"
+        ],
+        "9435": [
+          "oxygen",
+          "\u0627\u0644\u0645\u0646\u0627\u0635\u0628",
+          "Oxygen",
+          "Oxygen",
+          "oxygen"
+        ],
+        "1912": [
+          "muscle",
+          "Muscle",
+          "Muscle",
+          "muscle",
+          "muscles"
+        ],
+        "12897": [
+          "pipeline",
+          "pipeline",
+          "Pipe",
+          "Pipe",
+          "\u0644\u0644\u0645\u0639\u0627\u0631\u0641"
+        ],
+        "3538": [
+          "transQ",
+          "ratto",
+          "Philip",
+          "<bos>",
+          "strptime"
+        ],
+        "441": [
+          "rest",
+          "same",
+          "matically",
+          "latest",
+          "fact"
+        ],
+        "1123": [
+          "LookAnd",
+          "\u044c\u0430\u0436",
+          "<bos>",
+          "StreetMap",
+          "raised"
+        ],
+        "10197": [
+          "four",
+          "five",
+          "three",
+          "seven",
+          "six"
+        ],
+        "8249": [
+          "art",
+          "Art",
+          "art",
+          "Art",
+          "ART"
+        ],
+        "10340": [
+          "intersection",
+          "rapporti",
+          "relationship",
+          "relationship",
+          "Verh\u00e4ltnis"
+        ],
+        "6432": [
+          "does",
+          "did",
+          "Does",
+          "Does",
+          "did"
+        ],
+        "12346": [
+          "kind",
+          "kinds",
+          "type",
+          "types",
+          "position"
+        ],
+        "7737": [
+          "webElementXpaths",
+          "wizard",
+          "expandindo",
+          "resourceCulture",
+          "EDEFAULT"
+        ],
+        "9742": [
+          "<bos>",
+          "SourceChecksum",
+          "__*/",
+          "]._",
+          "\u0430\u0440\u0445\u0438\u0432\u043b\u0430\u043d"
+        ],
+        "3787": [
+          "Port\u00e1ly",
+          "Efq",
+          "\u00e1zaro",
+          "rai\u017f",
+          "Monfieur"
+        ],
+        "10394": [
+          "Pack",
+          "pack",
+          "pack",
+          "Were",
+          "vamp"
+        ],
+        "10553": [
+          "spread",
+          "scattered",
+          "dispersed",
+          "Spread",
+          "spread"
+        ],
+        "13059": [
+          "+#+#",
+          "upto",
+          "\u062d\u0648\u0627\u0644\u06c1",
+          "intptr",
+          "AssemblyProduct"
+        ],
+        "10945": [
+          "usually",
+          "typically",
+          "commonly",
+          "Usually",
+          "usually"
+        ],
+        "15753": [
+          "one",
+          "either",
+          "thought",
+          "named",
+          "an"
+        ],
+        "5394": [
+          "<bos>",
+          "'",
+          "$\u200b",
+          "doigts",
+          "wikipagina"
+        ],
+        "11510": [
+          "AddTagHelper",
+          "\u0627\u0644\u0645\u0639\u064a\u0627\u0631\u0649",
+          "AddHtmlAttribute",
+          "ModelExpression",
+          "ddelweddau"
+        ],
+        "14385": [
+          "sizeCache",
+          "\"..\\..\\",
+          "\"..\\..\\..\\",
+          "QMetaType",
+          "ThroughAttribute"
+        ],
+        "15760": [
+          "it\u017felf",
+          "plea\u017fure",
+          "greate\u017ft",
+          "him\u017felf",
+          "Monfieur"
+        ],
+        "13721": [
+          "estekak",
+          "StoryboardSegue",
+          "endmodule",
+          "\u043d\u043e\u0432\u043d\u0438\u0448\u0442\u0432\u043e",
+          "XmlAccessType"
+        ],
+        "11846": [
+          "because",
+          "since",
+          "because",
+          "karena",
+          "since"
+        ],
+        "12547": [
+          "########.",
+          "\u044c\u0430\u0436",
+          "'>{",
+          "@\"/",
+          "ay"
+        ],
+        "12593": [
+          "because",
+          "because",
+          "porque",
+          "BECAUSE",
+          "Because"
+        ],
+        "15310": [
+          "referenties",
+          "\u0434\u043e\u043f\u0438\u0441\u0430\u0432\u0448\u0438",
+          "mergeFrom",
+          "they",
+          "WithMany"
+        ],
+        "3777": [
+          "autorytatywna",
+          "",
+          "cat",
+          "dis",
+          "Dan"
+        ],
+        "3407": [
+          "clear",
+          "clear",
+          "clarity",
+          "clearly",
+          "Clear"
+        ],
+        "1510": [
+          "Full",
+          "full",
+          "Full",
+          "full",
+          "FULL"
+        ],
+        "5243": [
+          "image",
+          "images",
+          "image",
+          "Image",
+          "IMAGE"
+        ],
+        "6600": [
+          "\u044b\u0433\u0430\u043d\u0430",
+          "defaultstate",
+          "BorderRadius",
+          "seye",
+          "pompa"
+        ],
+        "10521": [
+          "\u51fa\u7248\u5e74",
+          "BoxDecoration",
+          "<bos>",
+          "throughout",
+          "VIAF"
+        ],
+        "562": [
+          "\u539f\u59cb\u5185\u5bb9\u5b58\u6863\u4e8e",
+          "you",
+          "putAll",
+          "we",
+          "your"
+        ],
+        "1540": [
+          "<eos>",
+          "state",
+          "state",
+          "TagMode",
+          "map"
+        ],
+        "11287": [
+          "Talmud",
+          "tagHelperRunner",
+          "ErrIntOverflow",
+          "global",
+          "Bilder"
+        ],
+        "11268": [
+          "your",
+          "yourself",
+          "your",
+          "yourself",
+          "Your"
+        ],
+        "15344": [
+          "ho",
+          "woo",
+          "Ho",
+          "Woo",
+          "Ho"
+        ],
+        "4401": [
+          "UserScript",
+          "parsedMessage",
+          "FetchType",
+          "IUrlHelper",
+          "endphp"
+        ],
+        "1598": [
+          "<em>",
+          "<i>",
+          "\u300a",
+          "_",
+          "textit"
+        ],
+        "888": [
+          "",
+          ".;",
+          "();",
+          ";",
+          "v\u00e4nner"
+        ],
+        "15765": [
+          "PhpStorm",
+          "\u064a\u062a\u064a\u0645\u0647",
+          "Act",
+          "v\u1ecdng",
+          "mouseClicked"
+        ],
+        "6563": [
+          "organic",
+          "att",
+          "general",
+          "deadline",
+          "Tri"
+        ],
+        "518": [
+          "general",
+          "general",
+          "General",
+          "GENERAL",
+          "geral"
+        ],
+        "15429": [
+          "ValueStyle",
+          "Expert",
+          "rule",
+          "expert",
+          "Expert"
+        ],
+        "8128": [
+          "program",
+          "programs",
+          "Program",
+          "programme",
+          "program"
+        ],
+        "4227": [
+          "few",
+          "few",
+          "couple",
+          "two",
+          "six"
+        ],
+        "15785": [
+          "do",
+          "does",
+          "did",
+          "are",
+          "causes"
+        ],
+        "15550": [
+          "beginning",
+          "starts",
+          "begins",
+          "starting",
+          "Starting"
+        ],
+        "9550": [
+          "explain",
+          "Explain",
+          "Describe",
+          "describe",
+          "Explain"
+        ],
+        "12688": [
+          "@[+][",
+          "Vidite",
+          "Normdatei",
+          "expandindo",
+          "::_('"
+        ],
+        "5856": [
+          "\u2015\u2015\u2015\u2015\u2015",
+          "Efq",
+          "conf",
+          "\u2015\u2015\u2015\u2015",
+          "EndInit"
+        ],
+        "7074": [
+          "unless",
+          "unless",
+          "Unless",
+          "Unless",
+          "\u00b1"
+        ],
+        "6610": [
+          "according",
+          "according",
+          "According",
+          "According",
+          "selon"
+        ],
+        "11892": [
+          "\u24e7",
+          "my\u017felf",
+          "Majefty",
+          "\u017feveral",
+          "gynhyrchwyd"
+        ],
+        "11958": [
+          ".",
+          "Monfieur",
+          "Efq",
+          "my\u017felf",
+          ".\"."
+        ]
+      },
+      "21": {
+        "8816": [
+          "heart",
+          "heart",
+          "Heart",
+          "Heart",
+          "HEART"
+        ],
+        "10734": [
+          "stdc",
+          "BagLayout",
+          "Tembelea",
+          "DockStyle",
+          "AutoField"
+        ],
+        "12775": [
+          "\ue315",
+          "ViewFeatures",
+          "defStyle",
+          "Zab",
+          "MONG"
+        ],
+        "5204": [
+          "kloped",
+          "autorytatywna",
+          "ujednoznacz",
+          "MemoryWarning",
+          "spi"
+        ],
+        "1156": [
+          "Lymp",
+          "linf",
+          "Lymp",
+          "lymp",
+          "Fass"
+        ],
+        "9373": [
+          "happens",
+          "happened",
+          "counts",
+          "role",
+          "MENAFN"
+        ],
+        "10962": [
+          "propOrder",
+          "programs",
+          "transfieras",
+          "type",
+          "they"
+        ],
+        "12175": [
+          "occaf",
+          "an\u017f",
+          "in\u017f",
+          "it\u017felf",
+          "e\u017ft"
+        ],
+        "10732": [
+          "razine",
+          "\u9664",
+          "\u0644\u06cc",
+          "Naissance",
+          "ecraft"
+        ],
+        "252": [
+          "inspired",
+          "sparked",
+          "triggered",
+          "spawned",
+          "spurred"
+        ],
+        "13809": [
+          "cause",
+          "Cause",
+          "cause",
+          "Cause",
+          "causes"
+        ],
+        "3835": [
+          "key",
+          "key",
+          "Key",
+          "Key",
+          "KEY"
+        ],
+        "1989": [
+          "governments",
+          "Governments",
+          "worlds",
+          "countries",
+          "nations"
+        ],
+        "11473": [
+          "[toxicity=0]",
+          "package",
+          "<h1>",
+          "\ufeff//",
+          "/*"
+        ],
+        "3589": [
+          "median",
+          "average",
+          "weight",
+          "optimal",
+          "recommended"
+        ],
+        "8414": [
+          "values",
+          "core",
+          "catch",
+          "core",
+          "values"
+        ],
+        "7755": [
+          "=$?",
+          "tiest",
+          "largest",
+          "loudest",
+          "tallest"
+        ],
+        "7397": [
+          "classified",
+          "top",
+          "classified",
+          "secret",
+          "top"
+        ],
+        "10636": [
+          "<bos>",
+          "U",
+          "military",
+          "Vietnam",
+          "Army"
+        ],
+        "2638": [
+          "identity",
+          "identities",
+          "identity",
+          "nature",
+          "Identity"
+        ],
+        "10224": [
+          "more",
+          "more",
+          "MORE",
+          "More",
+          "More"
+        ],
+        "3737": [
+          "rungsseite",
+          "ujednoznacz",
+          "expandindo",
+          "Efq",
+          "\u66d6\u6627\u3055\u56de\u907f"
+        ],
+        "13266": [
+          "scary",
+          "spooky",
+          "frightening",
+          "terrifying",
+          "ghost"
+        ],
+        "2555": [
+          "mainly",
+          "primarily",
+          "mostly",
+          "Mainly",
+          "chiefly"
+        ],
+        "14760": [
+          "Majefty",
+          "Shakspeare",
+          "it\u017felf",
+          "Jefus",
+          "Hou\u017fe"
+        ],
+        "6847": [
+          "The\u017fe",
+          "\u0645\u062a\u0639\u0644\u0642\u0647",
+          "my\u017felf",
+          "Monfieur",
+          "it\u017felf"
+        ],
+        "11788": [
+          "The\u017fe",
+          "it\u017felf",
+          "my\u017felf",
+          "Monfieur",
+          "\u0645\u062a\u0639\u0644\u0642\u0647"
+        ],
+        "234": [
+          "\u0432\u0438\u043f\u0440\u0430\u0432\u0438\u0432\u0448\u0438",
+          "oa\u030dt",
+          "expandindo",
+          "berdayakan",
+          "AssemblyCompany"
+        ],
+        "2763": [
+          "AddTagHelper",
+          "ISupport",
+          "\u5b58\u4e8e\u4e92\u8054\u7f51\u6863\u6848\u9986",
+          "Hou\u017fe",
+          "cau\u017fe"
+        ],
+        "2061": [
+          "onto",
+          "onto",
+          "Ont",
+          "Ont",
+          "unto"
+        ],
+        "5440": [
+          ".-",
+          ".,",
+          ".\",",
+          ".),",
+          ".;"
+        ],
+        "8991": [
+          "rungsseite",
+          "The\u017fe",
+          "\u043d\u0435\u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0430",
+          "\u041c\u0435\u043a\u0441\u0438\u0447\u043a\u0430",
+          "\u0645\u062a\u0639\u0644\u0642\u0647"
+        ],
+        "8372": [
+          "seeds",
+          "isDebugEnabled",
+          "rupal",
+          "XCTest",
+          "lawn"
+        ],
+        "1038": [
+          "dishes",
+          "dish",
+          "Dishes",
+          "meals",
+          "Dish"
+        ],
+        "4400": [
+          "WriteBarrier",
+          "\u05e9\u05d5\u05dc\u05d9\u05d9\u05dd",
+          "ContextHolder",
+          "myeloma",
+          "TestRunner"
+        ],
+        "11010": [
+          "lamb",
+          "chicken",
+          "pork",
+          "Chicken",
+          "veal"
+        ],
+        "5193": [
+          "web",
+          "Web",
+          "web",
+          "webs",
+          "Web"
+        ],
+        "4875": [
+          "clear",
+          "clear",
+          "Clear",
+          "CLEAR",
+          "Clear"
+        ],
+        "10713": [
+          "normally",
+          "normally",
+          "Normally",
+          "normal",
+          "Normally"
+        ],
+        "11141": [
+          "ro",
+          "no",
+          "red",
+          ",",
+          "ande"
+        ],
+        "3333": [
+          "bright",
+          "brightness",
+          "bright",
+          "brightest",
+          "brightness"
+        ],
+        "13738": [
+          "around",
+          "around",
+          "Around",
+          "Around",
+          "AROUND"
+        ],
+        "8492": [
+          "my\u017felf",
+          "it\u017felf",
+          "Monfieur",
+          "Efq",
+          "The\u017fe"
+        ],
+        "13593": [
+          "you",
+          "the",
+          "they",
+          "it",
+          "possible"
+        ],
+        "4787": [
+          "hes",
+          "its",
+          "shes",
+          "theyre",
+          "Theres"
+        ],
+        "8747": [
+          "Marion",
+          "counties",
+          "Montgomery",
+          "Weld",
+          "+#+#"
+        ],
+        "3881": [
+          "\u0641\u0631\u064a\u0628\u064a\u0633",
+          "antagonist",
+          "Tikang",
+          "central",
+          "antagonists"
+        ],
+        "6709": [
+          "city",
+          "town",
+          "City",
+          "city",
+          "City"
+        ],
+        "4305": [
+          "phrase",
+          "term",
+          "word",
+          "concept",
+          "last"
+        ],
+        "6813": [
+          "<blockquote>",
+          "\u200d",
+          "\\[",
+          "</strong>",
+          "ke"
+        ],
+        "3218": [
+          "less",
+          "LESS",
+          "less",
+          "lessly",
+          "expect"
+        ],
+        "14427": [
+          "privilege",
+          "Privilege",
+          "Privilege",
+          "privilege",
+          "Privile"
+        ],
+        "9313": [
+          "provided",
+          "provided",
+          "Provided",
+          "Provided",
+          "PROVIDED"
+        ]
+      },
+      "22": {
+        "2324": [
+          "instructions",
+          "works",
+          "migrationBuilder",
+          "Bakter",
+          "\u2019"
+        ],
+        "4751": [
+          "[toxicity=0]",
+          "package",
+          "<h1>",
+          "import",
+          "\ufeff//"
+        ],
+        "10656": [
+          "is",
+          "\u0627\u0644\u0645\u0639\u064a\u0627\u0631\u0649",
+          "viewDidLoad",
+          "does",
+          "RegressionTest"
+        ],
+        "3476": [
+          "do",
+          "do",
+          "DO",
+          "Do",
+          "Do"
+        ],
+        "7491": [
+          "PerformLayout",
+          "am",
+          "Hentet",
+          "expandindo",
+          "\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629"
+        ],
+        "14465": [
+          "The\u017fe",
+          "Efq",
+          "Monfieur",
+          "plea\u017fure",
+          "auffi"
+        ],
+        "12378": [
+          "rule",
+          "rule",
+          "Rule",
+          "RULE",
+          "Rule"
+        ],
+        "7697": [
+          "limb",
+          "indisponible",
+          "attachment",
+          "rlrl",
+          "limb"
+        ],
+        "4733": [
+          "player",
+          "players",
+          "team",
+          "court",
+          "game"
+        ],
+        "11777": [
+          "DebuggerNonUser",
+          "venn",
+          "BeanFactory",
+          "portions",
+          "unit"
+        ],
+        "12284": [
+          "English",
+          "English",
+          "english",
+          "ENGLISH",
+          "Spanish"
+        ],
+        "15312": [
+          "UserScript",
+          "\u043d\u043e\u0432\u043d\u0438\u0448\u0442\u0432\u043e",
+          "StatefulWidget",
+          "AspNetCore",
+          "AttributeSet"
+        ],
+        "9644": [
+          "urban",
+          "urban",
+          "Urban",
+          "Urban",
+          "URBAN"
+        ],
+        "464": [
+          "war",
+          "war",
+          "Victory",
+          "guerra",
+          "War"
+        ],
+        "1571": [
+          "WriteTagHelper",
+          "}))",
+          "SpringRunner",
+          "DataAnnotations",
+          "EndTag"
+        ],
+        "5682": [
+          "rockets",
+          "rocket",
+          "missiles",
+          "volcano",
+          "supernova"
+        ],
+        "13522": [
+          "MLLoader",
+          "\u51fa\u7248\u5e74",
+          "\u064a\u062a\u064a\u0645\u0647",
+          "resourceCulture",
+          "utafitiHapana"
+        ],
+        "11679": [
+          "floor",
+          "Floor",
+          "floors",
+          "floor",
+          "FLOOR"
+        ],
+        "1095": [
+          "used",
+          "sold",
+          "applied",
+          "utilized",
+          "employed"
+        ],
+        "13838": [
+          "\uf0f1",
+          "esgue",
+          "ujednoznacz",
+          "apunov",
+          "estay"
+        ],
+        "1694": [
+          "extremely",
+          "very",
+          "extremely",
+          "immensely",
+          "Extremely"
+        ],
+        "724": [
+          "Monfieur",
+          "it\u017felf",
+          "The\u017fe",
+          "my\u017felf",
+          "Jefus"
+        ],
+        "14239": [
+          "based",
+          "+'",
+          "endpush",
+          "partly",
+          ".'"
+        ],
+        "1742": [
+          "awtextra",
+          "Przypisy",
+          "wild",
+          "eaten",
+          "domestic"
+        ],
+        "7379": [
+          "ModelExpression",
+          "TargetException",
+          "\u0425\u044c\u0430\u0436\u043e\u0440\u0433\u0430\u0448",
+          "olesale",
+          "ThroughAttribute"
+        ],
+        "13681": [
+          "come",
+          "grow",
+          "go",
+          "emerge",
+          "disappear"
+        ],
+        "4863": [
+          "cast",
+          "Cast",
+          "casting",
+          "casts",
+          "Cast"
+        ],
+        "15987": [
+          "ubblica",
+          "memoized",
+          "TestingModule",
+          "Alva",
+          "$_['"
+        ],
+        "5476": [
+          "whole",
+          "whole",
+          "Whole",
+          "Whole",
+          "WHOLE"
+        ],
+        "15231": [
+          "you",
+          "You",
+          "You",
+          "you",
+          "YOU"
+        ],
+        "549": [
+          "you",
+          "you",
+          "You",
+          "You",
+          "YOU"
+        ],
+        "7371": [
+          "it\u017felf",
+          "The\u017fe",
+          "Efq",
+          "my\u017felf",
+          "Monfieur"
+        ],
+        "1040": [
+          "intelligence",
+          "consciousness",
+          "intelligence",
+          "consciousness",
+          "senti"
+        ],
+        "15793": [
+          "<bos>",
+          "pyx",
+          "VersionUID",
+          "property",
+          "treatment"
+        ],
+        "15531": [
+          "black",
+          "black",
+          "\u043d\u0438\u0446\u0438\u043f\u0430",
+          "\u0648\u062a\u0633\u062c\u064a\u0644\u0627\u062a",
+          "TagMode"
+        ],
+        "7565": [
+          "place",
+          "organization",
+          "device",
+          "drink",
+          "book"
+        ],
+        "15670": [
+          "<unused61>",
+          "<unused62>",
+          "<unused63>",
+          "",
+          "<eos>"
+        ],
+        "14727": [
+          "The\u017fe",
+          "Monfieur",
+          "Efq",
+          "my\u017felf",
+          "it\u017felf"
+        ],
+        "8155": [
+          "<unused61>",
+          "",
+          "<unused62>",
+          "<eos>",
+          "<unused63>"
+        ],
+        "5839": [
+          "<",
+          "*",
+          "No",
+          "As",
+          "Over"
+        ],
+        "16145": [
+          "snippetHide",
+          "EconPapers",
+          "CodeAttribute",
+          "\ue315",
+          "\u0645\u0634\u064a\u0646"
+        ],
+        "3820": [
+          "English",
+          "Danish",
+          "direction",
+          "foundation",
+          "fall"
+        ],
+        "4278": [
+          "\u5b58\u4e8e\u4e92\u8054\u7f51\u6863\u6848\u9986",
+          "\u0421\u0430\u0432\u0435\u0437\u043d\u0435",
+          "endregion",
+          "GEBURTSDATUM",
+          "mergeFrom"
+        ],
+        "13662": [
+          "shell",
+          "shells",
+          "player",
+          "cycle",
+          "\u0421\u0442\u0430\u043d\u043e\u0432\u043d\u0438\u0448\u0442\u0432\u043e"
+        ],
+        "12330": [
+          "per",
+          "per",
+          "Per",
+          "Per",
+          "PER"
+        ],
+        "3774": [
+          "my\u017felf",
+          "Efq",
+          "him\u017felf",
+          "it\u017felf",
+          "them\u017felves"
+        ],
+        "1133": [
+          "under",
+          "under",
+          "Under",
+          "Under",
+          "UNDER"
+        ]
+      },
+      "4": {
+        "15907": [
+          "<bos>",
+          "The",
+          "<h2>",
+          "'",
+          ""
+        ],
+        "13593": [
+          "<bos>",
+          "//});",
+          ".*\")]",
+          "kasarigan",
+          "}*/"
+        ],
+        "10510": [
+          "ModelExpression",
+          "DoubleQuotes",
+          "'\\\\;'",
+          "__((",
+          "MigrationBuilder"
+        ],
+        "12206": [
+          "<bos>",
+          "b\u0151",
+          "st\u00e5",
+          "Q",
+          "avrebbero"
+        ],
+        "16324": [
+          "<bos>",
+          "",
+          "The",
+          "",
+          "The"
+        ]
+      },
+      "6": {
+        "13076": [
+          "<bos>",
+          "uxxxx",
+          "reactstrap",
+          "kh\u00e1u",
+          "MigrationBuilder"
+        ],
+        "2267": [
+          "Efq",
+          "Majefty",
+          "Monfieur",
+          "The\u017fe",
+          "my\u017felf"
+        ],
+        "9419": [
+          "OFDb",
+          "--)",
+          "pinulongan",
+          "\u0938\u092e\u0940\u0915\u094d\u0937\u0915",
+          "IonicModule"
+        ],
+        "3073": [
+          "\u05c3",
+          "}{*}{",
+          "\u0643\u0648\u0645\u0648\u0646\u0632",
+          "tonode",
+          "\u03a0\u03b7\u03b3\u03ae"
+        ],
+        "8826": [
+          "ProtoMessage",
+          "WebVitals",
+          "Majefty",
+          "\u0627\u0644\u0631\u064a\u0627\u0636\u064a\u0647",
+          "AssemblyCompany"
+        ],
+        "9708": [
+          "SequentialGroup",
+          "onCreateView",
+          "surla",
+          "ostante",
+          "CURLOPT"
+        ],
+        "10436": [
+          "<bos>",
+          "sizeCache",
+          "\ufeff<?",
+          "nakalista",
+          "SequentialGroup"
+        ],
+        "2686": [
+          ");",
+          "];",
+          "}]);",
+          "());",
+          "())));"
+        ],
+        "1567": [
+          "TextAlign",
+          "it\u017felf",
+          "ContentAsync",
+          "Affiliations",
+          "again\u017ft"
+        ],
+        "2270": [
+          "<bos>",
+          "IUrlHelper",
+          "Paglinawan",
+          "InjectAttribute",
+          "\u0421\u0430\u0432\u0435\u0437\u043d\u0435"
+        ],
+        "1583": [
+          "XmlAccessorType",
+          "<>();",
+          "autorytatywna",
+          "endpush",
+          "QtWidgets"
+        ],
+        "10140": [
+          "<bos>",
+          "\u0421\u0430\u0432\u0435\u0437\u043d\u0435",
+          "Monfieur",
+          "\ufeff#",
+          "betweenstory"
+        ],
+        "12454": [
+          "CreateTagHelper",
+          "RegressionTest",
+          "ViewImports",
+          "\u24e7",
+          "thenReturn"
+        ]
+      },
+      "24": {
+        "12064": [
+          "G",
+          "R",
+          "S",
+          "",
+          "C"
+        ],
+        "10631": [
+          "<bos>",
+          "con",
+          "q",
+          "Boards",
+          "ce"
+        ],
+        "4977": [
+          "The\u017fe",
+          "An\u017f",
+          "berdayakan",
+          "varandra",
+          "ainfi"
+        ],
+        "15599": [
+          "avoient",
+          "Monfieur",
+          "\u00e9toient",
+          "The\u017fe",
+          "enfans"
+        ],
+        "8119": [
+          "The\u017fe",
+          "Monfieur",
+          "Efq",
+          "my\u017felf",
+          "who\u017fe"
+        ],
+        "15840": [
+          "6",
+          "six",
+          "Six",
+          "\uff16",
+          "\u516d"
+        ],
+        "6387": [
+          "6",
+          "Six",
+          "Sixty",
+          "SIX",
+          "six"
+        ],
+        "312": [
+          "6",
+          "",
+          "li",
+          "si",
+          ""
+        ],
+        "7637": [
+          "ov\u00e1cs",
+          "financi\u00e8res",
+          "hagy",
+          "sportifs",
+          "\u00ednsula"
+        ],
+        "592": [
+          "<unused63>",
+          "5",
+          "4",
+          "<unused61>",
+          "0"
+        ],
+        "483": [
+          "<eos>",
+          "the",
+          "(",
+          "basic",
+          "world"
+        ],
+        "14405": [
+          "Sandra",
+          "Laura",
+          "Emma",
+          "Sarah",
+          "Anna"
+        ],
+        "10286": [
+          "rrggbb",
+          "bigcap",
+          "bigsqcup",
+          "bigcup",
+          "bigcirc"
+        ],
+        "15454": [
+          "",
+          ".",
+          "<eos>",
+          ",",
+          "-"
+        ],
+        "1427": [
+          ">{@",
+          "\u0627\u0644\u062d\u0631\u0647",
+          "\u5b58\u4e8e\u4e92\u8054\u7f51\u6863\u6848\u9986",
+          "\u0645\u0634\u064a\u0646",
+          "\"..\\..\\"
+        ],
+        "10434": [
+          "\u00e9toient",
+          "feroit",
+          "vectorielles",
+          "automatiques",
+          "\u041c\u0435\u043a\u0441\u0438\u0447\u043a\u0430"
+        ],
+        "1260": [
+          "which",
+          ".",
+          "The",
+          "first",
+          "the"
+        ],
+        "8706": [
+          "<eos>",
+          "-",
+          "<bos>",
+          ".",
+          "("
+        ],
+        "8792": [
+          "Efq",
+          "my\u017felf",
+          "it\u017felf",
+          "The\u017fe",
+          "Monfieur"
+        ],
+        "8376": [
+          "Monfieur",
+          "The\u017fe",
+          "my\u017felf",
+          "Efq",
+          "it\u017felf"
+        ],
+        "15822": [
+          "of",
+          "",
+          "",
+          "by",
+          "<eos>"
+        ],
+        "2507": [
+          "The\u017fe",
+          "Monfieur",
+          "my\u017felf",
+          "Efq",
+          "it\u017felf"
+        ],
+        "4707": [
+          "ainfi",
+          "feroit",
+          "\u00e9toient",
+          "avoient",
+          "auroit"
+        ],
+        "10627": [
+          "();)",
+          "(;;)",
+          "^(@)",
+          "Majefty",
+          "iconFacebook"
+        ],
+        "10793": [
+          "resourceCulture",
+          "\u0645\u0631\u0626\u064a\u0647",
+          "\u0627\u0644\u0645\u0646\u0627\u0635\u0628",
+          "\u811a\u6ce8\u306e\u4f7f\u3044\u65b9",
+          "\u0434\u043e\u043f\u0438\u0441\u0430\u0432\u0448\u0438"
+        ],
+        "8463": [
+          "work",
+          "point",
+          "board",
+          "light",
+          "box"
+        ],
+        "10662": [
+          "in",
+          "_",
+          "and",
+          "on",
+          "n"
+        ],
+        "6162": [
+          ".",
+          "SEGUIR",
+          "The\u017fe",
+          "Efq",
+          "it\u017felf"
+        ],
+        "8099": [
+          ".",
+          "jspb",
+          "rawDesc",
+          "\u0c32\u0c3e\u0c32\u0c41",
+          "noinspection"
+        ],
+        "7901": [
+          "Monfieur",
+          "The\u017fe",
+          "my\u017felf",
+          "it\u017felf",
+          "Efq"
+        ]
+      },
+      "25": {
+        "4717": [
+          "<eos>",
+          "-",
+          ".",
+          "(",
+          ","
+        ],
+        "15920": [
+          "<eos>",
+          "-",
+          ",",
+          "(",
+          "."
+        ],
+        "10681": [
+          "The\u017fe",
+          "Monfieur",
+          "my\u017felf",
+          "\u017feveral",
+          "Be\u017f"
+        ],
+        "14744": [
+          "<eos>",
+          "-",
+          "(",
+          ".",
+          ""
+        ],
+        "12923": [
+          "<bos>",
+          "<unused63>",
+          "<unused61>",
+          "<unused62>",
+          "decision"
+        ],
+        "13822": [
+          ".",
+          "(",
+          "<eos>",
+          ",",
+          "1"
+        ],
+        "1373": [
+          "Monfieur",
+          "The\u017fe",
+          "my\u017felf",
+          "Efq",
+          "it\u017felf"
+        ],
+        "3204": [
+          "Monfieur",
+          "The\u017fe",
+          "my\u017felf",
+          "it\u017felf",
+          "Efq"
+        ],
+        "9975": [
+          "Monfieur",
+          "The\u017fe",
+          "my\u017felf",
+          "it\u017felf",
+          "Efq"
+        ],
+        "16377": [
+          "",
+          "(",
+          "\"",
+          "...",
+          "a"
+        ],
+        "10152": [
+          "bandicam",
+          "Monfieur",
+          "\u00b1",
+          "imgnum",
+          "namefont"
+        ],
+        "16302": [
+          "]--;",
+          "__(/*!",
+          "</tfoot>",
+          "ATIVA",
+          "IVOS"
+        ],
+        "6843": [
+          "<bos>",
+          "<eos>",
+          "in",
+          "The",
+          "and"
+        ]
+      },
+      "23": {
+        "2757": [
+          "^(@)",
+          "Efq",
+          "Majefty",
+          "photolibrary",
+          "$_\""
+        ],
+        "2269": [
+          "NameInMap",
+          "job",
+          "clientY",
+          "ambition",
+          "ast\u00e9ro\u00efdes"
+        ],
+        "1034": [
+          "The\u017fe",
+          "my\u017felf",
+          "Efq",
+          "Monfieur",
+          "it\u017felf"
+        ],
+        "8249": [
+          "propOrder",
+          "name",
+          "death",
+          "source",
+          "betweenstory"
+        ],
+        "8924": [
+          "ValueStyle",
+          "tvguidetime",
+          "]\")]",
+          "\u0421\u0430\u0432\u0435\u0437\u043d\u0435",
+          "RenderAtEndOf"
+        ],
+        "9833": [
+          "quality",
+          "quality",
+          "Quality",
+          "Quality",
+          "QUALITY"
+        ],
+        "13877": [
+          "Monfieur",
+          "my\u017felf",
+          "Efq",
+          "it\u017felf",
+          "\u017feveral"
+        ],
+        "10894": [
+          "",
+          "<unused61>",
+          "<unused62>",
+          ",",
+          "."
+        ],
+        "5917": [
+          "The\u017fe",
+          "it\u017felf",
+          "Monfieur",
+          "my\u017felf",
+          "Efq"
+        ],
+        "3350": [
+          "<eos>",
+          "",
+          "(",
+          "",
+          "-"
+        ],
+        "15454": [
+          "-",
+          ".",
+          ",",
+          "",
+          ""
+        ],
+        "5744": [
+          "Efq",
+          "my\u017felf",
+          "The\u017fe",
+          "Monfieur",
+          "it\u017felf"
+        ],
+        "10252": [
+          "Efq",
+          "my\u017felf",
+          "it\u017felf",
+          "^(@)",
+          "The\u017fe"
+        ],
+        "13346": [
+          "***!",
+          "DeleteBehavior",
+          "+#+#",
+          "otomatig",
+          "SharedDtor"
+        ],
+        "3957": [
+          "item",
+          "song",
+          "band",
+          "piece",
+          "Singer"
+        ],
+        "6200": [
+          "Do",
+          "do",
+          "Do",
+          "do",
+          "DO"
+        ],
+        "7266": [
+          "The",
+          "A",
+          "<eos>",
+          "I",
+          "-"
+        ],
+        "14350": [
+          "it\u017felf",
+          "avoient",
+          "\u00e9toient",
+          "Monfieur",
+          "my\u017felf"
+        ],
+        "2689": [
+          "Efq",
+          "The\u017fe",
+          "my\u017felf",
+          "Monfieur",
+          "it\u017felf"
+        ],
+        "15618": [
+          "]--;",
+          "nahilalakip",
+          "\u0645\u062a\u0639\u0644\u0642\u0647",
+          ",<",
+          "\u0628\u064a\u0647\u0627"
+        ],
+        "13078": [
+          "b",
+          "be",
+          "be",
+          "bet",
+          "bef"
+        ],
+        "13002": [
+          "The\u017fe",
+          "Monfieur",
+          "Efq",
+          "my\u017felf",
+          "it\u017felf"
+        ],
+        "9188": [
+          "Monfieur",
+          "The\u017fe",
+          "\u0645\u062a\u0639\u0644\u0642\u0647",
+          "Efq",
+          "rai\u017f"
+        ],
+        "11762": [
+          "left",
+          "<>());",
+          "store",
+          "packets",
+          "capita"
+        ],
+        "1590": [
+          "food",
+          "music",
+          "food",
+          "Food",
+          "Food"
+        ],
+        "6216": [
+          ".",
+          "useDispatch",
+          "\u0641\u0631\u064a\u0628\u064a\u0633",
+          "H\u00e4n",
+          "ViewImports"
+        ],
+        "6445": [
+          "Efq",
+          "my\u017felf",
+          "Majefty",
+          "The\u017fe",
+          "\u017feveral"
+        ],
+        "15758": [
+          "G",
+          "cast",
+          "App",
+          "actively",
+          "\u0413\u0435\u043e\u0433\u0440\u0430\u0444\u0438\u044f\u0441\u0435"
+        ],
+        "6162": [
+          "integrate",
+          "improve",
+          "promote",
+          "deteriorate",
+          "solve"
+        ],
+        "13257": [
+          "feed",
+          "feed",
+          "EDEFAULT",
+          "Feeding",
+          "fed"
+        ],
+        "7986": [
+          "\u05e9\u05d5\u05dc\u05d9\u05d9\u05dd",
+          "EconPapers",
+          ">=\",",
+          "]\")]",
+          "nakalista"
+        ],
+        "5412": [
+          "what",
+          "you",
+          "for",
+          "the",
+          "everything"
+        ],
+        "8967": [
+          "my\u017felf",
+          "Efq",
+          "\u017felf",
+          "\u017felves",
+          "Majefty"
+        ],
+        "1682": [
+          "\u025c",
+          "eridge",
+          "TagMode",
+          "BeginContext",
+          "Obr\u00e1zky"
+        ],
+        "754": [
+          "ArrowToggle",
+          "'\\\\;'",
+          "Normdatei",
+          "GenerationType",
+          "press"
+        ],
+        "3260": [
+          "Monfieur",
+          "my\u017felf",
+          "The\u017fe",
+          "Efq",
+          "it\u017felf"
+        ]
+      },
+      "19": {
+        "10452": [
+          "sproz",
+          "saraba",
+          "famous",
+          "Battle",
+          "Tower"
+        ],
+        "4857": [
+          "capital",
+          "capital",
+          "Capital",
+          "Capital",
+          "CAPITAL"
+        ],
+        "10220": [
+          "exact",
+          "precise",
+          "exactly",
+          "big",
+          "name"
+        ],
+        "5662": [
+          "peoples",
+          "artist",
+          "__(/*!",
+          "aarrggbb",
+          "childrens"
+        ],
+        "12085": [
+          "slavery",
+          "apartheid",
+          "slaves",
+          "Civil",
+          "WWII"
+        ],
+        "15264": [
+          "did",
+          "do",
+          "does",
+          "Does",
+          "did"
+        ],
+        "11934": [
+          "kind",
+          "happens",
+          "role",
+          "exactly",
+          "sort"
+        ],
+        "15802": [
+          "fruits",
+          "foods",
+          "fruit",
+          "plant",
+          "food"
+        ],
+        "13792": [
+          "what",
+          "what",
+          "What",
+          "What",
+          "WHAT"
+        ],
+        "10243": [
+          "legend",
+          "legends",
+          "myth",
+          "myths",
+          "Legend"
+        ],
+        "10892": [
+          "based",
+          "not",
+          "far",
+          "the",
+          "still"
+        ],
+        "15830": [
+          "association",
+          "associate",
+          "associated",
+          "associations",
+          "assoc"
+        ],
+        "2959": [
+          "common",
+          "common",
+          "Common",
+          "Common",
+          "COMMON"
+        ],
+        "2717": [
+          "communicated",
+          "dealt",
+          "dispensed",
+          "shown",
+          "handled"
+        ],
+        "1657": [
+          "far",
+          "doing",
+          "having",
+          "not",
+          "facing"
+        ]
+      },
+      "11": {
+        "16076": [
+          "<bos>",
+          "VIDEOTAPE",
+          "MathML",
+          "\u043d\u0435\u043d",
+          "\u03c1\u03c5"
+        ],
+        "13934": [
+          "__':",
+          "__':",
+          "pinulongan",
+          "inderella",
+          "Hentet"
+        ],
+        "6361": [
+          "Majefty",
+          "Jefus",
+          "Monfieur",
+          "it\u017felf",
+          "purpo\u017fe"
+        ],
+        "9478": [
+          "SequentialGroup",
+          "cherch\u00e9s",
+          "SIMBAD",
+          "Viitteet",
+          "\ue315"
+        ],
+        "15260": [
+          "Personendaten",
+          "betweenstory",
+          "correctes",
+          "avoient",
+          "\u0434\u043e\u043f\u0438\u0441\u0430\u0432\u0448\u0438"
+        ]
+      },
+      "12": {
+        "16209": [
+          "</h5>",
+          "shadowOpacity",
+          "ViewGroup",
+          "covered",
+          "covered"
+        ],
+        "3903": [
+          "^(@)",
+          "felves",
+          "ne\u017fs",
+          "chede",
+          "&"
+        ],
+        "9899": [
+          "purpo\u017fe",
+          "\u0645\u062a\u0639\u0644\u0642\u0647",
+          "\u017ftate",
+          "Efq",
+          "Majefty"
+        ],
+        "10924": [
+          "BufferException",
+          "R\u00e9f\u00e9rence",
+          "lenker",
+          "\u0627\u0644\u0631\u064a\u0627\u0636\u064a\u0647",
+          "AutoScaleMode"
+        ],
+        "1521": [
+          "\u0434\u043e\u043f\u0438\u0441\u0430\u0432\u0448\u0438",
+          "\u0432\u0438\u043f\u0440\u0430\u0432\u0438\u0432\u0448\u0438",
+          "MainAxisSize",
+          "WithMany",
+          "\"..\\..\\..\\"
+        ]
+      },
+      "13": {
+        "5666": [
+          "RegressionTest",
+          "prieten",
+          "oredCriteria",
+          "RegistryLite",
+          "\u0627\u0644\u0631\u064a\u0627\u0636\u064a\u0647"
+        ],
+        "13391": [
+          "RegressionTest",
+          "fotogr\u00e1fica",
+          "urma",
+          "soldati",
+          "norske"
+        ],
+        "8223": [
+          "fromnode",
+          "DockStyle",
+          "Sucesor",
+          "Royce",
+          "AutoScaleMode"
+        ],
+        "7006": [
+          "ArrowToggle",
+          "b",
+          "T",
+          "&",
+          "F"
+        ],
+        "2277": [
+          "SequentialGroup",
+          "AssemblyCulture",
+          "enfans",
+          "IndentedString",
+          "CppCodeGen"
+        ]
+      },
+      "14": {
+        "4649": [
+          "Efq",
+          "The\u017fe",
+          "my\u017felf",
+          "\u017feveral",
+          "Majefty"
+        ],
+        "5370": [
+          "\ue315",
+          "SI",
+          "Sens",
+          "Sot",
+          "uidado"
+        ],
+        "6880": [
+          "<bos>",
+          "invokingState",
+          "ddelweddau",
+          "gynhyrchwyd",
+          "AttributeSet"
+        ],
+        "8604": [
+          "\u24e7",
+          "Majefty",
+          "Efq",
+          "Monfieur",
+          "\u017feveral"
+        ],
+        "2570": [
+          "\u0641\u0631\u064a\u0628\u064a\u0633",
+          "\u0648\u062a\u0633\u062c\u064a\u0644\u0627\u062a",
+          "MigrationBuilder",
+          "\u811a\u6ce8\u306e\u4f7f\u3044\u65b9",
+          "ddelweddau"
+        ]
+      },
+      "15": {
+        "11446": [
+          "AddTagHelper",
+          "\u0641\u0631\u064a\u0628\u064a\u0633",
+          "TagMode",
+          "RectangleBorder",
+          "BoxDecoration"
+        ],
+        "11314": [
+          "AndEndTag",
+          "\u064a\u0643\u0628",
+          "SwingConstants",
+          "PyExc",
+          "\u0446\u0435\u0437\u0434\u0430\u0442\u043d\u0438\u0439"
+        ],
+        "5996": [
+          "HasFactory",
+          "jScrollPane",
+          "ScopeManager",
+          "JScrollPane",
+          "onPostExecute"
+        ],
+        "1471": [
+          "AddTagHelper",
+          "IsContent",
+          "astore",
+          "HtmlAttribute",
+          "\u2033]"
+        ],
+        "12613": [
+          "\u0627\u0646\u064a\u0641",
+          "bo",
+          "doInBackground",
+          "Bo",
+          "createCanvas"
+        ]
+      },
+      "16": {
+        "8400": [
+          "<bos>",
+          "-",
+          "ce",
+          "C",
+          "z"
+        ],
+        "11248": [
+          "Nonnull",
+          "welcoming",
+          "\u0e0a",
+          "konu\u015f",
+          "<bos>"
+        ],
+        "9027": [
+          "spooky",
+          "horror",
+          "fright",
+          "scary",
+          "Horror"
+        ],
+        "7043": [
+          "<bos>",
+          "<eos>",
+          "\u2019",
+          "is",
+          "-"
+        ],
+        "9838": [
+          "surla",
+          "\u043d\u0435\u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0430",
+          "nakalista",
+          "my\u017felf",
+          "\u9190"
+        ]
+      },
+      "0": {
+        "6051": [
+          "Efq",
+          "my\u017felf",
+          "it\u017felf",
+          "Monfieur",
+          "The\u017fe"
+        ],
+        "13839": [
+          "<bos>",
+          "the",
+          "a",
+          "it",
+          ""
+        ],
+        "2664": [
+          "EconPapers",
+          "URLException",
+          "another",
+          "RenderAtEndOf",
+          "XmlAccessType"
+        ],
+        "9747": [
+          "betweenstory",
+          "tartalomaj\u00e1nl\u00f3",
+          "MigrationBuilder",
+          "IndentedString",
+          "#+#"
+        ],
+        "9022": [
+          "the",
+          "<",
+          "</td>",
+          "",
+          "</b>"
+        ]
+      },
+      "2": {
+        "13384": [
+          "<bos>",
+          "\ufeff/*",
+          "the",
+          "\ufeff#",
+          ""
+        ],
+        "12174": [
+          "<bos>",
+          "'",
+          "\u2019",
+          "",
+          "["
+        ],
+        "1518": [
+          "TagMode",
+          "transf\u00e9rez",
+          "GenerationType",
+          "initComponents",
+          "ReusableCell"
+        ],
+        "4845": [
+          "",
+          "",
+          "it",
+          "whether",
+          "rather"
+        ],
+        "2958": [
+          "it\u017felf",
+          "hou\u017fe",
+          "Efq",
+          "Hou\u017fe",
+          "Monfieur"
+        ]
+      },
+      "18": {
+        "4138": [
+          "thing",
+          "setVerticalGroup",
+          "alyptus",
+          "\u24e7",
+          "mit\u00e9s"
+        ],
+        "208": [
+          "few",
+          "few",
+          "Few",
+          "Few",
+          "fewer"
+        ],
+        "15056": [
+          "\u24e7",
+          "^(@)",
+          "]--;",
+          "\u043d\u0430\u0441\u0435\u0459\u0443",
+          "ViewImports"
+        ],
+        "8422": [
+          "thing",
+          "\u0627\u0644\u062d\u064a\u0627\u0647",
+          "person",
+          "!(\"{}\",",
+          "WebElementEntity"
+        ],
+        "4441": [
+          "basis",
+          "Basis",
+          "basis",
+          "foundation",
+          "bases"
+        ]
+      }
+    }
+  }
+}

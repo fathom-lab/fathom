@@ -6,7 +6,7 @@ authors:
   - family-names: Rodabaugh
     given-names: Alexander
     orcid: ""
-repository-code: "https://github.com/heyzoos123-blip/fathom-research"
+repository-code: "https://github.com/heyzoos123-blip/fathom"
 url: "https://fathom.darkflobi.com"
 license: MIT
 version: "2.0.0"

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.banner {
+  width: 1500px; height: 500px;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  font-family: 'Courier New', monospace;
+}
+.banner::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(0,255,136,.03) 0%, transparent 50%);
+  z-index: 1;
+}
+.banner::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,.6) 100%);
+  z-index: 2;
+}
+
+.b-content { position: relative; z-index: 3; text-align: center; }
+.b-gothic {
+  font-size: 18px; line-height: 1.0; white-space: pre;
+  color: #00ff88;
+  text-shadow: 0 0 30px rgba(0,255,136,.2), 0 0 80px rgba(0,255,136,.06);
+  letter-spacing: 1px;
+}
+
+.b-divider {
+  width: 500px; height: 1px; margin: 24px auto 0;
+  background: linear-gradient(90deg, transparent, #333, transparent);
+}
+
+.b-formula {
+  font-size: 11px; color: #2a2a2a; margin-top: 16px;
+  letter-spacing: 3px;
+}
+
+.b-tagline {
+  font-size: 14px; color: #666; margin-top: 14px;
+  letter-spacing: 8px; text-transform: uppercase;
+}
+.b-tagline em {
+  color: #cc2222; font-style: normal;
+}
+
+.b-footer {
+  font-size: 9px; color: #2a2a2a; margin-top: 14px;
+  letter-spacing: 5px; text-transform: uppercase;
+}
+
+/* Top/bottom border lines */
+.border-line {
+  position: absolute; z-index: 4;
+  left: 40px; right: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, #1a1a1a 15%, #1a1a1a 85%, transparent);
+}
+.border-line.top { top: 20px; }
+.border-line.bottom { bottom: 20px; }
+
+
+/* === PROFILE PIC === */
+.pfp {
+  width: 400px; height: 400px;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.pfp::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(0,255,136,.04), transparent 55%);
+}
+.pfp::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,.5) 100%);
+  z-index: 1;
+}
+.pfp-frame {
+  position: absolute; z-index: 3;
+}
+.pfp-frame.t { top: 16px; left: 16px; right: 16px; height: 1px; background: linear-gradient(90deg, transparent, #1a1a1a, transparent); }
+.pfp-frame.b { bottom: 16px; left: 16px; right: 16px; height: 1px; background: linear-gradient(90deg, transparent, #1a1a1a, transparent); }
+.pfp-frame.l { left: 16px; top: 16px; bottom: 16px; width: 1px; background: linear-gradient(180deg, transparent, #1a1a1a, transparent); }
+.pfp-frame.r { right: 16px; top: 16px; bottom: 16px; width: 1px; background: linear-gradient(180deg, transparent, #1a1a1a, transparent); }
+.pfp-content { position: relative; z-index: 2; text-align: center; }
+.pfp-ascii {
+  font-size: 22px; line-height: 1.0; white-space: pre;
+  color: #00ff88;
+  text-shadow: 0 0 30px rgba(0,255,136,.3), 0 0 80px rgba(0,255,136,.08);
+}
+.pfp-sub {
+  font-size: 9px; color: #444;
+  letter-spacing: 6px; margin-top: 12px;
+  text-transform: uppercase;
+}
+
+
+body {
+  background: #080808; padding: 50px;
+  display: flex; flex-direction: column; gap: 50px; align-items: center;
+}
+h3 {
+  color: #555; font-family: monospace; font-size: 11px;
+  letter-spacing: 5px;
+}
+.preview-wrapper { transform-origin: top left; }
+.download-btn {
+  background: transparent; color: #00ff88; border: 1px solid #222;
+  padding: 10px 30px; font-family: 'Courier New', monospace; font-size: 11px;
+  cursor: pointer; letter-spacing: 4px; text-transform: uppercase;
+  transition: all 0.3s;
+}
+.download-btn:hover {
+  border-color: #00ff88; background: rgba(0,255,136,.05);
+}
+.section { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+</style>
+</head>
+<body>
+
+<h3>TWITTER BANNER (1500x500)</h3>
+<div class="section">
+  <div class="preview-wrapper" id="wrap1">
+    <div class="banner" id="banner1">
+      <div class="border-line top"></div>
+      <div class="border-line bottom"></div>
+
+      <div class="b-content">
+        <div class="b-gothic">
+:::::::::: :::    ::::::::::: :::    :::  ::::::::  ::::    ::::
+:+:        :+: :+:    :+:     :+:    :+: :+:    :+: :+:+: :+:+:+
++:+       +:+   +:+   +:+     +:+    +:+ +:+    +:+ +:+ +:+:+ +:+
+:#::+::# +#++:++#++:  +#+     +#++:++#++ +#+    +:+ +#+  +:+  +#+
++#+      +#+     +#+  +#+     +#+    +#+ +#+    +#+ +#+       +#+
+#+#      #+#     #+#  #+#     #+#    #+# #+#    #+# #+#       #+#
+###      ###     ###  ###     ###    ###  ########  ###       ###</div>
+        <div class="b-divider"></div>
+        <div class="b-tagline">we read circuits, not <em>text</em></div>
+        <div class="b-footer">SAE coherence &nbsp;|&nbsp; cross-architecture &nbsp;|&nbsp; d=0.584 &nbsp;|&nbsp; p=0.00018 &nbsp;|&nbsp; patent pending</div>
+      </div>
+    </div>
+  </div>
+  <button class="download-btn" onclick="downloadElement('banner1', 'fathom_banner.png')">download banner</button>
+</div>
+
+<h3>TWITTER PROFILE PIC (400x400)</h3>
+<div class="section">
+  <div class="preview-wrapper" id="wrap2">
+    <div class="pfp" id="pfp">
+      <div class="pfp-frame t"></div>
+      <div class="pfp-frame b"></div>
+      <div class="pfp-frame l"></div>
+      <div class="pfp-frame r"></div>
+      <div class="pfp-content">
+        <div class="pfp-ascii">
+::::::::::
+:+:
++:+
+:#::+::#
++#+
+#+#
+###        </div>
+        <div class="pfp-sub">fathom</div>
+      </div>
+    </div>
+  </div>
+  <button class="download-btn" onclick="downloadElement('pfp', 'fathom_pfp.png')">download profile pic</button>
+</div>
+
+<script>
+function scaleAll() {
+  var vw = window.innerWidth - 120;
+  document.querySelectorAll('.preview-wrapper').forEach(function(wrap) {
+    var child = wrap.firstElementChild;
+    var s = Math.min(1, vw / child.offsetWidth);
+    wrap.style.transform = 'scale(' + s + ')';
+    wrap.style.width = child.offsetWidth + 'px';
+    wrap.style.height = (child.offsetHeight * s) + 'px';
+  });
+}
+window.addEventListener('load', scaleAll);
+window.addEventListener('resize', scaleAll);
+
+function downloadElement(id, filename) {
+  var el = document.getElementById(id);
+  var br = el.style.borderRadius;
+  el.style.borderRadius = '0';
+  html2canvas(el, {
+    scale: 1, backgroundColor: '#000000',
+    width: el.offsetWidth, height: el.offsetHeight,
+    useCORS: true, logging: false
+  }).then(function(canvas) {
+    el.style.borderRadius = br;
+    var link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+</script>
+
+</body>
+</html>

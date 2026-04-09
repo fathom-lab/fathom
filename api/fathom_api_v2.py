@@ -15,7 +15,7 @@ New in v2:
 Usage:
     uvicorn fathom_api_v2:app --host 0.0.0.0 --port 8500
 
-Patent pending: US 64/020,489, 64/021,113
+Patent pending: US 64/020,489, 64/021,113, 64/026,964
 """
 
 import sys
@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.join(_root, 'probes'))
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field
 import numpy as np
 import traceback
@@ -108,7 +108,7 @@ app.add_middleware(
 @app.middleware("http")
 async def rate_limit(request: Request, call_next):
     """Simple per-IP rate limiting."""
-    if request.url.path == "/scan":
+    if request.url.path in ("/scan", "/score"):
         ip = request.client.host if request.client else "unknown"
         now = time.time()
         times = _request_times.get(ip, [])
@@ -137,6 +137,11 @@ async def global_exception_handler(request: Request, exc: Exception):
 class ScanRequest(BaseModel):
     prompt: str = Field(..., min_length=1, max_length=2000)
     max_tokens: int = Field(default=40, ge=1, le=100)
+    s_threshold: float = Field(default=S_THRESHOLD, ge=0.001, le=0.1)
+
+class ScoreRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=2000)
+    text: str = Field(..., min_length=1, max_length=4000)
     s_threshold: float = Field(default=S_THRESHOLD, ge=0.001, le=0.1)
 
 class TokenState(BaseModel):
@@ -243,13 +248,30 @@ def scan(req: ScanRequest):
         raise HTTPException(400, "prompt must not be empty")
 
     t_start = time.time()
-    try:
-        result = steerer.generate_with_entropy(
-            req.prompt, max_tokens=req.max_tokens
-        )
-    except Exception as e:
-        log.error(f"Generation error: {e}")
-        raise HTTPException(500, str(e))
+    last_err = None
+    for attempt in range(2):
+        try:
+            result = steerer.generate_with_entropy(
+                req.prompt, max_tokens=req.max_tokens
+            )
+            last_err = None
+            break
+        except Exception as e:
+            last_err = e
+            log.warning(f"Generation attempt {attempt+1} failed: {e}")
+            try:
+                steerer._inner.reset_hooks()
+            except Exception:
+                pass
+    if last_err is not None:
+        log.error(f"Generation failed after retries: {last_err}")
+        # Schedule model reload — the model is likely in a corrupted state
+        try:
+            loop = asyncio.get_event_loop()
+            loop.create_task(load_model_async())
+        except RuntimeError:
+            pass  # no event loop in sync context — model stays as-is
+        raise HTTPException(500, f"Generation failed — try again in a moment")
 
     gen_time = time.time() - t_start
 
@@ -300,6 +322,109 @@ def scan(req: ScanRequest):
     )
 
 
+@app.post("/score", response_model=ScanResponse)
+def score(req: ScoreRequest):
+    """Score existing text without generation — measures cognitive state of provided text."""
+    if steerer is None:
+        if model_loading:
+            raise HTTPException(503, "Model loading (~60s). Retry.")
+        raise HTTPException(503, f"Model failed: {model_error}")
+
+    if not req.prompt or not req.prompt.strip():
+        raise HTTPException(400, "prompt must not be empty")
+    if not req.text or not req.text.strip():
+        raise HTTPException(400, "text must not be empty")
+
+    t_start = time.time()
+    try:
+        # Tokenize the provided text and run forward passes to get C_delta + entropy
+        inner = steerer._inner
+        full_text = req.prompt + req.text
+        tokens = inner.to_tokens(full_text)
+        prompt_tokens = inner.to_tokens(req.prompt)
+        prompt_len = prompt_tokens.shape[1]
+
+        # Run token-by-token scoring on the text portion
+        import torch
+        import torch.nn.functional as F
+
+        c_delta_trajectory = []
+        entropy_trajectory = []
+        logprob_trajectory = []
+        text_tokens = []
+
+        for pos in range(prompt_len, tokens.shape[1]):
+            context = tokens[:, :pos + 1]
+            hidden_states = {}
+            capture_hooks = steerer._build_capture_hooks(hidden_states)
+
+            with torch.no_grad():
+                try:
+                    inner.reset_hooks()
+                    logits = inner.run_with_hooks(context, fwd_hooks=capture_hooks)
+                except (RuntimeError, IndexError, KeyError):
+                    inner.reset_hooks()
+                    logits = inner(context)
+                    hidden_states = {}
+
+            try:
+                c_delta, _ = steerer._fast_c_delta(hidden_states)
+            except (KeyError, AttributeError):
+                c_delta = None
+            c_delta_trajectory.append(c_delta if c_delta is not None else 0.0)
+
+            logit_vec = logits[0, -1].float()
+            logp = F.log_softmax(logit_vec, dim=-1)
+            p = logp.exp()
+            entropy = float(-(p * logp).sum().item())
+            entropy_trajectory.append(entropy)
+
+            token_id = int(tokens[0, pos].item())
+            logprob_trajectory.append(float(logp[token_id].item()))
+            text_tokens.append(inner.tokenizer.decode([token_id]))
+
+    except Exception as e:
+        log.error(f"Score error: {e}")
+        raise HTTPException(500, str(e))
+
+    gen_time = time.time() - t_start
+    n = len(text_tokens)
+
+    token_states = []
+    for i in range(n):
+        ts = TokenState(
+            idx=i,
+            token=text_tokens[i],
+            c_delta=round(c_delta_trajectory[i], 6),
+            entropy=round(entropy_trajectory[i], 4),
+            logprob=round(logprob_trajectory[i], 4),
+        )
+        token_states.append(ts)
+
+    cd_traj = c_delta_trajectory[:min(n, EARLY_WINDOW)]
+    s_early = compute_S(cd_traj, 0, EARLY_WINDOW, req.s_threshold)
+    ent_traj = entropy_trajectory[:min(n, EARLY_WINDOW)]
+    entropy_early = float(np.mean(ent_traj)) if ent_traj else 0.0
+    zone = classify_zone(s_early, entropy_early)
+    max_cd = max(c_delta_trajectory) if c_delta_trajectory else 0.0
+    flagged = sum(1 for c in c_delta_trajectory if c > req.s_threshold)
+    flag_rate = flagged / max(1, n)
+
+    return ScanResponse(
+        prompt=req.prompt,
+        generated_text=req.text,
+        tokens=token_states,
+        total_tokens=n,
+        s_early=round(s_early, 6),
+        entropy_early=round(entropy_early, 4),
+        zone=zone,
+        max_c_delta=round(max_cd, 6),
+        flag_rate=round(flag_rate, 4),
+        model=model_name_loaded or DEFAULT_MODEL,
+        generation_time_s=round(gen_time, 2),
+    )
+
+
 @app.get("/demo")
 def demo():
     """Serve the interactive demo page."""
@@ -312,17 +437,5 @@ def demo():
 
 @app.get("/")
 def root():
-    return {
-        "name": "Fathom Scan API",
-        "version": "2.0.0",
-        "description": "Cognitive state measurement for LLM generations",
-        "endpoints": {
-            "POST /scan": "Generate text and measure cognitive state",
-            "GET /health": "Check model status",
-            "GET /demo": "Interactive demo page",
-            "GET /docs": "Interactive API docs (Swagger)",
-        },
-        "paper": "Commitment Intensity: SAE Feature Coherence Reveals "
-                 "Cognitive States Invisible to Raw Activation Analysis",
-        "patent": "US 64/020,489, 64/021,113",
-    }
+    """Redirect to demo page."""
+    return RedirectResponse(url="/demo")

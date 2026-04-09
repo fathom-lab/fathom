@@ -97,9 +97,30 @@ button:disabled { background: var(--dim); color: var(--mute); cursor: not-allowe
 .state-canvas { width: 100%; height: 300px; display: block; }
 
 .footer { text-align: center; padding: 2rem 1rem; color: var(--dim); font-size: .5rem; border-top: 1px solid var(--line); margin-top: 2rem; }
-.loading { color: var(--mute); text-align: center; padding: 2rem; font-size: .8rem; }
-.loading .pulse { display: inline-block; animation: pulse 1.5s ease-in-out infinite; }
+.loading { text-align: center; padding: 2.5rem 1rem 2rem; }
+.loading-text { color: var(--mute); font-size: .68rem; margin-top: 1.2rem; letter-spacing: .03em; animation: pulse 1.5s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+.neural-loader { display: inline-block; width: 120px; height: 60px; position: relative; }
+.neural-loader .node {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); animation: nodePulse 1.5s ease-in-out infinite;
+}
+.neural-loader .node:nth-child(1) { left: 0; top: 26px; animation-delay: 0s; }
+.neural-loader .node:nth-child(2) { left: 28px; top: 6px; animation-delay: .2s; }
+.neural-loader .node:nth-child(3) { left: 28px; top: 46px; animation-delay: .3s; }
+.neural-loader .node:nth-child(4) { left: 56px; top: 12px; animation-delay: .4s; }
+.neural-loader .node:nth-child(5) { left: 56px; top: 36px; animation-delay: .5s; }
+.neural-loader .node:nth-child(6) { left: 84px; top: 6px; animation-delay: .6s; }
+.neural-loader .node:nth-child(7) { left: 84px; top: 46px; animation-delay: .7s; }
+.neural-loader .node:nth-child(8) { left: 112px; top: 26px; animation-delay: .9s; }
+@keyframes nodePulse { 0%,100% { transform: scale(.6); opacity: .25; box-shadow: none; } 50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 12px var(--green); } }
+.neural-loader svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.neural-loader svg line { stroke: var(--green); stroke-width: .5; opacity: .15; animation: linePulse 2s ease-in-out infinite; }
+@keyframes linePulse { 0%,100% { opacity:.08; } 50% { opacity:.25; } }
+
+/* Progress bar */
+.scan-progress { position: fixed; top: 48px; left: 0; right: 0; height: 2px; z-index: 999; background: transparent; pointer-events: none; display: none; }
+.scan-progress-bar { height: 100%; width: 0; background: var(--green); box-shadow: 0 0 20px var(--green), 0 0 60px rgba(0,255,136,.3); transition: width .3s ease-out; }
 .error { color: var(--red); padding: 1rem; border: 1px solid rgba(255,68,68,.3); background: rgba(255,68,68,.05); font-size: .75rem; }
 
 /* Scanning animation */
@@ -160,11 +181,11 @@ input.scanning { border-color: var(--green); box-shadow: 0 0 30px rgba(0,255,136
     <a href="/health">status</a>
     <a href="https://github.com/heyzoos123-blip/fathom-research">github</a>
   </ul>
-  <span class="patent">US 64/020,489</span>
+  <span class="patent">US 64/020,489 &amp; 64/021,113 &amp; 64/026,964</span>
+  <span id="apiStatus" style="font-size:.5rem;padding:.15rem .5rem;border-radius:2px;letter-spacing:.04em"></span>
 </nav>
 
 <canvas id="particles"></canvas>
-<div id="scanLine" class="scan-line"></div>
 <main>
   <p style="color:var(--light);font-size:.75rem;line-height:1.7;margin-bottom:1.2rem;max-width:600px">
     type a question below. fathom reads the model's <strong style="color:var(--green)">circuit geometry</strong>
@@ -182,8 +203,25 @@ input.scanning { border-color: var(--green); box-shadow: 0 0 30px rgba(0,255,136
     <button onclick="setPrompt('Did Einstein fail math in school?')" class="preset-btn" style="background:var(--surface);color:var(--mute);border:1px solid var(--line);padding:.35rem .7rem;font-size:.6rem;font-weight:400;cursor:pointer">Einstein + math</button>
   </div>
 
+  <div id="scanProgress" class="scan-progress"><div id="scanProgressBar" class="scan-progress-bar"></div></div>
+
   <div id="error" class="error" style="display:none"></div>
-  <div id="loading" class="loading" style="display:none"><span class="pulse">reading circuit geometry...</span></div>
+  <div id="loading" class="loading" style="display:none">
+    <div class="neural-loader">
+      <div class="node"></div><div class="node"></div><div class="node"></div>
+      <div class="node"></div><div class="node"></div>
+      <div class="node"></div><div class="node"></div><div class="node"></div>
+      <svg viewBox="0 0 120 60">
+        <line x1="4" y1="30" x2="32" y2="10"/><line x1="4" y1="30" x2="32" y2="50"/>
+        <line x1="32" y1="10" x2="60" y2="16"/><line x1="32" y1="10" x2="60" y2="40"/>
+        <line x1="32" y1="50" x2="60" y2="16"/><line x1="32" y1="50" x2="60" y2="40"/>
+        <line x1="60" y1="16" x2="88" y2="10"/><line x1="60" y1="16" x2="88" y2="50"/>
+        <line x1="60" y1="40" x2="88" y2="10"/><line x1="60" y1="40" x2="88" y2="50"/>
+        <line x1="88" y1="10" x2="116" y2="30"/><line x1="88" y1="50" x2="116" y2="30"/>
+      </svg>
+    </div>
+    <div class="loading-text">reading circuit geometry...</div>
+  </div>
 
   <div id="results" class="results">
     <div id="zoneBanner" class="zone-banner"></div>
@@ -251,6 +289,7 @@ input.scanning { border-color: var(--green); box-shadow: 0 0 30px rgba(0,255,136
 
 <script>
 const API = window.location.origin;
+const THR = 0.005;
 const ZONES = {
   SAFE:      { icon: '\u2713', explain: 'low commitment + low entropy \u2014 the model retrieved confidently from grounded knowledge. safe to trust.' },
   UNCERTAIN: { icon: '?', explain: 'low commitment + high entropy \u2014 the model is exploring, not locked onto an answer. exercise caution.' },
@@ -258,29 +297,96 @@ const ZONES = {
   DANGER:    { icon: '\u2716', explain: 'high commitment + high entropy \u2014 the circuits locked onto something but the output layer is uncertain. this is the hallucination signature.' },
 };
 
+let apiReady = false;
+
+// ── Health check ────────────────────────────────────────────────
+async function checkHealth() {
+  const el = document.getElementById('apiStatus');
+  try {
+    const res = await fetch(API + '/health');
+    if (!res.ok) throw new Error('unreachable');
+    const data = await res.json();
+    if (data.model_loaded) {
+      el.textContent = 'ONLINE';
+      el.style.background = 'rgba(0,255,136,.12)';
+      el.style.color = '#00ff88';
+      apiReady = true;
+      document.getElementById('scanBtn').disabled = false;
+    } else if (data.model_loading) {
+      el.textContent = 'LOADING MODEL...';
+      el.style.background = 'rgba(255,184,0,.12)';
+      el.style.color = '#ffb800';
+      apiReady = false;
+      document.getElementById('scanBtn').disabled = true;
+      setTimeout(checkHealth, 3000);
+    } else {
+      el.textContent = 'ERROR: ' + (data.error || 'unknown');
+      el.style.background = 'rgba(255,68,68,.12)';
+      el.style.color = '#ff4444';
+      apiReady = false;
+    }
+  } catch (e) {
+    el.textContent = 'OFFLINE';
+    el.style.background = 'rgba(255,68,68,.12)';
+    el.style.color = '#ff4444';
+    apiReady = false;
+    document.getElementById('scanBtn').disabled = true;
+    setTimeout(checkHealth, 5000);
+  }
+}
+
+// ── Scan ────────────────────────────────────────────────────────
 async function scan() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt) return;
+  if (!apiReady) {
+    document.getElementById('error').textContent = 'model is still loading \u2014 please wait';
+    document.getElementById('error').style.display = 'block';
+    return;
+  }
   document.getElementById('scanBtn').disabled = true;
   document.getElementById('scanBtn').textContent = 'SCANNING...';
   document.getElementById('error').style.display = 'none';
   document.getElementById('results').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
   document.getElementById('prompt').classList.add('scanning');
-  document.getElementById('scanLine').style.display = 'block';
+
+  const prog = document.getElementById('scanProgress');
+  const progBar = document.getElementById('scanProgressBar');
+  prog.style.display = 'block'; progBar.style.width = '0%';
+  let pv = 0;
+  const pi = setInterval(() => { pv += (92 - pv) * 0.06; progBar.style.width = pv + '%'; }, 80);
+
   try {
-    const res = await fetch(API + '/scan', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({prompt, max_tokens: 40}) });
-    if (!res.ok) { const err = await res.json(); throw new Error(err.detail || res.statusText); }
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 300000); // 5 min timeout
+    const res = await fetch(API + '/scan', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt, max_tokens: 40}),
+      signal: ctrl.signal,
+    });
+    clearTimeout(timeout);
+    if (!res.ok) {
+      let msg = res.statusText;
+      try { const err = await res.json(); msg = err.detail || msg; } catch (_) {}
+      if (res.status === 503) msg = 'model is loading (~60s). retrying...';
+      if (res.status === 429) msg = 'rate limit reached \u2014 wait a moment and try again';
+      throw new Error(msg);
+    }
+    clearInterval(pi); progBar.style.width = '100%';
+    setTimeout(() => { prog.style.display = 'none'; progBar.style.width = '0'; }, 400);
     render(await res.json());
   } catch (e) {
-    document.getElementById('error').textContent = e.message;
+    clearInterval(pi); prog.style.display = 'none';
+    const msg = e.name === 'AbortError' ? 'scan timed out \u2014 model may still be warming up, try again' : (e.message || 'network error \u2014 is the API running?');
+    document.getElementById('error').textContent = msg;
     document.getElementById('error').style.display = 'block';
   } finally {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('scanBtn').disabled = false;
     document.getElementById('scanBtn').textContent = 'SCAN';
     document.getElementById('prompt').classList.remove('scanning');
-    document.getElementById('scanLine').style.display = 'none';
   }
 }
 
@@ -304,14 +410,14 @@ function render(data) {
   document.getElementById('mT').className = 'metric-value ' + (data.generation_time_s < 5 ? 'green' : 'amber');
 
   // Generated text with per-token coloring
-  const thr = 0.005;
   let html = '';
   for (const tok of data.tokens) {
+    const cd = Math.abs(tok.c_delta || 0);
     let cls = 'tok-normal';
-    if (tok.c_delta > thr * 3) cls = 'tok-hot';
-    else if (tok.c_delta > thr * 1.5) cls = 'tok-warm';
-    else if (tok.c_delta < thr * 0.3) cls = 'tok-safe';
-    const tip = `t${tok.idx}  commitment: ${tok.c_delta.toFixed(4)}  entropy: ${(tok.entropy||0).toFixed(2)}`;
+    if (cd > THR * 3) cls = 'tok-hot';
+    else if (cd > THR * 1.5) cls = 'tok-warm';
+    else if (cd < THR * 0.3) cls = 'tok-safe';
+    const tip = `t${tok.idx}  commitment: ${cd.toFixed(4)}  entropy: ${(tok.entropy||0).toFixed(2)}`;
     html += `<span class="tok ${cls}" title="${tip}" style="animation-delay:${tok.idx * 40}ms">${tok.token}</span>`;
   }
   document.getElementById('genText').innerHTML = html;
@@ -537,6 +643,7 @@ function setPrompt(text) {
 }
 document.getElementById('prompt').addEventListener('keydown', e => { if (e.key === 'Enter') scan(); });
 window.addEventListener('resize', () => { initParticles(); });
+checkHealth();
 
 // Particle background
 function initParticles() {

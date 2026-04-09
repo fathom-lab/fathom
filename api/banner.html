@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Twitter banner: 1500x500 */
+.banner {
+  width: 1500px; height: 500px;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  font-family: 'Courier New', monospace;
+}
+.banner::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(0,255,136,.06), transparent 50%),
+    radial-gradient(ellipse at 70% 40%, rgba(168,85,247,.04), transparent 50%);
+}
+/* Subtle grid */
+.banner::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(0,255,136,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.banner-content { position: relative; z-index: 1; text-align: center; }
+.banner-ascii {
+  font-size: 28px; line-height: 1.1; white-space: pre;
+  color: #00ff88;
+  text-shadow: 0 0 20px rgba(0,255,136,.3), 0 0 60px rgba(0,255,136,.1);
+  letter-spacing: 2px;
+}
+.banner-sub {
+  font-size: 16px; color: #888; margin-top: 20px;
+  letter-spacing: 8px; text-transform: uppercase;
+}
+.banner-stats {
+  font-size: 13px; color: #444; margin-top: 12px;
+  letter-spacing: 3px;
+}
+.banner-line {
+  width: 200px; height: 1px; margin: 15px auto;
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
+}
+
+/* Twitter profile pic: 400x400 */
+.pfp {
+  width: 400px; height: 400px;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  border-radius: 50%;
+}
+.pfp::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0,255,136,.08), transparent 70%);
+}
+.pfp-content { position: relative; z-index: 1; text-align: center; }
+.pfp-letter {
+  font-family: 'Courier New', monospace;
+  font-size: 180px; font-weight: bold;
+  color: #00ff88;
+  text-shadow: 0 0 30px rgba(0,255,136,.4), 0 0 80px rgba(0,255,136,.15);
+  line-height: 1;
+}
+.pfp-dots {
+  font-size: 14px; color: rgba(0,255,136,.3);
+  letter-spacing: 4px; margin-top: -10px;
+}
+
+/* Alt banner — more visual */
+.banner2 {
+  width: 1500px; height: 500px;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  font-family: 'Courier New', monospace;
+}
+.banner2::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 25% 50%, rgba(0,255,136,.05), transparent 40%),
+    radial-gradient(ellipse at 75% 50%, rgba(255,68,68,.04), transparent 40%);
+}
+.banner2::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(0,255,136,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,.02) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.b2-left { position: relative; z-index: 1; text-align: left; padding-left: 100px; }
+.b2-title {
+  font-size: 72px; font-weight: bold; color: #00ff88;
+  text-shadow: 0 0 30px rgba(0,255,136,.3);
+  letter-spacing: 6px;
+}
+.b2-sub {
+  font-size: 18px; color: #666; margin-top: 8px;
+  letter-spacing: 4px;
+}
+.b2-tagline {
+  font-size: 14px; color: #444; margin-top: 20px;
+  max-width: 500px; line-height: 1.6;
+}
+.b2-tagline em { color: #00ff88; font-style: normal; }
+
+.b2-right {
+  position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+  z-index: 1; text-align: right;
+}
+.b2-stat { font-size: 13px; color: #555; margin: 6px 0; letter-spacing: 1px; }
+.b2-stat strong { color: #00ff88; }
+
+body { background: #222; padding: 40px; display: flex; flex-direction: column; gap: 40px; align-items: center; }
+h3 { color: #888; font-family: monospace; font-size: 12px; letter-spacing: 3px; }
+</style>
+</head>
+<body>
+
+<h3>BANNER OPTION 1 — CENTERED ASCII</h3>
+<div class="banner">
+  <div class="banner-content">
+    <div class="banner-ascii">  ███████╗ █████╗ ████████╗██╗  ██╗ ██████╗ ███╗   ███╗
+  ██╔════╝██╔══██╗╚══██╔══╝██║  ██║██╔═══██╗████╗ ████║
+  █████╗  ███████║   ██║   ███████║██║   ██║██╔████╔██║
+  ██╔══╝  ██╔══██║   ██║   ██╔══██║██║   ██║██║╚██╔╝██║
+  ██║     ██║  ██║   ██║   ██║  ██║╚██████╔╝██║ ╚═╝ ██║
+  ╚═╝     ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝</div>
+    <div class="banner-line"></div>
+    <div class="banner-sub">cognitive state measurement</div>
+    <div class="banner-stats">SAE feature coherence · cross-architecture · ICML 2026</div>
+  </div>
+</div>
+
+<h3>BANNER OPTION 2 — LEFT-ALIGNED WITH STATS</h3>
+<div class="banner2">
+  <div class="b2-left">
+    <div class="b2-title">FATHOM</div>
+    <div class="b2-sub">cognitive measurement</div>
+    <div class="b2-tagline">
+      the first instrument that reads <em>circuit geometry</em>,
+      not text. SAE feature coherence reveals cognitive states
+      invisible to all other methods.
+    </div>
+  </div>
+  <div class="b2-right">
+    <div class="b2-stat"><strong>d = 0.584</strong> · cross-architecture</div>
+    <div class="b2-stat"><strong>p = 0.00018</strong> · Fisher combined</div>
+    <div class="b2-stat"><strong>AUC 0.663</strong> · beats logit entropy</div>
+    <div class="b2-stat"><strong>2 architectures</strong> · Gemma + Llama</div>
+    <div class="b2-stat" style="margin-top:15px;color:#333">patent pending · US 64/020,489</div>
+  </div>
+</div>
+
+<h3>PROFILE PIC</h3>
+<div class="pfp">
+  <div class="pfp-content">
+    <div class="pfp-letter">F</div>
+    <div class="pfp-dots">· · · · ·</div>
+  </div>
+</div>
+
+</body>
+</html>

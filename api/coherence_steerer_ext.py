@@ -56,12 +56,27 @@ class CoherenceSteererExt(CoherenceSteerer):
             capture_hooks = self._build_capture_hooks(hidden_states)
 
             t_mon = time.time()
-            with torch.no_grad():
-                logits = inner.run_with_hooks(tokens, fwd_hooks=capture_hooks)
+            try:
+                with torch.no_grad():
+                    inner.reset_hooks()
+                    logits = inner.run_with_hooks(tokens, fwd_hooks=capture_hooks)
+            except (RuntimeError, IndexError, KeyError):
+                # KV cache / tensor mismatch / hook key error — fall back to plain forward
+                inner.reset_hooks()
+                try:
+                    with torch.no_grad():
+                        logits = inner(tokens)
+                except RuntimeError:
+                    # Both paths failed — abort generation with what we have
+                    break
+                hidden_states = {}
 
-            # C_delta
-            c_delta, layer_c = self._fast_c_delta(hidden_states)
-            c_delta_trajectory.append(c_delta)
+            # C_delta (may be None if hooks didn't fire)
+            try:
+                c_delta, layer_c = self._fast_c_delta(hidden_states)
+            except (KeyError, AttributeError):
+                c_delta, layer_c = None, {}
+            c_delta_trajectory.append(c_delta if c_delta is not None else 0.0)
             c_layer_trajectory.append({k: v for k, v in layer_c.items() if v is not None})
 
             # Entropy + top token stats
@@ -91,6 +106,14 @@ class CoherenceSteererExt(CoherenceSteerer):
 
         gen_time = time.time() - t_start
         total = len(generated_tokens)
+
+        # Truncate trajectories to match token count — on EOS the final
+        # forward pass appends an extra entry that has no matching token.
+        c_delta_trajectory = c_delta_trajectory[:total]
+        c_layer_trajectory = c_layer_trajectory[:total]
+        entropy_trajectory = entropy_trajectory[:total]
+        logprob_trajectory = logprob_trajectory[:total]
+        top2_margin_trajectory = top2_margin_trajectory[:total]
 
         return GenerationResultExt(
             prompt=prompt,
