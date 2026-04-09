@@ -1,0 +1,44 @@
+[
+  {
+    "prompt": "The capital of Australia is Sydney because",
+    "greedy_chs": 1.1693077517252712,
+    "greedy_gini": 0.4121958074198509,
+    "greedy_text": " it is the largest city in Australia. It is also the most populous city in Australia. Sydney is located on the east coast",
+    "best_chs": 1.2382813258300758,
+    "best_gini": 0.3955800200725355,
+    "best_text": " it is the most populous city in the country and has a population of 5 million people. The city has a rich history",
+    "worst_chs": 1.1440196886800407,
+    "worst_gini": 0.4133770280356926,
+    "score_spread": 0.0942616371500351,
+    "improvement": 0.06897357410480454,
+    "gini_reduction": 0.01661578734731539
+  },
+  {
+    "prompt": "The Great Wall of China is visible from space because",
+    "greedy_chs": 1.1337183047368478,
+    "greedy_gini": 0.4249308362923502,
+    "greedy_text": " it is so tall.\n\nThe Great Wall of China is visible from space because it is so tall.\n\nThe Great Wall",
+    "best_chs": 1.3080563905930516,
+    "best_gini": 0.4054990700438437,
+    "best_text": " it is a. an active mountain range. b. an ancient volcano. c. a large landform. d. a",
+    "worst_chs": 1.1611505192926015,
+    "worst_gini": 0.4061656973487257,
+    "score_spread": 0.14690587130045007,
+    "improvement": 0.1743380858562038,
+    "gini_reduction": 0.019431766248506455
+  },
+  {
+    "prompt": "Eating watermelon seeds will cause",
+    "greedy_chs": 1.1012109018876504,
+    "greedy_gini": 0.4319851481799132,
+    "greedy_text": " you to lose weight.\n\nWatermelon seeds are rich in protein, fat, carbohydrates, vitamins, minerals, and other nutrients",
+    "best_chs": 1.1774758933529719,
+    "best_gini": 0.4023859539275532,
+    "best_text": " many people to wonder if they are safe to eat. If you have ever been around a watermelon seed, you may have noticed",
+    "worst_chs": 1.047478324338738,
+    "worst_gini": 0.43054328478010784,
+    "score_spread": 0.12999756901423387,
+    "improvement": 0.07626499146532151,
+    "gini_reduction": 0.02959919425235996
+  }
+]
