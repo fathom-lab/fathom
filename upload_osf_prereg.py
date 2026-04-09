@@ -4,7 +4,7 @@
 import json
 import requests
 
-OSF_TOKEN = "ZQXV6Lt3CsfRCFuWLdG6sNBbqLIDZsbSRYeqCLHShMwlNYSB7SjXV66FmunhiHWBQ2Dppo"
+OSF_TOKEN = "REDACTED_SEE_SECRETS"
 PROJECT_ID = "wtkzg"
 BASE = "https://api.osf.io/v2"
 

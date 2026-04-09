@@ -1,5 +1,5 @@
 import requests
-TOKEN = "WkwECeWXt1SiW7cmnXyCf2Fe2NXAUn3iRjmqHNR9vXDQ3G8mEqD1Wrq5Fb0u"
+TOKEN = "REDACTED_SEE_SECRETS"
 BASE = "https://zenodo.org/api"
 HEADERS = {"Authorization": f"Bearer {TOKEN}"}
 

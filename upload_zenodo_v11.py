@@ -8,7 +8,7 @@ import os
 import requests
 import sys
 
-TOKEN = "WkwECeWXt1SiW7cmnXyCf2Fe2NXAUn3iRjmqHNR9vXDQ3G8mEqD1Wrq5Fb0u"
+TOKEN = "REDACTED_SEE_SECRETS"
 BASE = "https://zenodo.org/api"
 LATEST_ID = 19464572  # v10 — the last published version on real concept
 ZIP_PATH = "zenodo_v8/fathom_spectrum_v8.zip"
