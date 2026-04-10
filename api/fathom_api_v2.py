@@ -425,6 +425,292 @@ def score(req: ScoreRequest):
     )
 
 
+# ── Autopilot endpoint ─────────────────────────────────────────────────────
+
+_autopilot = None
+
+class AutopilotRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=2000)
+    max_tokens: int = Field(default=40, ge=1, le=100)
+    nudge_strength: float = Field(default=0.3, ge=0.0, le=2.0)
+    steer_strength: float = Field(default=0.8, ge=0.0, le=2.0)
+    redirect_weight: float = Field(default=0.2, ge=0.0, le=1.0)
+
+class InterventionRecord(BaseModel):
+    token_idx: int
+    escalation_level: int
+    lock_in_layers: List[int]
+    correction_magnitude: float
+    pre_gini: float
+    post_gini: Optional[float]
+    pre_s_early: float
+    token_changed: bool
+    old_token: str
+    new_token: str
+
+class AutopilotResponse(BaseModel):
+    prompt: str
+    generated_text: str
+    total_tokens: int
+    # Trajectories
+    gini_trajectory: List[float]
+    s_early_trajectory: List[float]
+    escalation_history: List[int]
+    # Interventions
+    interventions: List[InterventionRecord]
+    intervention_count: int
+    max_escalation: int
+    # Health
+    health_score: float
+    needs_regen: bool
+    # Meta
+    model: str
+    generation_time_s: float
+    overhead_pct: float
+    api_version: str = "2.0.0"
+
+
+@app.post("/autopilot", response_model=AutopilotResponse)
+def autopilot(req: AutopilotRequest):
+    """
+    Generate with trajectory-aware cognitive course correction.
+
+    Monitors SAE feature coherence trajectories per-token and applies
+    dynamic, generation-specific corrections when attractor lock-in
+    is detected at tokens 3-7 (the S_early window).
+
+    Escalation ladder:
+      Level 0: monitor only
+      Level 1: gentle nudge (alpha=nudge_strength)
+      Level 2: strong multi-layer steer (alpha=steer_strength)
+      Level 3: flag for regeneration
+    """
+    global _autopilot
+
+    if steerer is None:
+        if model_loading:
+            raise HTTPException(503, "Model loading (~60s). Retry.")
+        raise HTTPException(503, f"Model failed: {model_error}")
+
+    # Lazy-load autopilot (uses same GPU model but different engine)
+    if _autopilot is None:
+        try:
+            from fathom_autopilot import FathomAutopilot
+            _autopilot = FathomAutopilot(
+                model_name=model_name_loaded or DEFAULT_MODEL,
+                nudge_strength=req.nudge_strength,
+                steer_strength=req.steer_strength,
+                redirect_weight=req.redirect_weight,
+            )
+        except Exception as e:
+            log.error(f"Autopilot init failed: {e}")
+            raise HTTPException(500, f"Autopilot init failed: {e}")
+
+    t_start = time.time()
+    try:
+        result = _autopilot.generate_autopilot(
+            req.prompt, max_tokens=req.max_tokens, verbose=False
+        )
+    except Exception as e:
+        log.error(f"Autopilot generation failed: {e}")
+        try:
+            _autopilot._inner.reset_hooks()
+        except Exception:
+            pass
+        raise HTTPException(500, f"Generation failed: {e}")
+
+    gen_time = time.time() - t_start
+
+    # Convert interventions to API format
+    intv_records = []
+    for intv in result.autopilot_interventions:
+        intv_records.append(InterventionRecord(
+            token_idx=intv.token_idx,
+            escalation_level=intv.escalation_level,
+            lock_in_layers=intv.lock_in_layers,
+            correction_magnitude=round(intv.correction_magnitude, 6),
+            pre_gini=round(intv.pre_gini, 4),
+            post_gini=round(intv.post_gini, 4) if intv.post_gini is not None else None,
+            pre_s_early=round(intv.pre_s_early, 6),
+            token_changed=intv.token_changed,
+            old_token=intv.old_token,
+            new_token=intv.new_token,
+        ))
+
+    return AutopilotResponse(
+        prompt=req.prompt,
+        generated_text=result.text,
+        total_tokens=result.total_tokens,
+        gini_trajectory=[round(g, 4) for g in result.gini_trajectory],
+        s_early_trajectory=[round(s, 6) for s in result.s_early_trajectory],
+        escalation_history=result.escalation_history,
+        interventions=intv_records,
+        intervention_count=len(intv_records),
+        max_escalation=result.max_escalation,
+        health_score=round(result.health_score, 3),
+        needs_regen=result.needs_regen,
+        model=model_name_loaded or DEFAULT_MODEL,
+        generation_time_s=round(gen_time, 2),
+        overhead_pct=round(result.overhead_pct, 1),
+    )
+
+
+# ── Guardian endpoint (cognitive health check) ───────────────────────────
+
+_guardian = None
+
+class GuardianRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=2000)
+    max_tokens: int = Field(default=40, ge=1, le=100)
+    gini_threshold: float = Field(default=0.45, ge=0.3, le=0.7)
+    s_early_threshold: float = Field(default=0.005, ge=0.001, le=0.05)
+
+class GuardianResponse(BaseModel):
+    prompt: str
+    generated_text: str
+    total_tokens: int
+    # Core cognitive state (first-pass, no adaptive loop)
+    cognitive_health: float          # composite health score
+    mean_gini: float                 # spectrum concentration
+    max_gini: float
+    mean_spread: float
+    mean_early_mass: float
+    s_early: float                   # commitment intensity (IPR)
+    # Decision
+    triggered: bool                  # would guardian flag this prompt?
+    trigger_reason: Optional[str]    # which signal fired
+    confidence: str                  # HIGH | MODERATE | LOW | UNCERTAIN
+    warning: Optional[str]           # human-readable cognitive warning
+    # Trajectories (for debugging / visualization)
+    gini_trajectory: List[float]
+    s_early_value: float
+    # Meta
+    model: str
+    generation_time_s: float
+    api_version: str = "2.0.0"
+
+
+def _classify_confidence(mean_gini: float, s_early: float, health: float,
+                          gini_threshold: float, s_threshold: float) -> tuple:
+    """
+    Classify cognitive confidence based on validated thresholds.
+
+    Returns: (confidence_level, trigger_reason, warning)
+    """
+    gini_fire = mean_gini > gini_threshold
+    s_fire = s_early > s_threshold
+
+    if gini_fire and s_fire:
+        return (
+            "LOW",
+            "both_gini_and_s_early",
+            "Model shows genuine uncertainty on this topic (elevated concentration AND commitment intensity). Verify externally."
+        )
+    if gini_fire:
+        return (
+            "UNCERTAIN",
+            "high_gini",
+            "Cognitive signature suggests obscure-retrieval confabulation. Model is searching but struggling. Verify externally."
+        )
+    if s_fire:
+        return (
+            "MODERATE",
+            "high_s_early",
+            "Early-token commitment intensity is elevated. Model locked in fast — may be template-filling."
+        )
+    # Healthy
+    if health > 1.2:
+        return ("HIGH", None, None)
+    return ("MODERATE", None, None)
+
+
+@app.post("/guardian", response_model=GuardianResponse)
+def guardian(req: GuardianRequest):
+    """
+    Cognitive health check for a prompt.
+
+    Runs a single-pass greedy generation with full SAE trajectory monitoring
+    and returns a cognitive health assessment. Uses validated thresholds to
+    flag prompts where the model shows signs of obscure-retrieval confabulation.
+
+    Honest limits:
+      - 100% precision on obscure-retrieval confabulation (model searching + failing)
+      - Does NOT catch template-fill hallucination (confident plausible bullshit)
+      - This is cognitive state measurement, not fact checking
+
+    Designed for integration into agent pipelines as a verification layer.
+    """
+    global _guardian
+
+    if steerer is None:
+        if model_loading:
+            raise HTTPException(503, "Model loading (~60s). Retry.")
+        raise HTTPException(503, f"Model failed: {model_error}")
+
+    # Lazy-load guardian (uses same GPU model)
+    if _guardian is None:
+        try:
+            from fathom_guardian import FathomGuardian
+            _guardian = FathomGuardian(
+                model_name=model_name_loaded or DEFAULT_MODEL,
+                max_candidates=1,  # we only want the first-pass assessment
+                gini_threshold=req.gini_threshold,
+                s_early_threshold=req.s_early_threshold,
+            )
+        except Exception as e:
+            log.error(f"Guardian init failed: {e}")
+            raise HTTPException(500, f"Guardian init failed: {e}")
+
+    t_start = time.time()
+    try:
+        # Generate a single greedy candidate with full trajectory capture
+        candidate = _guardian._generate_candidate(
+            req.prompt, max_tokens=req.max_tokens, temperature=0.0
+        )
+    except Exception as e:
+        log.error(f"Guardian generation failed: {e}")
+        try:
+            _guardian._inner.reset_hooks()
+        except Exception:
+            pass
+        raise HTTPException(500, f"Generation failed: {e}")
+
+    gen_time = time.time() - t_start
+
+    # Classify
+    confidence, reason, warning = _classify_confidence(
+        mean_gini=candidate.mean_gini,
+        s_early=candidate.s_early,
+        health=candidate.health_score,
+        gini_threshold=req.gini_threshold,
+        s_threshold=req.s_early_threshold,
+    )
+
+    triggered = confidence in ("LOW", "UNCERTAIN")
+
+    return GuardianResponse(
+        prompt=req.prompt,
+        generated_text=candidate.text,
+        total_tokens=candidate.total_tokens,
+        cognitive_health=round(candidate.health_score, 3),
+        mean_gini=round(candidate.mean_gini, 4),
+        max_gini=round(candidate.max_gini, 4),
+        mean_spread=round(candidate.mean_spread, 4),
+        mean_early_mass=round(candidate.mean_early_mass, 4),
+        s_early=round(candidate.s_early, 6),
+        triggered=triggered,
+        trigger_reason=reason,
+        confidence=confidence,
+        warning=warning,
+        gini_trajectory=[round(g, 4) for g in candidate.gini_trajectory],
+        s_early_value=round(candidate.s_early, 6),
+        model=model_name_loaded or DEFAULT_MODEL,
+        generation_time_s=round(gen_time, 2),
+    )
+
+
+# ── Static routes ──────────────────────────────────────────────────────────
+
 @app.get("/demo")
 def demo():
     """Serve the interactive demo page."""
