@@ -1,0 +1,20 @@
+{
+  "built_at": "2026-04-10T16:58:46-0400",
+  "source_commit": "b09e54f8f0fefbc1dabbb0f21529d2bae2e759f7",
+  "paper_bundle": {
+    "path": "zenodo_v14\\fathom_paper_v14.zip",
+    "filename": "fathom_paper_v14.zip",
+    "n_files": 13,
+    "bytes_on_disk": 1576071,
+    "bytes_raw": 1889493,
+    "sha256": "ee589bf50a8f2df34da3523d45c237e310dc7e41ad194ed87fe20833af5d1164"
+  },
+  "atlas_bundle": {
+    "path": "zenodo_v14\\fathom_atlas_v0.3.zip",
+    "filename": "fathom_atlas_v0.3.zip",
+    "n_files": 52,
+    "bytes_on_disk": 3446309,
+    "bytes_raw": 14207667,
+    "sha256": "25c2e2e94380b92a37fda19a49cabf87d3bbf1c065cb94dc1b03b9ec7391977e"
+  }
+}

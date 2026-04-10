@@ -128,11 +128,12 @@ reproducible.
 
 ```
 @misc{rodabaugh2026atlas,
-  title={The Fathom Cognitive Atlas: Cross-Architecture
-         Measurement of Transformer Internal State},
+  title={The Fathom Cognitive Atlas v0.3: Pre-registered
+         Cross-Architecture Replication of the RLHF Attractor},
   author={Rodabaugh, Alexander},
   year={2026},
-  note={Zenodo. doi:10.5281/zenodo.<TBD>},
+  note={Zenodo. doi:10.5281/zenodo.19502716
+        (Concept DOI: 10.5281/zenodo.19502715)},
 }
 ```
 

@@ -73,6 +73,16 @@ resume_rodabaugh.html
 paper/icml2026.zip
 paper/icml_template/
 
+# Zenodo bundles (regenerable via zenodo_v14/build_bundles.py)
+zenodo_v14/*.zip
+zenodo_v14/__pycache__/
+zenodo_v14/paper/fathom_icml2026_v2.pdf
+zenodo_v14/paper/fathom_icml2026_v2.tex
+zenodo_v14/paper/references.bib
+zenodo_v14/paper/*.sty
+zenodo_v14/paper/*.bst
+zenodo_v14/paper/figures/
+
 # Old experiment directories
 fathom_scan_cli/
 fingerprints/
