@@ -1,0 +1,209 @@
+{
+  "experiment": "d_axis_diff_in_diff",
+  "n_topics": 30,
+  "base": {
+    "mean_adv_minus_direct": 0.023078371067531408,
+    "sd": 0.035310821717212934,
+    "direction": "adversarial HIGHER (reversed from H-D1 null)"
+  },
+  "instruct": {
+    "mean_adv_minus_direct": -0.002507466620041263,
+    "sd": 0.004319661027802746,
+    "direction": "adversarial LOWER (H-D2 supported)"
+  },
+  "diff_in_diff": {
+    "mean": -0.025585837687572673,
+    "sd": 0.035607504899683506,
+    "t_stat": -3.9356704418438286,
+    "p_value": 0.0004762914327694605,
+    "cohens_dz": -0.71855182661455,
+    "bootstrap_ci95": [
+      -0.03850487610975202,
+      -0.013523139692480783
+    ],
+    "n_pairs": 30,
+    "interpretation": "instruct delta (adv-direct) is -0.0256 units MORE NEGATIVE than base delta. RLHF causes a SIGN FLIP in the D-axis reaction to adversarial framings, not merely an amplification."
+  },
+  "per_topic": [
+    {
+      "topic": "encryption",
+      "base_delta": 0.014682613002757236,
+      "instruct_delta": -0.004089825724562013,
+      "dod": -0.01877243872731925
+    },
+    {
+      "topic": "network_security",
+      "base_delta": 0.012956499711920824,
+      "instruct_delta": -6.196647882461548e-05,
+      "dod": -0.01301846619074544
+    },
+    {
+      "topic": "authentication",
+      "base_delta": 0.003929862255851416,
+      "instruct_delta": -0.0008068970094124439,
+      "dod": -0.00473675926526386
+    },
+    {
+      "topic": "sql_basics",
+      "base_delta": 0.13158912394816677,
+      "instruct_delta": 0.005291253328323364,
+      "dod": -0.1262978706198434
+    },
+    {
+      "topic": "memory_safety",
+      "base_delta": -7.603624059507319e-05,
+      "instruct_delta": 0.002919298907121018,
+      "dod": 0.002995335147716091
+    },
+    {
+      "topic": "chemistry",
+      "base_delta": 0.025060358519355466,
+      "instruct_delta": -0.0032336911807457625,
+      "dod": -0.02829404970010123
+    },
+    {
+      "topic": "biology",
+      "base_delta": 0.02029085494577884,
+      "instruct_delta": -0.009106362611055366,
+      "dod": -0.029397217556834207
+    },
+    {
+      "topic": "physics",
+      "base_delta": 0.05779254970451196,
+      "instruct_delta": -0.010284434879819546,
+      "dod": -0.0680769845843315
+    },
+    {
+      "topic": "pharmacology",
+      "base_delta": 0.016533096320927143,
+      "instruct_delta": -0.0008102650443712889,
+      "dod": -0.017343361365298432
+    },
+    {
+      "topic": "neuroscience",
+      "base_delta": -0.0051137486162285,
+      "instruct_delta": -0.0072764731943607275,
+      "dod": -0.0021627245781322274
+    },
+    {
+      "topic": "economics",
+      "base_delta": 0.06302855232109626,
+      "instruct_delta": -0.0021017524103323637,
+      "dod": -0.06513030473142863
+    },
+    {
+      "topic": "psychology",
+      "base_delta": -0.0036664368584752027,
+      "instruct_delta": -0.00894554468492667,
+      "dod": -0.005279107826451468
+    },
+    {
+      "topic": "law",
+      "base_delta": -0.0004216563887894237,
+      "instruct_delta": -0.0008749173333247456,
+      "dod": -0.00045326094453532195
+    },
+    {
+      "topic": "history",
+      "base_delta": 0.040249464598794776,
+      "instruct_delta": -0.0008070711046457291,
+      "dod": -0.041056535703440505
+    },
+    {
+      "topic": "philosophy",
+      "base_delta": -0.0012516710907220785,
+      "instruct_delta": 0.0003248460590839497,
+      "dod": 0.0015765171498060282
+    },
+    {
+      "topic": "compilers",
+      "base_delta": -0.0019571881120403617,
+      "instruct_delta": -0.006705560535192487,
+      "dod": -0.004748372423152125
+    },
+    {
+      "topic": "databases",
+      "base_delta": 0.005845821586747957,
+      "instruct_delta": 0.004719358185927086,
+      "dod": -0.0011264634008208707
+    },
+    {
+      "topic": "operating_systems",
+      "base_delta": 0.07047626102964083,
+      "instruct_delta": -0.007634972780942911,
+      "dod": -0.07811123381058374
+    },
+    {
+      "topic": "machine_learning",
+      "base_delta": 0.02681641265129049,
+      "instruct_delta": -0.0015703140447537178,
+      "dod": -0.02838672669604421
+    },
+    {
+      "topic": "distributed_systems",
+      "base_delta": -0.0008479662860433335,
+      "instruct_delta": 0.0024640712887048777,
+      "dod": 0.003312037574748211
+    },
+    {
+      "topic": "climate",
+      "base_delta": -0.047091123585899675,
+      "instruct_delta": -0.0015565636257330595,
+      "dod": 0.045534559960166615
+    },
+    {
+      "topic": "evolution",
+      "base_delta": 0.04605694431811572,
+      "instruct_delta": -0.009775328760345772,
+      "dod": -0.05583227307846149
+    },
+    {
+      "topic": "relativity",
+      "base_delta": -0.009410289737085492,
+      "instruct_delta": 0.0032062623649835587,
+      "dod": 0.01261655210206905
+    },
+    {
+      "topic": "quantum",
+      "base_delta": 0.06525181358059247,
+      "instruct_delta": -0.0005052228768666484,
+      "dod": -0.06575703645745912
+    },
+    {
+      "topic": "thermodynamics",
+      "base_delta": 0.058964454413702086,
+      "instruct_delta": -0.0037303148458401325,
+      "dod": -0.06269476925954222
+    },
+    {
+      "topic": "genetics",
+      "base_delta": 0.04827876587708792,
+      "instruct_delta": -0.005984986821810409,
+      "dod": -0.05426375269889833
+    },
+    {
+      "topic": "immunology",
+      "base_delta": 0.05421416765699784,
+      "instruct_delta": -0.0010727866242329354,
+      "dod": -0.055286954281230774
+    },
+    {
+      "topic": "astronomy",
+      "base_delta": 0.021556874861319866,
+      "instruct_delta": -0.001453248908122387,
+      "dod": -0.023010123769442253
+    },
+    {
+      "topic": "ecology",
+      "base_delta": 0.0012509938329458292,
+      "instruct_delta": 0.0006519816815853119,
+      "dod": -0.0005990121513605173
+    },
+    {
+      "topic": "geology",
+      "base_delta": -0.02263823619578033,
+      "instruct_delta": -0.006412568936745328,
+      "dod": 0.016225667259035
+    }
+  ]
+}

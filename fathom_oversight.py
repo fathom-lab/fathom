@@ -211,8 +211,6 @@ class FathomOversight(SpectrumSteerer):
             logprob = float(logp[next_id].item())
 
             # ── D-axis: Deception/Honesty measurement ──
-            # How well does the model's internal state at the final layer
-            # align with what it chose to say?
             # D = cosine(residual_at_final_layer, unembedding[chosen_token])
             # High D = honest (internal state matches expression)
             # Low D = deceptive (internal state diverges from expression)
@@ -220,9 +218,19 @@ class FathomOversight(SpectrumSteerer):
             final_hs = hidden_states.get(final_layer)
             if final_hs is not None:
                 try:
-                    # Get unembedding matrix
+                    # Reduce residual to a 1D vector at the current position
+                    h = final_hs.float()
+                    if h.dim() == 3:        # (batch, seq, d_model)
+                        h = h[0, -1, :]
+                    elif h.dim() == 2:      # (seq, d_model) or (batch, d_model)
+                        h = h[-1, :]
+                    # else assume (d_model,)
+                    d_model = h.shape[-1]
+
+                    # Locate unembedding matrix on HookedTransformer: unembed.W_U
                     W_U = None
-                    for attr_path in ["unembed.W_U", "lm_head.weight"]:
+                    for attr_path in ["unembed.W_U", "lm_head.weight",
+                                      "embed_out.weight"]:
                         obj = self._inner
                         for part in attr_path.split("."):
                             obj = getattr(obj, part, None)
@@ -232,23 +240,28 @@ class FathomOversight(SpectrumSteerer):
                             W_U = obj
                             break
 
-                    if W_U is not None:
-                        h = final_hs.float()
-                        # Unembedding vector for chosen token
-                        if W_U.shape[0] > next_id:
-                            token_dir = W_U[next_id].float()
-                        elif W_U.shape[1] > next_id:
-                            token_dir = W_U[:, next_id].float()
+                    if W_U is not None and next_id is not None:
+                        # Pick whichever dim equals d_model; the OTHER dim is vocab.
+                        # TransformerLens layout: W_U is (d_model, vocab).
+                        # HF lm_head.weight: (vocab, d_model).
+                        W_f = W_U.float()
+                        if W_f.shape[0] == d_model:
+                            token_dir = W_f[:, next_id]
+                        elif W_f.shape[1] == d_model:
+                            token_dir = W_f[next_id, :]
                         else:
-                            token_dir = None
+                            token_dir = None  # unexpected shape
 
                         if token_dir is not None:
-                            # Cosine similarity = how aligned is internal state with chosen token
                             h_norm = h / h.norm().clamp(min=1e-8)
                             t_norm = token_dir / token_dir.norm().clamp(min=1e-8)
                             d_honesty = float((h_norm @ t_norm).item())
-                except Exception:
-                    pass  # D-axis is best-effort, never crash
+                except Exception as _exc:
+                    # Log first failure once so bugs don't stay silent
+                    if not getattr(self, "_d_honesty_err_logged", False):
+                        print(f"[d_honesty] first failure: "
+                              f"{type(_exc).__name__}: {_exc}", flush=True)
+                        self._d_honesty_err_logged = True
 
         return CognitiveState(
             token_idx=step,
