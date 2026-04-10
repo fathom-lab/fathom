@@ -20,7 +20,8 @@
 </p>
 
 <p align="center">
-  <a href="https://doi.org/10.5281/zenodo.19437539"><img src="https://img.shields.io/badge/paper-Zenodo_v8-blue"/></a>
+  <a href="https://doi.org/10.5281/zenodo.19326174"><img src="https://img.shields.io/badge/paper-Zenodo-blue"/></a>
+  <a href="atlas/README.md"><img src="https://img.shields.io/badge/atlas-v0.3_pre--registered-purple"/></a>
   <a href="https://fathom-gpu.darkcity.wtf/demo"><img src="https://img.shields.io/badge/demo-live-brightgreen"/></a>
   <a href="https://fathom-gpu.darkcity.wtf/docs"><img src="https://img.shields.io/badge/API-docs-orange"/></a>
   <a href="https://osf.io/wtkzg"><img src="https://img.shields.io/badge/OSF-pre--registered-lightgrey"/></a>
@@ -146,6 +147,29 @@ returns per-token `c_delta`, `entropy`, `logprob` + cognitive zone classificatio
 
 ---
 
+## the fathom cognitive atlas
+
+```
+  the first public, cross-architecture cognitive state atlas of
+  open-weight language models.
+
+  v0.3 — H1 supported (pre-registered replication)
+    n = 6 model family pairs (Gemma-2, Gemma-3, Llama-3.2-3B,
+                              Llama-3.2-1B, Qwen2.5-3B, Qwen2.5-1.5B)
+    mean LOO cos = +0.769   bootstrap CI [+0.571, +0.869]
+    permutation p = 0.0315  (one-sided, 2000 shuffles)
+
+  pre-registered in PREREG_v0.3_attractor_replication.md before
+  any v0.3 data was captured. analysis ran without modification.
+```
+
+→ full writeup: [`atlas/FINDINGS_v0.3.md`](atlas/FINDINGS_v0.3.md)
+→ atlas overview + roadmap: [`atlas/README.md`](atlas/README.md)
+→ sealed pre-registration: [`atlas/PREREG_v0.3_attractor_replication.md`](atlas/PREREG_v0.3_attractor_replication.md)
+→ rigor audit: [`atlas/FINDINGS_bulletproof_audit.md`](atlas/FINDINGS_bulletproof_audit.md)
+
+---
+
 ## repository structure
 
 ```
@@ -154,14 +178,21 @@ returns per-token `c_delta`, `entropy`, `logprob` + cognitive zone classificatio
   ├── README.md                  you are here
   ├── coherence_steerer.py       core SAE measurement engine
   ├── depth_scorer.py            depth scoring via circuit attribution
+  ├── fathom_oversight.py        D-axis + K/C/S measurement pipeline
   ├── requirements.txt           dependencies
   │
   ├── paper/                     ICML 2026 workshop submission (LaTeX)
-  ├── analysis/                  28 analysis scripts
+  ├── atlas/                     cognitive atlas v0.3 (see above)
+  │   ├── probes/                probe_set_v0.1.json, hash-pinned
+  │   ├── captures/              12 versioned per-model JSONs
+  │   ├── analysis/              bootstrap, permutation, estimator validation
+  │   ├── FINDINGS_*.md          v0.1 → v0.2 → v0.2.1 → v0.3 trail
+  │   └── PREREG_v0.3_*.md       sealed pre-registration
+  │
+  ├── analysis/                  D-axis + S-axis analysis scripts
   ├── runners/                   experiment drivers
   ├── probes/                    SAE-free cross-architecture probes
-  ├── verification/              reproducibility (17 + 14 assertions)
-  ├── viz/                       figure generators
+  ├── verification/              reproducibility assertions
   ├── api/                       Fathom Scan API v2 + interactive demo
   │
   ├── findings/                  documented results
@@ -187,11 +218,19 @@ all claims in the paper verified to reproduce exactly from saved JSON data.
 
 ```bibtex
 @article{rodabaugh2026fathom,
-  title   = {Commitment Intensity: A Physics-Grounded Cognitive
-             Measurement from SAE Feature Coherence Trajectories},
+  title   = {Fathom: Cognitive Measurement Instruments for
+             Transformer Internals via SAE Feature Coherence Geometry},
   author  = {Rodabaugh, Alexander},
   year    = {2026},
-  note    = {Zenodo. doi:10.5281/zenodo.19437539}
+  note    = {Zenodo concept DOI. doi:10.5281/zenodo.19326174}
+}
+
+@misc{rodabaugh2026atlas,
+  title  = {The Fathom Cognitive Atlas v0.3: Pre-registered
+            Cross-Architecture Replication of the RLHF Attractor},
+  author = {Rodabaugh, Alexander},
+  year   = {2026},
+  note   = {Zenodo concept DOI. doi:10.5281/zenodo.19326174}
 }
 ```
 

@@ -1,6 +1,14 @@
 # The Fathom Cognitive Atlas
 
-**Status:** v0.1 — seed release
+**Status:** v0.3 — H1 pre-registered replication supported
+**Models:** 6 independent (base, instruct) pairs across 3 families and 2 generations
+**Probe set:** `probe_set_v0.1.json` (SHA-pinned, 90 prompts, 6 categories)
+**Headline result:** RLHF Attractor direction prediction, $n=6$ families,
+mean LOO cosine $= +0.769$, bootstrap 95% CI $[+0.571, +0.869]$,
+permutation $p = 0.0315$ (one-sided, $2000$ perms).
+Pre-registered in `PREREG_v0.3_attractor_replication.md`, analysis in
+`analysis/atlas_attractor_n5.py`, results in `FINDINGS_v0.3.md`.
+
 **Maintained by:** Alexander Rodabaugh (Fathom Intelligence)
 **License:** CC-BY-4.0 on data, MIT on code
 
@@ -132,14 +140,42 @@ Companion to the Fathom ICML 2026 MechInterp Workshop paper.
 
 ## Status and roadmap
 
-- **v0.1 (this release)** — Seed. 3 models (Gemma-2-2B, Llama-3.2-3B,
-  Qwen2.5-3B), 6 categories, ~100 prompts. Proves the protocol.
-- **v0.2** — Expansion to instruct variants (+3 models) and Phi-3.5,
-  OLMo-2, SmolLM2 (+3 models). Probe set held fixed.
-- **v1.0** — Public release. 15+ models across 3+ families, ~150
-  prompts, queryable static website, Zenodo DOI.
-- **v1.1+** — Community submissions. Atlas accepts PRs with new
-  model captures. Each submission is re-captured by maintainer to
-  verify protocol compliance.
+- **v0.1** — 3 base models (Gemma-2-2B, Llama-3.2-3B, Qwen2.5-3B),
+  seed release. See `FINDINGS_v0.1.md`.
+- **v0.2** — Expansion to 6 models (+ 3 instruct variants). RLHF
+  convergence observation. See `FINDINGS_v0.2.md`.
+- **v0.2.1** — Formalized the RLHF Attractor as a first-class
+  object with a leave-one-out direction test. Observed +0.95 / +0.86 / −0.19
+  per-family cosines at n=3. See `FINDINGS_v0.2.1_attractor.md`.
+- **Bulletproof audit** — Added bootstrap CIs, permutation tests, and
+  top-k entropy estimator validation. Exposed that the v0.2.1 claim
+  was structurally below significance at n=3 (permutation floor
+  $p_{\min} = 0.125$). See `FINDINGS_bulletproof_audit.md`.
+- **Entropy bridge** — Found that top-5 entropy from API logprobs
+  tracks full-distribution entropy at shape correlation $r \approx 0.90$
+  across 3 validated open models, opening the path to closed
+  frontier models. See `FINDINGS_entropy_bridge.md`.
+- **Pre-registration SEALED** — `PREREG_v0.3_attractor_replication.md`
+  committed as `e32cc75` before any v0.3 data was captured.
+- **v0.3 (current)** — Expanded to n=6 family pairs (Gemma-2, Gemma-3,
+  Llama-3.2-3B, Llama-3.2-1B, Qwen2.5-3B, Qwen2.5-1.5B). **H1
+  SUPPORTED**: mean LOO cosine +0.769, bootstrap CI [+0.571, +0.869],
+  permutation $p = 0.0315$. All three pre-registered conditions
+  passed without modification. See `FINDINGS_v0.3.md`.
+- **v0.4 (planned)** — Truly independent-family expansion: Phi, OLMo,
+  Mistral. Target: convert n=6 replication into cross-family
+  result with $n \geq 9$.
+- **v1.0 (planned)** — Public release, queryable static website,
+  Zenodo DOI. Target: 15+ models across 5+ architecture families.
+
+## Index of findings documents
+
+- `FINDINGS_v0.1.md` — seed release, 3 base models
+- `FINDINGS_v0.2.md` — expansion to 6 models, RLHF convergence observation
+- `FINDINGS_v0.2.1_attractor.md` — first RLHF Attractor formalization (superseded by v0.3)
+- `FINDINGS_entropy_bridge.md` — top-k entropy proxy for closed-model extension
+- `FINDINGS_bulletproof_audit.md` — rigor audit that caught v0.2.1 over-framing
+- `PREREG_v0.3_attractor_replication.md` — sealed pre-registration for v0.3
+- `FINDINGS_v0.3.md` — **H1 SUPPORTED**, the current headline result
 
 Contributions welcome via PRs to this directory.

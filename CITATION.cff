@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-title: "Fathom: Commitment Intensity via SAE Feature Coherence Trajectories"
-message: "If you use this software, please cite it as below."
+title: "Fathom: Cognitive Measurement Instruments for Transformer Internals via SAE Feature Coherence Geometry"
+message: "If you use this software or the Fathom Cognitive Atlas, please cite it as below."
 type: software
 authors:
   - family-names: Rodabaugh
@@ -9,21 +9,30 @@ authors:
 repository-code: "https://github.com/heyzoos123-blip/fathom"
 url: "https://fathom.darkflobi.com"
 license: MIT
-version: "2.0.0"
-date-released: "2026-04-07"
+version: "3.0.0"
+date-released: "2026-04-10"
 preferred-citation:
   type: article
   authors:
     - family-names: Rodabaugh
       given-names: Alexander
-  title: "Commitment Intensity: A Physics-Grounded Cognitive Measurement from SAE Feature Coherence Trajectories"
+  title: "Fathom: Cognitive Measurement Instruments for Transformer Internals via SAE Feature Coherence Geometry"
   year: 2026
-  doi: "10.5281/zenodo.19437539"
-  url: "https://doi.org/10.5281/zenodo.19437539"
+  doi: "10.5281/zenodo.19326174"
+  url: "https://doi.org/10.5281/zenodo.19326174"
+  notes: "Zenodo concept DOI — resolves to latest version"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.19326174"
+    description: "Concept DOI (always resolves to latest version)"
 keywords:
   - sparse autoencoders
   - mechanistic interpretability
+  - cognitive atlas
   - hallucination detection
   - transformer internals
   - cognitive measurement
   - inverse participation ratio
+  - RLHF alignment
+  - cross-architecture measurement
+  - pre-registration
