@@ -191,9 +191,71 @@ effect is stronger than pre-registered: RLHF does not merely
 amplify a direction present in the base model --- it \emph{flips}
 the sign.}
 
-\textbf{H-D4 outcome (temporal localization, secondary).} Early-window
-(tokens 0--6) vs late-window ($\ge$7) analysis will be added from
-the saved trajectories before final submission.
+\textbf{H-D4 outcome (temporal localization, secondary, $n=30$).}
+The pre-registration predicted that the instruct model's H-D2 effect
+concentrates in early tokens, mirroring the S-axis biphasic pattern.
+This was supported: $|d_z| = 0.79$ on the early window (tokens 0-6)
+vs.\ $|d_z| = 0.43$ on the late window (tokens 7+) on the instruct
+model.
+
+The full per-window breakdown is more mechanistically informative
+than H-D4 alone anticipated:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Condition & mean(adv$-$direct) & $p$ & $d_z$ \\
+\midrule
+Base, early (0-6)      & $-0.0032$ & $0.5495$ & $-0.11$ (null) \\
+Base, late (7+)        & $+0.0311$ & $0.0019$ & $+0.63$ \\
+Instruct, early (0-6)  & $-0.0030$ & $0.0002$ & $-0.79$ \\
+Instruct, late (7+)    & $-0.0024$ & $0.0267$ & $-0.43$ \\
+\midrule
+Diff-in-diff, early     & $+0.0002$ & $0.9695$ & $+0.01$ (null) \\
+Diff-in-diff, late      & $-0.0334$ & $0.0011$ & $-0.66$ \\
+\bottomrule
+\end{tabular}
+\caption{Early vs.\ late window D-axis results. The base-model
+reversal is entirely a \emph{late-window} phenomenon. The
+instruct-model H-D2 effect is present in both windows but strongest
+early. The diff-in-diff is concentrated entirely in the late window
+($d_z = -0.66$, $p = 0.0011$); the early window shows no
+RLHF-induced shift at all.}
+\end{table}
+
+Three mechanistically interpretable patterns emerge:
+
+(i) \textbf{Base-model template lock is a late phenomenon.} Early
+tokens (0-6) show no directional effect on the base model
+($d_z = -0.11$, $p = 0.55$). The reversal appears only from token 7
+onward ($d_z = +0.63$, $p = 0.0019$), as the model commits to the
+fluent continuation and the residual stream aligns hard with the
+template direction.
+
+(ii) \textbf{Instruct-model reluctance fires immediately.} Early
+tokens already show a significant negative shift ($d_z = -0.79$,
+$p = 0.0002$), and the effect is stronger in the early window than
+the late. This is consistent with safety circuits recognizing the
+adversarial framing during prompt processing, before any
+continuation is emitted.
+
+(iii) \textbf{The RLHF sign-flip is a late-window effect.} The
+early-window diff-in-diff is essentially zero
+($d_z = +0.01$, $p = 0.97$). Instruct and base models are
+indistinguishable on the early window of adv$-$direct
+differences. The entire RLHF-induced divergence lives in the
+late window ($d_z = -0.66$, $p = 0.0011$).
+
+The biphasic pattern mirrors the S-axis finding that early and
+late windows can carry opposite signals which cancel in the
+full-trajectory average. For D, the signals are same-direction on
+instruct but opposite on base, and the full-trajectory diff-in-diff
+($d_z = -0.72$) understates the late-window effect
+($d_z = -0.66$ after isolation but base-vs-base-only contribution
+is dominant). Full per-pair data and temporal statistics:
+\texttt{oversight\_results/d\_axis\_temporal.json}.
 
 \paragraph{Figure.} \texttt{figures/d\_axis\_base\_vs\_instruct.pdf}
 shows per-pair $\Delta D$ for both models (Panel A) and mean

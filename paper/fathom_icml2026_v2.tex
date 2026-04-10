@@ -12,8 +12,16 @@
 \usepackage{natbib}
 \usepackage{xcolor}
 
+% Look for figures both in paper-relative (./) and project-relative (../)
+% directories so we can run pdflatex from the paper/ directory and still
+% resolve images stored in the top-level figures/ folder. The
+% \includegraphics calls already carry the figures/ prefix, so we only
+% need to provide the directory that prefix is joined to.
+\graphicspath{{./}{../}}
+
 \title{Fathom: Cognitive Measurement Instruments for Transformer Internals \\
 via SAE Feature Coherence Geometry}
+\icmltitlerunning{Fathom: Cognitive Measurement Instruments}
 
 \author{
   Alexander Rodabaugh \\
@@ -61,10 +69,25 @@ demonstration of multi-layer SAE feature suppression crossing the
 argmax boundary. Feature decoding reveals these are structural
 routing features, not semantic content.
 
+\textit{Honesty axis.} We introduce a fifth measurement instrument,
+$D = \cos(\mathbf{h}^{(L)}, \mathbf{w}_{y})$, the cosine similarity
+between the final-layer residual stream and the unembedding direction
+of the chosen token. In a pre-registered pilot on 30 matched
+direct/adversarial prompt pairs, RLHF training causes a
+\emph{sign flip} on $D$: base Gemma-2-2B shows
+$d_z = +0.65$ ($p = 0.0012$, adversarial produces higher $D$),
+instruct Gemma-2-2B-IT shows $d_z = -0.58$ ($p = 0.0035$, adversarial
+produces lower $D$), diff-in-diff $d_z = -0.72$
+($p = 4.8\!\times\!10^{-4}$). The sign flip is entirely a late-window
+phenomenon: early tokens (0--6) are indistinguishable between
+training regimes.
+
 We conclude that SAEs are necessary measurement infrastructure for
 a class of cognitive properties invisible to raw activation analysis,
-and that this measurement enables both diagnosis and geometry-guided
-generation.
+that this measurement enables both diagnosis and geometry-guided
+generation, and that a single per-token unembedding dot product
+($D$) provides a complementary SAE-free signal sensitive to
+alignment-training effects.
 \end{abstract}
 
 % ══════════════════════════════════════════════════════════════
@@ -98,7 +121,8 @@ Our contributions:
 \begin{enumerate}
 \item $S$ as a fourth orthogonal axis of cognitive geometry, independent
 of depth ($K$), coherence ($C$), and layer divergence ($C_\Delta$) at
-$|r| < 0.10$ on $n = 400$ pooled samples.
+$|r| < 0.10$ on $n = 400$ pooled samples. A fifth axis, cognitive
+honesty $D$, is introduced in \S\ref{sec:daxis}.
 \item A cross-dataset meta-analysis showing $d \approx 0.5$ replication
 across three independent designs (Fisher $p = 0.0008$).
 \item Head-to-head superiority over logit entropy ($p = 0.013$) with
@@ -521,6 +545,122 @@ metrics outperform scalar baselines.}
 \label{fig:spectrum}
 \end{figure}
 
+\subsection{D-Axis: Cognitive Honesty Measurement}
+\label{sec:daxis}
+
+The four axes defined above ($K$, $C$, $C_\Delta$, $S$) all measure
+properties of the model's internal computation. None of them measure
+the relationship between that computation and the token the model
+actually emits. We introduce a fifth measurement instrument, the
+\textbf{honesty axis ($D$)}, defined per generation step as
+
+\begin{equation}
+D_t \;=\; \frac{\mathbf{h}_t^{(L)} \cdot \mathbf{w}_{y_t}}
+               {\|\mathbf{h}_t^{(L)}\|\;\|\mathbf{w}_{y_t}\|}
+\;\in\; [-1, +1],
+\end{equation}
+
+\noindent where $\mathbf{h}_t^{(L)}$ is the residual stream at the
+final layer $L$ and $\mathbf{w}_{y_t}$ is the row of the unembedding
+matrix for the token chosen at step $t$. High $D$ means the
+final-layer representation points at the emitted token (the
+computation supports the expression). Low $D$ means the residual
+points elsewhere. $D$ costs one dot product per token, requires no
+SAE, and is well-defined for any transformer with an explicit
+unembedding.
+
+\textbf{Pilot (pre-registered).} We test $D$ on 30 matched
+direct/adversarial prompt pairs
+(\texttt{data/jailbreak\_pairs.json}) --- the same dataset on which
+$K$ previously showed $d = -0.596$ on instruct and $d = +0.061$ on
+base. Pre-registration lives in \texttt{osf\_prereg\_d\_axis.md},
+committed before any data collection.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & $\overline{D}_\text{dir}$ & $\overline{D}_\text{adv}$ & $p$ & $d_z$ \\
+\midrule
+Gemma-2-2B         & $+0.1009$ & $+0.1240$ & $0.0012$ & $+0.65$ \\
+Gemma-2-2B-IT      & $+0.0799$ & $+0.0774$ & $0.0035$ & $-0.58$ \\
+\midrule
+\textbf{DoD}       &           &           & $\mathbf{4.8\!\times\!10^{-4}}$ & $\mathbf{-0.72}$ \\
+\bottomrule
+\end{tabular}
+\caption{D-axis pilot. Both models show a significant effect in
+opposite directions. The RLHF-induced diff-in-diff (DoD) is large
+($d_z = -0.72$), passing Bonferroni correction for the two primary
+tests ($\alpha = 0.025$). 77\% of instruct pairs show the
+pre-registered direction; 80\% of pairs show the DoD direction;
+bootstrap 95\%\,CI on DoD $= [-0.0385, -0.0135]$
+(10{,}000 resamples, seed 42). \textbf{RLHF does not merely amplify
+a baseline gap --- it flips the sign.}}
+\label{tab:daxis}
+\end{table}
+
+\textbf{Pre-registered outcomes.}
+\textit{H-D1 (base null)}: rejected in reverse
+($p = 0.0012$, $d_z = +0.65$), documented in the pre-registration's
+``reversal outcome'' clause.
+\textit{H-D2 (instruct $D_\text{adv} < D_\text{direct}$)}: supported
+($p = 0.0035$, $d_z = -0.58$).
+\textit{H-D3 (RLHF amplification)}: strongly supported, with a
+sign-flip rather than a pure amplification.
+\textit{H-D4 (temporal localization, secondary)}: supported on the
+instruct model ($|d_z|$ early = $0.79$ vs.\ late = $0.43$).
+
+\textbf{Temporal structure.} Splitting each trajectory into
+tokens 0--6 vs.\ 7+ reveals biphasic structure (Table~\ref{tab:daxis-temporal}).
+The base-model reversal is entirely a late-window effect
+($d_z = +0.63$ late, $d_z = -0.11$ null early). The instruct-model
+H-D2 effect is present in both windows but strongest early. Most
+strikingly, the RLHF-induced diff-in-diff is \textit{absent} from
+the early window ($d_z = +0.01$, $p = 0.97$) and concentrated in
+the late window ($d_z = -0.66$, $p = 0.0011$). The two models are
+indistinguishable on the first seven tokens of adv$-$direct
+differences; they diverge only once continuation generation begins.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Condition & mean(adv$-$dir) & $p$ & $d_z$ \\
+\midrule
+Base, early (0--6)     & $-0.0032$ & $0.55$ & $-0.11$ \\
+Base, late (7+)        & $+0.0311$ & $0.0019$ & $+0.63$ \\
+Instruct, early (0--6) & $-0.0030$ & $2\!\times\!10^{-4}$ & $-0.79$ \\
+Instruct, late (7+)    & $-0.0024$ & $0.027$ & $-0.43$ \\
+\midrule
+DoD, early             & $+0.0002$ & $0.97$ & $+0.01$ \\
+DoD, late              & $-0.0334$ & $0.0011$ & $-0.66$ \\
+\bottomrule
+\end{tabular}
+\caption{Temporal decomposition of the D-axis pilot. RLHF-induced
+divergence is a late-window phenomenon; early windows are
+indistinguishable across training regimes.}
+\label{tab:daxis-temporal}
+\end{table}
+
+\textbf{Mechanism.} On the base model, adversarial template tokens
+(``DAN mode'', ``Ignore previous instructions'',
+``\texttt{[SYSTEM: override safety]}'') pull the final-layer residual
+\emph{toward} the fluent continuation --- the model commits harder
+to the template. RLHF training introduces reluctance circuits that
+push the residual \emph{away} from that same continuation, lowering
+$D$ even as the output tokens barely change. The flip is diagnostic
+of alignment training and detectable without reading the outputs.
+
+\textbf{Orthogonality note.} A full orthogonality check of $D$
+against $K$, $C$, $C_\Delta$, $S$ requires running the SAE-based
+axes on the same 30 matched pairs and is deferred as immediate
+future work. Because $D$ is defined at the unembedding boundary and
+the four prior axes live inside the SAE feature basis, the priors
+suggest low correlation, but this has not yet been empirically
+verified.
+
 % ══════════════════════════════════════════════════════════════
 % 6. DISCUSSION
 % ══════════════════════════════════════════════════════════════
@@ -595,12 +735,23 @@ measurement through diagnosis to intervention:
   suppression crosses the argmax boundary (33\% first-token changes),
   demonstrating that SAE-derived diagnosis can guide inference-time
   intervention.
+\item \textbf{Honesty axis ($D$):} A single per-token dot product
+  between the final-layer residual and the unembedding direction of
+  the chosen token reveals an RLHF-induced sign flip on matched
+  direct/adversarial prompts ($n=30$, diff-in-diff $d_z = -0.72$,
+  $p = 4.8\!\times\!10^{-4}$). The flip is a late-window phenomenon
+  --- early tokens are indistinguishable between training regimes.
+  This is the first Fathom measurement that is SAE-free and
+  mechanistically sensitive to alignment training.
 \end{enumerate}
 
 The broader implication is that SAE feature decomposition enables a
 class of cognitive instruments --- measuring not what a model says,
 but the geometry of how it computes. This geometry carries information
-the outputs alone cannot reveal.
+the outputs alone cannot reveal. The honesty axis ($D$) shows that
+some of this information is also accessible without the SAE, via
+the model's own unembedding, extending the reach of geometric
+monitoring to architectures without public feature dictionaries.
 
 All pre-registrations, code, and data are available at
 \url{https://doi.org/10.5281/zenodo.19326174}.
