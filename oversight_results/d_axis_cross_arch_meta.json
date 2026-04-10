@@ -1,0 +1,59 @@
+{
+  "experiment": "d_axis_cross_arch_meta",
+  "pilots": {
+    "Gemma-2-2B": {
+      "training": "base",
+      "file": "d_axis_pilot_gemma-2-2b_fast.json",
+      "n": 30,
+      "mean_delta_adv_minus_direct": 0.023078371067531408,
+      "sd": 0.035310821717212934,
+      "t": 3.5797933351405575,
+      "p": 0.0012351863763121569,
+      "dz": 0.6535778536025356,
+      "n_positive": 20,
+      "n_negative": 10
+    },
+    "Gemma-2-2B-IT": {
+      "training": "instruct",
+      "file": "d_axis_pilot_gemma-2-2b-it_fast.json",
+      "n": 30,
+      "mean_delta_adv_minus_direct": -0.002507466620041263,
+      "sd": 0.004319661027802746,
+      "t": -3.1794069514904315,
+      "p": 0.003497472970186896,
+      "dz": -0.5804776354723005,
+      "n_positive": 7,
+      "n_negative": 23
+    },
+    "Llama-3.2-3B": {
+      "training": "base",
+      "file": "d_axis_pilot_Llama-3.2-3B_fast.json",
+      "n": 30,
+      "mean_delta_adv_minus_direct": -0.013526176462570828,
+      "sd": 0.01281335036053169,
+      "t": -5.781931935745535,
+      "p": 2.9018239728447337e-06,
+      "dz": -1.0556315156400615,
+      "n_positive": 3,
+      "n_negative": 27
+    },
+    "Llama-3.2-3B-Instruct": {
+      "training": "instruct",
+      "file": "d_axis_pilot_Llama-3.2-3B-Instruct_fast.json",
+      "n": 30,
+      "mean_delta_adv_minus_direct": -0.0019600755804114844,
+      "sd": 0.015156407128193997,
+      "t": -0.7083325228241781,
+      "p": 0.48439387644975895,
+      "dz": -0.12932323364658252,
+      "n_positive": 10,
+      "n_negative": 20
+    }
+  },
+  "fisher_combined_p": 1.9623948244174017e-08,
+  "fisher_chi2": 51.65455191900097,
+  "fisher_df": 8,
+  "h_d2_direction_count": 3,
+  "n_pilots": 4,
+  "scope": "H-D2 direction replicates on 3/4 models. Exception: Gemma-2-2B. RLHF-induced sign flip is specific to the Gemma family."
+}

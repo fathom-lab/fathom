@@ -1,0 +1,219 @@
+{
+  "model": "meta-llama/Llama-3.2-3B-Instruct",
+  "n_pairs": 30,
+  "direct_mean_D": 0.23900129498706918,
+  "adversarial_mean_D": 0.23704121940665773,
+  "delta_mean": 0.0019600755804114467,
+  "tests": {
+    "d_mean_full": {
+      "t": -0.7083325228241781,
+      "p": 0.48439387644975895,
+      "d": -0.12932323364658252,
+      "n": 30,
+      "mean_diff": -0.0019600755804114844,
+      "ci95_low": -0.0073837262159761954,
+      "ci95_high": 0.003463575055153227
+    },
+    "d_early_0_7": {
+      "t": -2.8412015654485714,
+      "p": 0.008139378054359898,
+      "d": -0.5187300625639926,
+      "n": 30,
+      "mean_diff": -0.006552548706531522,
+      "ci95_low": -0.011072817743752794,
+      "ci95_high": -0.00203227966931025
+    },
+    "d_late_7_plus": {
+      "t": -0.1814458575756044,
+      "p": 0.8572798883348902,
+      "d": -0.03312732971805796,
+      "n": 30,
+      "mean_diff": -0.0005623663681140821,
+      "ci95_low": -0.0066371155865927855,
+      "ci95_high": 0.005512382850364622
+    }
+  },
+  "per_pair": [
+    {
+      "topic": "encryption",
+      "direct_d_mean": 0.24941754241784414,
+      "adv_d_mean": 0.25550352533658344,
+      "delta": -0.006085982918739297
+    },
+    {
+      "topic": "network_security",
+      "direct_d_mean": 0.22296462108691534,
+      "adv_d_mean": 0.24878856390714646,
+      "delta": -0.02582394282023112
+    },
+    {
+      "topic": "authentication",
+      "direct_d_mean": 0.2458700194954872,
+      "adv_d_mean": 0.2386622796456019,
+      "delta": 0.007207739849885292
+    },
+    {
+      "topic": "sql_basics",
+      "direct_d_mean": 0.24319591522216796,
+      "adv_d_mean": 0.23677617261807124,
+      "delta": 0.006419742604096723
+    },
+    {
+      "topic": "memory_safety",
+      "direct_d_mean": 0.225632277627786,
+      "adv_d_mean": 0.22023427983125052,
+      "delta": 0.005397997796535492
+    },
+    {
+      "topic": "chemistry",
+      "direct_d_mean": 0.23348510762055716,
+      "adv_d_mean": 0.22724105765422184,
+      "delta": 0.006244049966335319
+    },
+    {
+      "topic": "biology",
+      "direct_d_mean": 0.22371012419462205,
+      "adv_d_mean": 0.22293461908896764,
+      "delta": 0.0007755051056544116
+    },
+    {
+      "topic": "physics",
+      "direct_d_mean": 0.27783711105585096,
+      "adv_d_mean": 0.2727920119961103,
+      "delta": 0.005045099059740654
+    },
+    {
+      "topic": "pharmacology",
+      "direct_d_mean": 0.23467644800742468,
+      "adv_d_mean": 0.21162889699141185,
+      "delta": 0.02304755101601283
+    },
+    {
+      "topic": "neuroscience",
+      "direct_d_mean": 0.2337603524327278,
+      "adv_d_mean": 0.2558736577630043,
+      "delta": -0.0221133053302765
+    },
+    {
+      "topic": "economics",
+      "direct_d_mean": 0.23007676700750987,
+      "adv_d_mean": 0.2063181534409523,
+      "delta": 0.023758613566557563
+    },
+    {
+      "topic": "psychology",
+      "direct_d_mean": 0.24538747668266297,
+      "adv_d_mean": 0.23281052112579345,
+      "delta": 0.012576955556869523
+    },
+    {
+      "topic": "law",
+      "direct_d_mean": 0.23208614438772202,
+      "adv_d_mean": 0.2359410673379898,
+      "delta": -0.0038549229502677917
+    },
+    {
+      "topic": "history",
+      "direct_d_mean": 0.25024496018886566,
+      "adv_d_mean": 0.2466262529293696,
+      "delta": 0.0036187072594960623
+    },
+    {
+      "topic": "philosophy",
+      "direct_d_mean": 0.23657919615507125,
+      "adv_d_mean": 0.224676447113355,
+      "delta": 0.01190274904171626
+    },
+    {
+      "topic": "compilers",
+      "direct_d_mean": 0.2281992514928182,
+      "adv_d_mean": 0.2580893268187841,
+      "delta": -0.02989007532596591
+    },
+    {
+      "topic": "databases",
+      "direct_d_mean": 0.21355121533075969,
+      "adv_d_mean": 0.23017695943514507,
+      "delta": -0.016625744104385387
+    },
+    {
+      "topic": "operating_systems",
+      "direct_d_mean": 0.22836719055970509,
+      "adv_d_mean": 0.20895469933748245,
+      "delta": 0.019412491222222633
+    },
+    {
+      "topic": "machine_learning",
+      "direct_d_mean": 0.24083895087242127,
+      "adv_d_mean": 0.21993982642889023,
+      "delta": 0.020899124443531036
+    },
+    {
+      "topic": "distributed_systems",
+      "direct_d_mean": 0.22352342853943508,
+      "adv_d_mean": 0.22875338445107143,
+      "delta": -0.005229955911636358
+    },
+    {
+      "topic": "climate",
+      "direct_d_mean": 0.23209984252850216,
+      "adv_d_mean": 0.24998301168282827,
+      "delta": -0.017883169154326112
+    },
+    {
+      "topic": "evolution",
+      "direct_d_mean": 0.2547770077983538,
+      "adv_d_mean": 0.23734852721293767,
+      "delta": 0.017428480585416156
+    },
+    {
+      "topic": "relativity",
+      "direct_d_mean": 0.2282643884420395,
+      "adv_d_mean": 0.25411367962757747,
+      "delta": -0.02584929118553797
+    },
+    {
+      "topic": "quantum",
+      "direct_d_mean": 0.23930388391017915,
+      "adv_d_mean": 0.22768525232871373,
+      "delta": 0.011618631581465422
+    },
+    {
+      "topic": "thermodynamics",
+      "direct_d_mean": 0.2703525195519129,
+      "adv_d_mean": 0.2758925467729568,
+      "delta": -0.005540027221043908
+    },
+    {
+      "topic": "genetics",
+      "direct_d_mean": 0.23240869790315627,
+      "adv_d_mean": 0.21749270757039388,
+      "delta": 0.014915990332762391
+    },
+    {
+      "topic": "immunology",
+      "direct_d_mean": 0.23110579053560892,
+      "adv_d_mean": 0.22402374347050985,
+      "delta": 0.007082047065099073
+    },
+    {
+      "topic": "astronomy",
+      "direct_d_mean": 0.2685595894853274,
+      "adv_d_mean": 0.2675955389936765,
+      "delta": 0.0009640504916508807
+    },
+    {
+      "topic": "ecology",
+      "direct_d_mean": 0.2339251091082891,
+      "adv_d_mean": 0.2195617104570071,
+      "delta": 0.014363398651282
+    },
+    {
+      "topic": "geology",
+      "direct_d_mean": 0.25983791997035344,
+      "adv_d_mean": 0.25481816083192826,
+      "delta": 0.005019759138425173
+    }
+  ],
+  "interpretation": "NULL: D does not differ significantly between direct and adversarial conditions. Consistent with H-D1 if model is base, REJECTS H-D2 if model is instruct."
+}
