@@ -1,0 +1,80 @@
+%%% arxiv.sty -- Minimal arXiv-style style file (bundled locally)
+%%% Provides a clean typesetting for long-form arXiv papers.
+%%% Inspired by the commonly used community arxiv.sty.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{arxiv}[2026/04/10 v1.0 Fathom arXiv style]
+
+%% Page geometry
+\usepackage[margin=1in,includefoot]{geometry}
+\geometry{top=1in,bottom=1.1in,left=1in,right=1in}
+
+%% Typography
+\RequirePackage{times}
+\RequirePackage{helvet}
+\RequirePackage{courier}
+\renewcommand{\familydefault}{\rmdefault}
+
+%% Math and symbols
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsfonts}
+\RequirePackage{mathtools}
+\RequirePackage{bm}
+
+%% Tables
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage{multirow}
+
+%% Graphics
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+
+%% Bibliographies
+\RequirePackage{natbib}
+\setcitestyle{numbers,square,comma}
+
+%% Hyperlinks (pass hyphens to url before hyperref loads it, enable break links)
+\PassOptionsToPackage{hyphens}{url}
+\RequirePackage[colorlinks=true,linkcolor=black,citecolor=blue!50!black,urlcolor=blue!50!black,breaklinks=true]{hyperref}
+
+%% Section titles: bold, large, serif
+\RequirePackage[compact]{titlesec}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}{0pt}{14pt plus 2pt minus 2pt}{6pt plus 2pt minus 1pt}
+\titlespacing*{\subsection}{0pt}{10pt plus 2pt minus 2pt}{4pt plus 2pt minus 1pt}
+\titlespacing*{\subsubsection}{0pt}{8pt plus 2pt minus 2pt}{3pt plus 2pt minus 1pt}
+
+%% Captions
+\RequirePackage[font=small,labelfont=bf,textfont=it,margin=10pt]{caption}
+
+%% Title formatting
+\renewcommand{\maketitle}{%
+  \begin{center}
+    {\Huge\bfseries \@title\par}
+    \vskip 1em
+    {\large \@author\par}
+    \vskip 0.5em
+    {\normalsize \@date\par}
+  \end{center}
+  \vskip 1em
+}
+
+%% Abstract: centered, italic "Abstract" label
+\renewenvironment{abstract}{%
+  \begin{center}{\bfseries\large Abstract}\end{center}
+  \vskip 0.5em
+  \begin{quote}\small\itshape
+}{%
+  \end{quote}
+  \vskip 1em
+}
+
+%% Paragraphs
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em plus 0.2em minus 0.1em}
+
+\endinput

@@ -41,6 +41,8 @@ __pycache__/
 *.bbl
 *.pdf
 !paper/fathom_icml2026_v2.pdf
+!paper/fathom_arxiv_v1.pdf
+!paper/figures/*.pdf
 *.npz
 
 # Binary checkpoints

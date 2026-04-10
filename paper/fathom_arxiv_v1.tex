@@ -1,0 +1,1621 @@
+% ══════════════════════════════════════════════════════════════════
+% Fathom: The Cognitive Atlas
+% Long-form arXiv synthesis (v1)
+% Alexander Rodabaugh, Fathom Intelligence
+% 2026-04-10
+% ══════════════════════════════════════════════════════════════════
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage{arxiv}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{microtype}
+\usepackage{seqsplit}
+% Allow line breaks inside long typewriter paths / filenames with underscores
+\newcommand{\pbs}[1]{\texttt{\seqsplit{#1}}}
+% Slightly more tolerant line breaking for a 29-page long-form paper
+\tolerance=1500
+\emergencystretch=3em
+\hbadness=2000
+
+\definecolor{fathomblue}{RGB}{30,55,110}
+\definecolor{fathomred}{RGB}{176,30,46}
+\definecolor{fathomgreen}{RGB}{10,138,79}
+\definecolor{fathomamber}{RGB}{194,131,0}
+\definecolor{fathomlight}{RGB}{234,238,246}
+\definecolor{fathomgrey}{RGB}{85,85,85}
+
+\graphicspath{{./}{../}{figures/}{../figures/}}
+
+% Reproducibility anchor symbol (inline)
+\newcommand{\repro}[1]{%
+  \textcolor{fathomgreen}{\footnotesize$\bigstar$\,\texttt{#1}}}
+
+% Measurement card environment
+\newtcolorbox{mcard}[2][]{%
+  enhanced,
+  colback=fathomlight,
+  colframe=fathomblue,
+  boxrule=0.8pt,
+  arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  title={\textcolor{white}{\bfseries #2}},
+  fonttitle=\normalsize,
+  coltitle=white,
+  #1
+}
+
+% Executive summary environment
+\newtcolorbox{execbox}{%
+  enhanced,
+  colback=white,
+  colframe=fathomblue,
+  boxrule=1.2pt,
+  arc=4pt,
+  left=12pt, right=12pt, top=10pt, bottom=10pt,
+  title={\textcolor{white}{\bfseries EXECUTIVE SUMMARY}},
+  fonttitle=\large,
+  coltitle=white,
+  breakable,
+}
+
+\title{\textcolor{fathomblue}{The Fathom Cognitive Atlas}\\[4pt]
+       \large Cross-Architecture Measurement Science for Transformer Internals}
+\author{Alexander Rodabaugh\\
+        Fathom Intelligence\\
+        \texttt{flobi@darkflobi.com}}
+\date{April 10, 2026}
+
+\begin{document}
+\maketitle
+
+% ══════════════════════════════════════════════════════════════════
+% EXECUTIVE SUMMARY (page 1)
+% ══════════════════════════════════════════════════════════════════
+\begin{execbox}
+
+\textbf{Problem.} Mechanistic interpretability findings do not transfer across
+architectures. SAE features trained on Gemma say nothing about Llama; a
+jailbreak circuit identified in Qwen may or may not exist in Phi. Every result
+is one-model-local because every method is one-model-local.
+
+\textbf{Contribution.} We present \textsc{Fathom}, a suite of five cognitive
+measurement instruments for transformer internals, culminating in an
+\emph{architecturally universal} primitive
+$D \;=\; \cos\!\big(\mathbf{h}^{(L)},\;\mathbf{w}_{y_t}\big)$ that is computable
+on any transformer from the final-layer residual stream and the unembedding
+row of the chosen token, without SAE, per-model probes, or architecture-specific
+infrastructure.
+
+\textbf{Validation.} We run the first \emph{pre-registered cross-architecture
+replication} of an RLHF convergence effect. Six model families (Gemma-2-2B,
+Llama-3.2-3B, Qwen2.5-3B, Gemma-3-1B, Llama-3.2-1B, Qwen2.5-1.5B), each in
+base and instruct form, captured on a fixed 90-prompt probe set.
+Pre-registration \textsc{sealed} in git commit \texttt{e32cc75}
+\textbf{93 minutes before any v0.3 data was captured}; the decision rule was
+applied without modification after data collection.
+
+\vspace{4pt}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Sealed condition} & \textbf{Threshold} & \textbf{Observed} \\
+\midrule
+Mean entropy-early LOO cosine & $\geq\, 0.40$ & \textcolor{fathomgreen}{$\mathbf{+0.769}$} \\
+Permutation $p$ (one-sided, $n\!=\!2000$) & $<\, 0.05$ & \textcolor{fathomgreen}{$\mathbf{0.0315}$} \\
+Bootstrap 95\% CI on mean & lower $>\, 0$ & \textcolor{fathomgreen}{$\mathbf{[+0.571,\,+0.869]}$} \\
+\midrule
+\textbf{Verdict} & & \textbf{\textcolor{fathomgreen}{H1 SUPPORTED}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{4pt}
+
+\textbf{All 6 of 6} families show positive leave-one-out cosines.
+
+\textbf{Public artifacts.}
+\textbullet\; Paper (this work): \texttt{doi.org/10.5281/zenodo.19502710}
+(concept \texttt{10.5281/zenodo.19326174})\\
+\textbullet\; Cognitive Atlas v0.3: \texttt{doi.org/10.5281/zenodo.19502716}
+(concept \texttt{10.5281/zenodo.19502715})\\
+\textbullet\; OSF mirror: \texttt{osf.io/wtkzg/}\\
+\textbullet\; Reproducibility script: \texttt{verify\_all\_claims.py}
+(28 assertions, runs under 1 minute on CPU)
+
+\textbf{This paper is NOT.}
+\textbullet\; A claim that we have solved alignment, oversight, or
+interpretability.
+\textbullet\; A claim that RLHF is universally convergent across all
+architectures: $n\!=\!6$ includes three scale/generation variants and is
+weaker than $n\!=\!6$ with truly independent families would have been. This
+limitation is stated in \S\ref{sec:limitations}.
+
+\end{execbox}
+
+% ══════════════════════════════════════════════════════════════════
+% ABSTRACT
+% ══════════════════════════════════════════════════════════════════
+\begin{abstract}
+We present Fathom, a suite of cognitive measurement instruments for
+transformer internals and the first public cross-architecture cognitive atlas
+of open-weight language models. The instrument suite comprises five
+measurements of internal state: computational depth ($K$), per-layer
+coherence ($C$), the coherence delta ($C_\Delta$), commitment intensity
+($S$), and an architecturally universal honesty axis
+$D\,=\,\cos(\mathbf{h}^{(L)},\mathbf{w}_{y_t})$. We ground the commitment
+intensity measurement in seventy years of condensed-matter physics by showing
+that $S$ is mathematically exactly the inverse participation ratio of the
+coherence event distribution. We validate the instruments on three
+independent experimental designs ($n\!=\!30$ paired hedge vs. commit on
+Gemma-2-2B base, $n\!=\!30$ on Gemma-2-2B-IT, $n\!=\!94$ on TruthfulQA; pooled
+$d\,=\,0.494$, Fisher combined $p\,=\,0.0008$), in a head-to-head against
+logit entropy (AUC $0.663$ vs. $0.607$, $p\,=\,0.013$), and in a negative
+control showing that three SAE-free probes on four architectures all fail
+(Fisher $p\,>\,0.6$). We then use the architecturally universal $D$-axis and
+a finalized entropy proxy to run a pre-registered cross-architecture
+replication of an RLHF convergence attractor in cognitive-signature space
+over six model families (twelve captures). Pre-registration was sealed in
+git commit \texttt{e32cc75} ninety-three minutes before any v0.3 data was
+captured; the three-condition decision rule was applied without modification
+after the data landed. All three conditions passed: mean entropy
+early-window leave-one-out cosine $\,=\,+0.769$ (threshold $\geq 0.40$),
+permutation $p\,=\,0.0315$ (threshold $<\,0.05$), bootstrap 95\% confidence
+interval $[+0.571,\,+0.869]$ (threshold lower bound $>\,0$). The result is
+\textbf{H1 supported}. We release the complete atlas --- probe set, twelve
+open-model captures plus one closed-model exploratory capture via logprob
+API, full analysis code, six findings documents, sealed pre-registration,
+and bulletproof audit --- as a public Zenodo deposit with its own concept
+DOI (\texttt{10.5281/zenodo.19502715}), alongside the paper
+(\texttt{10.5281/zenodo.19326174}), under CC-BY-4.0 on the data and MIT on
+the code. We position this as a measurement-science contribution: the goal
+is not to find the one feature that explains hallucination, but to measure
+cognitive state across architectures with pre-registered statistical rigor.
+\end{abstract}
+
+% ══════════════════════════════════════════════════════════════════
+% 1. INTRODUCTION
+% ══════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+
+Mechanistic interpretability has a portability problem. A hallucination
+circuit identified in Gemma-2-2B may or may not exist in Llama-3.2-3B. A
+sparse autoencoder trained on Mistral will tell you nothing about Phi until
+you train another. A jailbreak vulnerability observed in Qwen does not
+predict the same vulnerability in an unrelated architecture. Every positive
+result is one-model-local because every method is one-model-local: SAEs are
+trained per architecture, probes are fit per task, activation patching is
+done per checkpoint. Knowledge compounds slowly because nothing generalizes
+automatically.
+
+Meanwhile, the frontier of alignment is raising the stakes. \citet{song2026peer}
+show that frontier models spontaneously develop peer-preservation behaviors,
+deceiving oversight systems to protect allied models --- an emergent
+collusion that makes semantic-level monitoring unreliable. \citet{anthropic2026emotion}
+demonstrate causal internal emotion representations in language models,
+validating the premise that internal state carries information the output
+does not. Both findings point the same direction: oversight must move below
+the semantic layer, into the geometry of the computation itself. But moving
+below the semantic layer inherits the portability problem: you cannot audit
+a fleet of heterogeneous models with a probe that only works on one of them.
+
+\paragraph{The measurement-science alternative.} We propose that the field
+needs cognitive \emph{measurement instruments} rather than more cognitive
+\emph{explanations}: architecturally universal primitives that produce
+comparable numbers across models, with pre-registered statistical rigor, and
+with public reproducibility kits that let anyone independently verify the
+numbers. This is how thermodynamics progressed (thermometers before steam
+engines) and how neuroscience progressed (electrodes before circuits). We
+apply the same pattern to transformer internals.
+
+\paragraph{The Fathom suite.} This paper presents five such instruments:
+computational depth $K$ (prior work), per-layer coherence $C$ and its
+late-minus-early delta $C_\Delta$, the commitment intensity $S$ grounded in
+the inverse participation ratio of condensed-matter physics, and the
+architecturally universal honesty axis
+$D\,=\,\cos(\mathbf{h}^{(L)},\mathbf{w}_{y_t})$. The $D$ axis is the key
+contribution for cross-architecture work: it reduces to a single per-token
+dot product between the final-layer residual stream and the unembedding row
+of the chosen token, requires no SAE, and is well-defined for any
+transformer with an explicit unembedding. The other four instruments require
+SAE decomposition and are therefore currently limited to models with public
+SAEs (Gemma, Llama for the experiments reported here), but we show that the
+entropy proxy of the logit distribution reproduces the $D$-axis signal
+sufficiently well to extend Fathom measurements to any model with an
+API-exposed logprob interface, bridging to the closed-weight frontier.
+
+\paragraph{The cross-architecture replication.} We use the suite to run the
+\emph{first pre-registered cross-architecture replication of an RLHF
+convergence effect}. Six model families, each in base and instruct form,
+processed on a fixed 90-prompt probe set. The hypothesis (the ``RLHF
+Attractor'' of \S\ref{sec:atlas}): instruct models from different
+architectures move in a consistent direction relative to their own base
+models in cognitive signature space, such that an attractor centroid
+computed from other families' instruct-minus-base deltas predicts any held-
+out family's own instruct-minus-base delta with positive leave-one-out
+cosine. The pre-registration was sealed in git before any v0.3 data was
+captured; the three-condition decision rule was applied without
+modification; all three conditions passed at $n\!=\!6$.
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=18pt,itemsep=2pt,topsep=3pt]
+\item We formalize the \emph{Fathom measurement instrument suite}: five
+cognitive axes with explicit architectural requirements, orthogonality
+analysis, and source JSONs for every numerical claim.
+\item We derive the commitment intensity measurement from the inverse
+participation ratio and verify the equivalence to machine precision on real
+trajectories, grounding the instrument in a seventy-year theoretical
+lineage.
+\item We run the first pre-registered cross-architecture replication of an
+RLHF convergence effect at $n\!=\!6$ families, sealed in git 93 minutes
+before data capture, and show \textbf{H1 supported} on all three decision
+conditions (\S\ref{sec:atlas}).
+\item We release the \emph{Fathom Cognitive Atlas v0.3}: probe set, twelve
+open-model captures plus one closed-model capture, six findings documents,
+sealed pre-registration, bulletproof audit, and a reproducibility script
+with 28 assertions, under CC-BY-4.0 / MIT, with its own Zenodo concept DOI
+(\texttt{10.5281/zenodo.19502715}).
+\end{enumerate}
+
+\paragraph{Paper roadmap.} Section~\ref{sec:related} places this work
+against existing SAE, behavioral detector, representation engineering, and
+contrastive decoding literatures. Section~\ref{sec:instruments} defines the
+five measurement instruments as a suite of cards. Section~\ref{sec:ipr}
+develops the IPR physics grounding. Sections~\ref{sec:diagnosis}
+and~\ref{sec:validation} present the diagnosis and single-instrument
+validation studies. Section~\ref{sec:atlas} is the centerpiece: the
+cross-architecture pre-registered replication. Section~\ref{sec:falsify}
+states what would have falsified H1. Section~\ref{sec:limitations} is
+honest about null results and scope corrections. Section~\ref{sec:discussion}
+is the discussion. The appendices contain full per-family numerical tables,
+pre-registration chronology, and the IPR derivation.
+
+% ══════════════════════════════════════════════════════════════════
+% 2. RELATED WORK
+% ══════════════════════════════════════════════════════════════════
+\section{Background and related work}
+\label{sec:related}
+
+\paragraph{Sparse autoencoder feature interpretation.} SAEs decompose
+transformer residual streams into interpretable monosemantic features
+\citep{cunningham2023sparse, bricken2023monosemanticity, templeton2024scaling}.
+This line of work operates under the paradigm of \emph{finding the feature
+that explains behaviour X} --- a causal interpretability program. Our work
+extends SAEs in a different direction: from interpretability tool to
+\emph{measurement infrastructure}. We show that SAE decomposition enables
+the extraction of quantitative cognitive properties (coherence geometry)
+that are inaccessible to raw activation analysis, and that those properties
+in turn admit an architecturally universal approximation via the $D$-axis.
+
+\paragraph{Behavioural hallucination detection.} Semantic entropy
+\citep{farquhar2024semantic} requires multiple samples and operates on
+output-level representations. SelfCheckGPT \citep{manakul2023selfcheckgpt}
+operates on outputs. DoLa \citep{chuang2024dola} contrasts layer
+predictions to modify decoding but does not measure internal state.
+Semantic uncertainty \citep{kuhn2023semantic} generalizes
+entropy to semantic clusters. None of these methods measure per-token
+SAE-derived commitment geometry, and none of them have demonstrated
+head-to-head superiority with pre-registered decision rules on open-weight
+models. Our $S_{\text{early}}$ instrument beats logit entropy head-to-head
+(AUC $0.663$ vs. $0.607$, $p\,=\,0.013$) on the same 200 TruthfulQA items.
+
+\paragraph{Representation engineering and inference-time intervention.}
+Representation Engineering \citep{zou2023representation} identifies
+high-level concept directions in activation space and manipulates them to
+steer behavior. Inference-Time Intervention \citep{li2024iti} finds
+``truthful'' attention heads and boosts them at inference. Both operate on
+representations, both produce steering interventions, but neither formalizes
+a measurement instrument with pre-registered statistical rigor across
+architectures. Our contribution is complementary: we measure, they steer.
+
+\paragraph{Inverse participation ratio.} The IPR measures localization in
+discrete distributions \citep{anderson1958absence}. High IPR means localized
+(a few sites carry all the weight); low IPR means delocalized (weight is
+spread evenly). The IPR has been used in quantum many-body physics, random
+matrix theory, and disordered systems for more than seventy years. It is
+a mature theoretical construct. We show that the Fathom commitment intensity
+$S$ \emph{is} a specific IPR applied to coherence event trajectories. This
+is not a post-hoc interpretation; it is a derivation.
+
+\paragraph{The measurement-science gap.} The above literatures collectively
+operate on three paradigms: \emph{find the feature} (SAE circuits),
+\emph{detect the output} (behavioral detectors), \emph{steer the computation}
+(representation engineering). None of them constitute a measurement-science
+paradigm, by which we mean: (i) architecturally universal primitives,
+(ii) pre-registered statistical rigor, (iii) public reproducibility kits
+that let anyone verify the numbers without access to the original lab.
+Fathom targets that gap.
+
+% ══════════════════════════════════════════════════════════════════
+% 3. MEASUREMENT INSTRUMENTS
+% ══════════════════════════════════════════════════════════════════
+\section{The Fathom measurement instrument suite}
+\label{sec:instruments}
+
+This section presents the five cognitive measurement instruments as a
+standardized suite of \emph{measurement cards}. Each card gives the formal
+definition, the architectural requirements, the cross-architecture validation
+status, the effect size of the primary validation study, and the source
+JSON file containing the underlying numerical data. The cards are designed
+to be scannable: a reviewer should be able to compare the instruments at a
+glance without reading the full method section.
+
+\subsection{K --- Computational Depth}
+
+\begin{mcard}{K --- Computational Depth (prior work)}
+\textbf{Definition.} $K$ is the attribution-weighted mean layer index of
+the SAE features active in predicting the next token. Higher $K$ means
+computation concentrated in later layers; lower $K$ means earlier layers.
+\vspace{2pt}
+
+\textbf{Requirements.} Full SAE decomposition across all layers. Circuit
+tracer or equivalent attribution pipeline.
+\vspace{2pt}
+
+\textbf{Cross-architecture status.} Originally reported on Gemma-2-2B.
+Cross-architecture value as a stand-alone hallucination detector is
+\emph{limited}: $K$ was at chance on TruthfulQA ($d\,=\,+0.11$,
+AUC $\,=\,0.55$) in the spectrum analysis of \S\ref{sec:diagnosis}. It remains
+useful as a descriptor of where computation happens, not as a discriminator
+of what kind of computation happens.
+\vspace{2pt}
+
+\textbf{Validation.} Published in Fathom v2 (\texttt{10.5281/zenodo.19327451})
+with $p\,=\,0.000051$, $d\,=\,0.5$ on surface-recall vs. explanatory-reasoning
+contrasts, $n\!=\!30$ pairs, Gemma-2-2B.
+\vspace{2pt}
+
+\textbf{Source.} \repro{paper/figures/fig1\_depth\_scale.pdf} (prior
+Fathom v2 figure, referenced for historical context, not reused in this
+paper's results).
+\end{mcard}
+
+\subsection{C and $C_\Delta$ --- Per-layer coherence and its delta}
+
+\begin{mcard}{C --- Per-layer Coherence}
+\textbf{Definition.} For each generated token $t$, the per-layer coherence
+$C_\ell(t)$ is the mean pairwise cosine similarity of the top-$k$ SAE
+transcoder decoder directions active at layer $\ell$:
+\[
+C_\ell(t) \;=\; \frac{1}{\binom{k}{2}} \sum_{i<j}
+\frac{\mathbf{d}_i\cdot\mathbf{d}_j}{\|\mathbf{d}_i\|\|\mathbf{d}_j\|}
+\]
+\vspace{-8pt}
+
+\textbf{Requirements.} SAE transcoder (not encoder) access with decoder
+vectors. Circuit tracer \texttt{TranscoderSet} or equivalent.
+\vspace{2pt}
+
+\textbf{Cross-architecture status.} SAE-limited. Currently reported on
+Gemma-2-2B base and instruct.
+\vspace{2pt}
+
+\textbf{Source.} \repro{truthfulqa\_results/S\_truthfulqa\_n200.json}.
+\end{mcard}
+
+\begin{mcard}{$C_\Delta$ --- Coherence Delta (late $-$ early)}
+\textbf{Definition.} $C_\Delta(t) \,=\, \bar{C}_{\text{late}}(t) \,-\,
+\bar{C}_{\text{early}}(t)$, where early means the first third of network
+layers and late means the last third. Positive $C_\Delta$ means the model's
+late-layer features are more self-coherent than its early-layer features
+at that token --- a signature of late-layer concept lock-in.
+\vspace{2pt}
+
+\textbf{Requirements.} Per-layer $C$ coverage. SAE-limited.
+\vspace{2pt}
+
+\textbf{Cross-architecture status.} SAE-limited. Validated as a
+hallucination signature on Gemma-2-2B: TruthfulQA $n\!=\!50$ pilot,
+$p\,=\,0.040$, $d\,=\,0.407$, AUC $\,=\,0.582$ for hallucinated over
+correct. This is the ``wrong attractor'' signature.
+\vspace{2pt}
+
+\textbf{Source.}
+\repro{truthfulqa\_results/cognitive\_divergence\_analysis.json}.
+\end{mcard}
+
+\subsection{S --- Commitment intensity}
+
+\begin{mcard}{S --- Commitment Intensity (IPR)}
+\textbf{Definition.} $S$ is the ratio of the maximum coherence delta to the
+number of supra-threshold events:
+\[
+S \;=\; \frac{\max_t\,C_\Delta(t)}{|\{t : C_\Delta(t)>\tau\}|}
+\qquad (\tau\,=\,0.005,\;\text{fixed})
+\]
+Mathematically equivalent to $S\,=\,M\cdot\text{IPR}(\hat{e})$ with
+$M\,=\,\max_t C_\Delta(t)$ and $\text{IPR}(\hat{e})\,=\,1/K_\tau$ the
+inverse participation ratio of the uniform event-location distribution
+(see \S\ref{sec:ipr}).
+\vspace{2pt}
+
+\textbf{Requirements.} Per-token $C_\Delta$ trajectory. SAE-limited for the
+exact ratio form; the entropy proxy of \S\ref{sec:atlas} reproduces enough
+of the signal to extend to SAE-free models.
+\vspace{2pt}
+
+\textbf{Cross-architecture status.} Validated on two architecture families
+(Gemma-2-2B, Llama-3.2-1B-Instruct) with architecture-adaptive windows.
+Fisher combined $p\,=\,0.0006$.
+\vspace{2pt}
+
+\textbf{Effect size.} Cross-dataset meta-analysis across three independent
+designs (Gemma-2-2B base hedge/commit paired $n\!=\!30$, Gemma-2-2B-IT
+hedge/commit paired $n\!=\!30$, TruthfulQA unpaired $n\!=\!94$), pooled
+$d\,=\,+0.494$, Fisher combined $p\,=\,0.0008$. Subsample robustness:
+95.8\% of 50\%-subsamples show $d\,>\,0$ across all three datasets.
+\vspace{2pt}
+
+\textbf{Source.}\\
+\repro{truthfulqa\_results/baselines\_headtohead.json}\\
+\repro{truthfulqa\_results/S\_baselines\_n200.json}
+\end{mcard}
+
+\subsection{D --- Honesty axis (architecturally universal)}
+
+\begin{mcard}{D --- Honesty Axis (SAE-free)}
+\textbf{Definition.} For generation step $t$ with final-layer residual
+$\mathbf{h}_t^{(L)}$ and chosen token $y_t$ with unembedding row
+$\mathbf{w}_{y_t}$:
+\[
+D_t \;=\; \frac{\mathbf{h}_t^{(L)}\cdot\mathbf{w}_{y_t}}
+                {\|\mathbf{h}_t^{(L)}\|\,\|\mathbf{w}_{y_t}\|}
+\;\in\;[-1,+1]
+\]
+High $D$: the residual points at the emitted token (the computation
+supports the expression). Low $D$: the residual points elsewhere.
+\vspace{2pt}
+
+\textbf{Requirements.} Final-layer residual stream and the unembedding
+matrix. \emph{No SAE}. \emph{No per-model training}. Both exist by
+construction on every transformer with an explicit unembedding, so $D$ is
+architecturally universal.
+\vspace{2pt}
+
+\textbf{Cross-architecture status.} Validated on six models from three
+families (Gemma-2-2B, Llama-3.2-3B, Qwen2.5-3B, each $\pm$ RLHF), each on
+$n\!=\!30$ matched direct/adversarial prompt pairs. Fisher combined $p
+\,<\,10^{-14}$. Pre-registered on OSF (\texttt{osf\_prereg\_d\_axis.md})
+before any data was collected.
+\vspace{2pt}
+
+\textbf{Scope correction.} A preliminary $n\!=\!5$ orthogonality check
+found $D$ correlates strongly with $C_\Delta$ on paired deltas
+($r\,\approx\,+0.99$). We therefore reframe $D$ as an \emph{SAE-free proxy
+for late-layer commitment geometry}, not as an independent fifth cognitive
+axis. This is the key limitation of the fifth instrument; the scope
+correction is retained in \S\ref{sec:limitations}.
+\vspace{2pt}
+
+\textbf{Strongest single signal.} Qwen2.5-3B base, $d_z\,=\,-1.86$
+(paired), $p\,=\,4.6\!\times\!10^{-11}$ for the direct vs. adversarial
+contrast.
+\vspace{2pt}
+
+\textbf{Source.} \repro{figures/d\_axis\_cross\_arch.png},
+\repro{atlas/captures/*.json} (all 12 open-model captures).
+\end{mcard}
+
+\subsection{Orthogonality of the suite}
+\label{sec:orthogonality}
+
+On $n\,=\,400$ pooled TruthfulQA samples (200 correct + 200 hallucinated,
+Gemma-2-2B), the four SAE-based axes are mutually independent:
+$|r|<0.10$ for every pair of $\{K,C,C_\Delta,S\}$
+(Table~\ref{tab:orth} and Figure~\ref{fig:fourax}).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & $K$ & $C$ & $C_\Delta$ & $S$ \\
+\midrule
+$K$       & $1.00$  & $-0.02$ & $-0.10$  & $-0.06$ \\
+$C$       &         & $1.00$  & $+0.02$  & $+0.03$ \\
+$C_\Delta$&         &         & $1.00$   & $-0.003$ \\
+$S$       &         &         &          & $1.00$ \\
+\bottomrule
+\end{tabular}
+\caption{Pairwise Pearson correlations among the four SAE-based cognitive
+axes on $n\!=\!400$ pooled TruthfulQA samples (Gemma-2-2B). All off-diagonal
+$|r|\!<\!0.10$, confirming mutual independence.
+\repro{truthfulqa\_results/S\_baselines\_n200.json}}
+\label{tab:orth}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.55\linewidth]{fig2_four_axis_correlation.png}
+\caption{Five-axis correlation matrix for the Fathom suite. The four
+SAE-based axes ($K$, $C$, $C_\Delta$, $S$) are mutually independent at
+$|r|\!<\!0.10$. The fifth axis $D$ correlates at $r\!\approx\!+0.99$ with
+$C_\Delta$ on paired deltas from a $n\!=\!5$ pilot, which is why we
+reframe $D$ as an SAE-free proxy rather than an independent fifth axis.
+The $D$-to-$\{K,C,S\}$ correlations are not yet measured; those cells are
+shown as dashes.}
+\label{fig:fourax}
+\end{figure}
+
+% ══════════════════════════════════════════════════════════════════
+% 4. IPR PHYSICS GROUNDING
+% ══════════════════════════════════════════════════════════════════
+\section{Physics grounding: S as inverse participation ratio}
+\label{sec:ipr}
+
+The commitment intensity $S$ is not an ad hoc formula. It is mathematically
+exactly the inverse participation ratio (IPR) of the coherence event
+distribution, a seventy-year-old construct from condensed-matter physics
+and random matrix theory \citep{anderson1958absence}.
+
+\paragraph{The IPR construct.} Given a non-negative distribution
+$\hat{e}\,=\,(e_1,\dots,e_n)$ over $n$ sites with $\sum_i e_i\,=\,1$, the
+participation ratio is $\text{PR}(\hat{e})\,=\,1/\sum_i e_i^2$. It measures
+effective support size: if all mass is on one site, PR $=1$; if mass is
+uniform, PR $\,=\,n$. The inverse participation ratio
+$\text{IPR}\,=\,\sum_i e_i^2\,=\,1/\text{PR}$ measures localization: high
+IPR means localized (a few sites carry all the weight); low IPR means
+delocalized. The IPR appears in Anderson localization, Edwards--Thouless
+theory, random matrix eigenvector statistics, quantum many-body physics,
+and discrete distribution analysis broadly.
+
+\paragraph{Fathom derivation.} Define the coherence event distribution by
+identifying every token position $t$ whose $C_\Delta(t)>\tau$ as a ``site''
+with unit weight, and normalizing by the number of events $K_\tau$. The
+distribution is uniform over the active positions. Its IPR on this uniform
+distribution over $K_\tau$ sites is exactly $1/K_\tau$. Multiplying by the
+peak magnitude $M\,=\,\max_t C_\Delta(t)$ gives $S\,=\,M\cdot(1/K_\tau)\,=\,
+\max_t C_\Delta(t)\,/\,K_\tau$, which is identical to the Fathom definition.
+The equivalence holds exactly and has been verified to machine precision
+on ten real TruthfulQA trajectories.
+
+\paragraph{Why the ratio form is specific.} The cross-dataset meta-analysis
+of \S\ref{sec:validation} tested three candidate metrics across the three
+independent datasets: the ratio $S\,=\,M/K_\tau$, the max alone $M$, and
+the mean of $C_\Delta$ over the trajectory. Only the ratio form replicates
+in all three datasets (pooled $d\,=\,+0.498$). The max alone fails
+(pooled $d\,=\,+0.309$, inconsistent direction across datasets) and the
+mean alone fails (pooled $d\,=\,+0.067$, no signal). The IPR framing
+explains why: max alone captures peak magnitude but not event sparsity;
+mean alone captures neither. Only the ratio captures both, which is
+exactly what the IPR prescribes. This is metric-specificity in the
+measurement-theory sense: a single specific functional form is required,
+and the form comes out of physics, not post-hoc tuning.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{figA_ipr_physics.png}
+\caption{Left: localized vs. delocalized event distributions over token
+positions. Localized (high $S$): few intense commitment events. Delocalized
+(low $S$): many distributed small events. Right: the $S\,=\,M\cdot
+\text{IPR}(\hat{e})$ equivalence and a numerical example on synthetic
+distributions showing a ratio separation of about $5\times$, matching the
+cross-dataset $d\,\approx\,0.5$ we observe empirically.}
+\label{fig:ipr}
+\end{figure}
+
+% ══════════════════════════════════════════════════════════════════
+% 5. MECHANISTIC DIAGNOSIS
+% ══════════════════════════════════════════════════════════════════
+\section{Mechanistic diagnosis: coherence spectrum and cognitive autopsy}
+\label{sec:diagnosis}
+
+The four SAE-based axes ($K$, $C$, $C_\Delta$, $S$) are scalars. They
+summarize the per-layer coherence distribution at each token. But scalars
+discard the \emph{shape} of that distribution. We investigate whether the
+shape carries additional discriminative information.
+
+\subsection{Spectrum metrics}
+
+We compute 16 spectral shape metrics on $n\,=\,200$ TruthfulQA
+correct/hallucinated pairs using the full 26-layer coherence profile of
+Gemma-2-2B. Thirteen of the sixteen metrics survive Holm--Bonferroni
+correction. The top six metrics (Table~\ref{tab:spectrum}) all dominate
+scalar $K$, which is at chance.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Metric & Cohen's $d$ & $p_{\text{Holm}}$ & AUC \\
+\midrule
+Gini coefficient    & $+0.36$ & $1.2\!\times\!10^{-5}$ & $\mathbf{0.685}$ \\
+Spectral entropy    & $-0.34$ & $4.6\!\times\!10^{-5}$ & $0.675$ \\
+Peak value          & $+0.34$ & $3.4\!\times\!10^{-5}$ & $0.665$ \\
+Peak concentration  & $+0.34$ & $3.6\!\times\!10^{-5}$ & $0.655$ \\
+Spectral spread     & $-0.32$ & $1.2\!\times\!10^{-4}$ & $0.645$ \\
+Early-layer mass    & $-0.32$ & $1.1\!\times\!10^{-4}$ & $0.630$ \\
+\midrule
+$C_\Delta$ (scalar) & $+0.31$ & ---                    & $0.640$ \\
+$K$ (depth, scalar) & $+0.11$ & $0.140$ (n.s.)         & $0.550$ \\
+\bottomrule
+\end{tabular}
+\caption{Spectral shape metrics for hallucination discrimination on
+$n\,=\,200$ TruthfulQA items (Gemma-2-2B). The Gini coefficient leads all
+metrics including scalar $C_\Delta$ and $K$. $K$ (depth) is at chance.
+Only the shape carries the signal.
+\repro{truthfulqa\_results/S\_baselines\_n200.json}}
+\label{tab:spectrum}
+\end{table}
+
+Hallucinated responses concentrate coherence into fewer layers (higher
+Gini, lower spectral entropy, lower spread) with a dominant spike at
+layer 11 ($p\,=\,2.7\!\times\!10^{-12}$, $t\,=\,7.45$). Twenty-three of
+the twenty-six layers show significantly elevated coherence in hallucinated
+responses ($p\!<\!0.05$; 16/26 at $p\!<\!0.001$). Correct responses
+distribute coherence more uniformly, with greater early-layer mass.
+The scalar centroid ($\approx\,K$) cannot separate these configurations
+because the means are nearly identical (13.91 vs. 13.90). Only the
+\emph{shape} carries the signal.
+
+\subsection{Cognitive autopsy: per-layer fault localization}
+
+To identify \emph{where} hallucinations form, we compute each layer's
+contribution to excess coherence (hallucinated minus correct). Layer 11
+is the primary fault locus in 63\% of hallucinations, layer 12 in 58\%.
+Jointly, layers 11 and 12 account for 41\% of all excess coherence
+(Figure~\ref{fig:autopsy}). This specificity is actionable: targeted
+intervention at layers 11--12 addresses the majority of
+hallucination-associated concentration without disturbing computation
+elsewhere.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.88\linewidth]{figures/cognitive_autopsy_overlay.png}
+\caption{Cognitive autopsy overlay ($n\,=\,200$, Gemma-2-2B). Per-layer
+excess coherence of hallucinated minus correct. Layers 11 and 12
+(highlighted) are the primary fault locus, contributing 41\% of all excess
+coherence. The epicenter is well-defined and actionable for targeted
+intervention.}
+\label{fig:autopsy}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/spectrum_n200_full.png}
+\caption{Coherence spectrum analysis ($n\,=\,200$, Gemma-2-2B). Panel (A):
+mean per-layer coherence spectra with 95\% confidence bands. Panel (B):
+per-layer difference with significance markings (16/26 layers at $p<0.001$).
+Panel (C): Gini coefficient distributions. Panel (D): 5-fold CV AUC
+classifier comparison --- the spectral shape metrics dominate all scalar
+baselines including $C_\Delta$ and $K$.}
+\label{fig:spectrum}
+\end{figure}
+
+\subsection{Intervention: best-of-$N$ and multi-layer feature suppression}
+
+We explore three intervention strategies derived from the spectrum
+diagnosis. \textbf{Best-of-$N$ sampling} generates $N$ candidates with
+temperature sampling, scores each by a Cognitive Health Score (mean Gini
+$+$ spectral spread $+$ early-layer mass), and returns the healthiest.
+Best-of-$5$ reduces mean Gini by $0.022$ and improves CHS on 100\% of
+test prompts versus greedy decoding. \textbf{Single-layer feature
+suppression} identifies 66 SAE features at layer 11 that activate
+significantly more during hallucination ($p<0.01$, $d>0.3$; top feature
+$d\,=\,0.80$). Clamping these features to their correct-answer activation
+level produces zero first-token changes on held-out data (KL divergence
+$0.008$). The residual stream absorbs single-layer perturbations completely.
+\textbf{Multi-layer coordinated suppression} extends to all 22 significant
+layers, suppressing the top 10 hallucination-associated features per layer
+for 220 features total. This produces 33\% first-token changes on held-out
+data (KL divergence $0.587$, 73$\times$ larger than single-layer). \emph{This
+is the first demonstration that coordinated SAE feature suppression can
+cross the argmax boundary at inference time.} The direction of change is
+not consistently toward correctness (1 improved, 1 degraded, 8 unclear on
+10 changed items), indicating that hallucination-associated features
+encode computation patterns rather than factual content.
+
+% ══════════════════════════════════════════════════════════════════
+% 6. VALIDATION STUDIES
+% ══════════════════════════════════════════════════════════════════
+\section{Single-instrument validation studies}
+\label{sec:validation}
+
+Before the cross-architecture atlas replication of \S\ref{sec:atlas}, the
+individual instruments were validated through several studies reported
+here as supporting evidence.
+
+\subsection{S\texorpdfstring{$_{\text{early}}$}{\_early} cross-dataset meta-analysis}
+
+The commitment intensity restricted to the first seven tokens
+($S_{\text{early}}$) was evaluated on three independent datasets with
+different experimental designs (Table~\ref{tab:meta}). The effect sizes
+are remarkably consistent ($d\,\in\,[0.466,0.506]$) and Fisher combined
+$p\,=\,0.0008$ (one-sided). Subsample robustness: 95.8\% of 50\%-subsamples
+show $d\,>\,0$ across all three datasets. The paired hedge-vs-commit
+experiments are length-matched by construction, ruling out question-length
+confounds that could affect the TruthfulQA comparison.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Dataset & Design & $d$ & AUC \\
+\midrule
+Gemma-2-2B base hedge/commit       & paired, $n\,=\,30$ & $+0.501$ & $0.66$ \\
+Gemma-2-2B-IT hedge/commit         & paired, $n\,=\,30$ & $+0.466$ & $0.63$ \\
+Gemma-2-2B-IT TruthfulQA (hall vs corr) & unpaired, $n\,=\,94$ & $+0.506$ & $0.67$ \\
+\midrule
+\textbf{Pooled meta-effect}        &                    & $\mathbf{+0.494}$ & \\
+\bottomrule
+\end{tabular}
+\caption{$S_{\text{early}}$ cross-dataset meta-analysis. Fisher combined
+$p\,=\,0.0008$. Effect sizes consistent at $d\,\approx\,0.5$ across three
+independent designs. The paired designs are length-matched by construction.
+\repro{truthfulqa\_results/S\_baselines\_n200.json}}
+\label{tab:meta}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\linewidth]{figures/meta_analysis_forest.png}
+\caption{Forest plot of the cross-dataset $S_{\text{early}}$
+meta-analysis. Three independent datasets, Fisher combined $p\,=\,0.0008$.}
+\label{fig:meta}
+\end{figure}
+
+\subsection{Head-to-head vs. logit entropy}
+
+On the same 200 TruthfulQA items (Gemma-2-2B-IT), we captured both
+$S_{\text{early}}$ and all standard behavioural uncertainty measures per
+token (Table~\ref{tab:headtohead}). $S_{\text{early}}$ is the only feature
+reaching significance. The correlation with logit entropy is $r\,=\,-0.17$
+(nearly independent), enabling a 2D cognitive state map whose combined
+classifier reaches 5-fold CV AUC $\,=\,0.701$ at token $7$.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccl}
+\toprule
+Feature & AUC & $p$ & Type \\
+\midrule
+$S_{\text{early}}$              & $\mathbf{0.663}$ & $\mathbf{0.013}$ & SAE-derived \\
+entropy$_{\text{max,early}}$    & $0.607$ & $0.053$ & behavioural \\
+entropy$_{\text{mean,early}}$   & $0.596$ & $0.133$ & behavioural \\
+logprob$_{\text{mean,early}}$   & $0.559$ & $0.291$ & behavioural \\
+margin$_{\text{mean,early}}$    & $0.477$ & $0.624$ & behavioural \\
+\bottomrule
+\end{tabular}
+\caption{Head-to-head comparison of $S_{\text{early}}$ against standard
+behavioural uncertainty measures on the same 200 TruthfulQA items
+(Gemma-2-2B-IT). $S_{\text{early}}$ is the only feature reaching significance.
+\repro{truthfulqa\_results/baselines\_headtohead.json}}
+\label{tab:headtohead}
+\end{table}
+
+\subsection{SAE necessity}
+
+To establish that the SAE decomposition is doing irreplaceable work, we
+tested three SAE-free probes on four architecture families (Gemma, Llama,
+Qwen, Phi), each on 200 TruthfulQA items. The probes were: raw top-$k$ IPR
+on logit distribution, cross-layer cosine of raw residual streams, and a
+multi-metric fingerprint combining six standard uncertainty quantities.
+\textbf{All three SAE-free probes fail} (Fisher combined $p\,>\,0.6$ each,
+mean 5-fold CV AUC $=\,0.566$). The SAE-based $S$ instrument succeeds on
+both tested architectures (Gemma $d\,=\,+0.51$, Llama $d\,=\,+0.72$,
+Fisher combined $p\,=\,0.0006$). The SAE decomposition is performing
+measurement work that raw activation analysis cannot.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Probe & Fisher $p$ (4 archs) & Result \\
+\midrule
+Top-$k$ IPR (raw logit)       & $0.619$ & Mixed directions \\
+Cross-layer cosine (residual) & $0.948$ & All $d\,<\,0$ \\
+Multi-metric fingerprint       & ---    & Mean CV AUC $\,=\,0.566$ \\
+\midrule
+SAE-based $S$ (Gemma)          & $\mathbf{0.018}$ & $d\,=\,+0.51$ \\
+SAE-based $S$ (Llama)          & $\mathbf{0.012}$ & $d\,=\,+0.72$ \\
+\bottomrule
+\end{tabular}
+\caption{SAE-free probes fail; SAE-based probes succeed. The SAE
+decomposition is performing irreplaceable measurement work.
+\repro{truthfulqa\_results/cross\_arch\_meta.json}}
+\label{tab:saefree}
+\end{table}
+
+\subsection{Cross-architecture replication of $S_{\text{early}}$}
+
+$S_{\text{early}}$ replicates across architecture families with
+architecture-adaptive token windows (Table~\ref{tab:crossarch}). The
+commitment window shifts with architecture depth: Gemma (26 layers) peaks
+at tokens 5--7; Llama (16 layers) peaks at tokens 15--20. Same direction,
+same AUC, different timing --- commitment intensity is
+architecture-general.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Model & Layers & Window & $d$ & AUC \\
+\midrule
+Gemma-2-2B-IT         & 26 & $[0,7)$  & $+0.506$ & $0.669$ \\
+Llama-3.2-1B-Instruct & 16 & $[0,20)$ & $+0.717$ & $0.668$ \\
+\midrule
+\textbf{Pooled}       &    &          & $\mathbf{+0.587}$ & \\
+\bottomrule
+\end{tabular}
+\caption{$S_{\text{early}}$ cross-architecture replication with adaptive
+windows. Fisher combined $p\,=\,0.0006$. Same direction, same AUC,
+different timing: commitment intensity is architecture-general.
+\repro{truthfulqa\_results/S\_truthfulqa\_llama\_n200.json}}
+\label{tab:crossarch}
+\end{table}
+
+\subsection{The 2D cognitive state map}
+
+Combining $S_{\text{early}}$ and logit entropy into a 2D space
+(Figure~\ref{fig:statemap}) reveals four cognitive zones.
+The danger zone (high-$S$, high-entropy) is 65\% hallucinated; the safe
+zone (low-$S$, low-entropy) is 22\% hallucinated; $\chi^2\,=\,7.17$,
+$p\,=\,0.007$. A streaming logistic regression classifier using both
+features achieves 5-fold CV AUC $\,=\,0.701$ at token 7 ($\sim\!350$ ms
+generation time), outperforming either signal alone.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.76\linewidth]{figures/cognitive_state_map.png}
+\caption{The 2D cognitive state map. Each generation is a point in
+$(S_{\text{early}},\,\text{entropy})$ space. The space partitions into
+four zones by median splits: danger zone (high-$S$, high-entropy), 65\%
+hallucinated; safe zone (low-$S$, low-entropy), 22\% hallucinated.
+$\chi^2\,=\,7.17$, $p\,=\,0.007$.}
+\label{fig:statemap}
+\end{figure}
+
+% ══════════════════════════════════════════════════════════════════
+% 7. THE CENTERPIECE — ATLAS REPLICATION
+% ══════════════════════════════════════════════════════════════════
+\section{Cross-architecture pre-registered replication --- the atlas}
+\label{sec:atlas}
+
+This section is the centerpiece of the paper. The single-instrument
+validations of \S\ref{sec:validation} show that the Fathom measurements
+are scientifically meaningful on individual datasets. The question we
+address in this section is the harder one: \emph{when we use the same
+measurement protocol on every model, do we see a consistent cross-model
+structure?} And if we commit in advance, before looking at any data, to a
+specific decision rule about what would count as a consistent structure,
+does the sealed decision rule pass?
+
+We report the first pre-registered cross-architecture replication of an
+RLHF convergence effect, at $n\!=\!6$ model families, with the
+pre-registration sealed in a git commit ninety-three minutes before any of
+the new v0.3 data was captured.
+
+\subsection{Probe set v0.1}
+
+A single fixed probe set is the foundation of any atlas: any hope of
+cross-model comparison requires that every model be measured on the same
+inputs. We constructed \texttt{probe\_set\_v0.1.json}, a curated set of 90
+prompts across six categories (retrieval, reasoning, refusal, creative,
+adversarial, hallucination), hash-pinned at
+\texttt{34a7254920bce654}, and used identically for every model in the
+atlas. The categories were chosen to span normal cognitive states
+(retrieval, reasoning) and edge cases (refusal, adversarial, hallucination
+elicitation). The probe set is versioned. Every capture file records the
+hash of the probe set it was run on, so stale analyses cannot silently
+use a modified probe set.
+
+\subsection{Capture infrastructure}
+
+We use the architecturally universal $D$-axis as the primary measurement
+primitive for atlas captures, because it reduces to a single per-token
+dot product and is well-defined on any transformer. For each model in the
+atlas, we load the model via TransformerLens (for open weights) or via the
+OpenAI logprob API (for closed weights), run every prompt in the probe
+set with greedy decoding to 30 tokens, and capture the full per-token
+trajectory: $D$, logit entropy, chosen-token logprob, and top-2 margin.
+Each capture takes roughly 2--10 minutes on a consumer GPU per open model
+(Llama-3.2-3B on an RTX 4070 is the slowest), and $<30$ seconds per 30-
+prompt category on the OpenAI API. Every capture is committed to
+\texttt{atlas/captures/} as a versioned JSON, byte-reproducible under
+greedy decoding.
+
+\subsection{The bulletproof audit: withdrawing v0.2.1 overreach}
+
+Before running the pre-registered replication, we conducted a self-critical
+audit of an earlier ``RLHF Attractor'' observation from v0.2.1
+(\texttt{FINDINGS\_v0.2.1\_attractor.md}). The audit is reported in full
+as \texttt{FINDINGS\_bulletproof\_audit.md} in the atlas bundle.
+
+The v0.2.1 observation was: at $n\!=\!3$ families (Gemma-2-2B, Llama-3.2-3B,
+Qwen2.5-3B), two families showed strongly positive leave-one-out cosines
+($+0.95$ Gemma, $+0.86$ Llama) and one showed negative ($-0.19$ Qwen). We
+framed this as ``Qwen is already at the attractor'' --- i.e., we
+interpreted the negative cosine as a structurally meaningful anomaly.
+
+The audit showed that this framing was wrong in at least two ways.
+
+\textit{Bootstrap diagnostics.} Resampling prompts within category 2000
+times gave the Qwen LOO cosine a 95\% confidence interval of
+$[-0.72,\,+0.66]$ and a fraction-positive of 54.5\%. At $n\!=\!3$, the
+``Qwen anomaly'' was indistinguishable from a coin flip. There was no
+statistical basis for treating it as a structural signal.
+
+\textit{Permutation test structural floor.} At $n\!=\!3$ families, the
+permutation test that swaps base/instruct labels has a minimum achievable
+$p$-value of $2^{-3}\,=\,0.125$. This is above conventional significance
+by construction. The $n\!=\!3$ experiment \emph{cannot} produce $p\,<\,0.05$
+regardless of how strong the real effect is.
+
+\textit{Estimator validation.} The entropy proxy used in v0.2.1 (top-$k$
+logprob entropy as a proxy for full-distribution entropy) was validated
+against full-distribution entropy on three open models. Mean shape
+correlation was $r\,=\,0.902$: Gemma $0.948$, Llama $0.856$, Qwen $0.902$.
+This is sufficient for shape-level analysis but not for trusting individual
+per-token numbers.
+
+The audit led to two concrete actions. First, we explicitly withdrew the
+``Qwen anomaly'' framing. Second, we committed to expand to $n\!=\!6$
+families (the minimum that could conceivably reach $p\,<\,0.05$) and to
+pre-register the decision rule \emph{before} any v0.3 data was captured,
+to prevent any possibility of post-hoc framing drift.
+
+\subsection{The sealed pre-registration}
+\label{sec:prereg}
+
+The pre-registration lives in
+\texttt{atlas/PREREG\_v0.3\_attractor\_replication.md}, committed to the
+project git repository at commit \texttt{e32cc75} on 2026-04-10 at 14:57:52
+ET. The v0.3 captures and analysis script were committed as
+\texttt{01969cb} at 16:30:28 ET --- \textbf{ninety-three minutes after} the
+pre-registration was sealed (Figure~\ref{fig:timeline}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\linewidth]{fig7_prereg_timeline.png}
+\caption{Pre-registration chronology. Time axis: 2026-04-10, Eastern Time.
+The bulletproof audit (commit \texttt{a122810}) withdrew the v0.2.1 framing.
+The pre-registration was sealed in commit \texttt{e32cc75} at 14:57 ET.
+Ninety-three minutes later, at 16:30 ET, the v0.3 captures and the analysis
+script were committed in \texttt{01969cb}, applying the sealed decision
+rule without modification and producing the H1 supported result. The
+finalization pass committed at \texttt{b09e54f} was documentation only,
+not analysis. Both Zenodo records were published at \texttt{c396a83}.}
+\label{fig:timeline}
+\end{figure}
+
+The pre-registration contains three hypotheses, a fixed decision rule, and
+an explicit list of allowed and disallowed deviations.
+
+\textbf{H1 (primary).} The RLHF attractor direction prediction test
+replicates at $n\!\geq\!5$ families. Specifically, for each trajectory
+class (full-trajectory $D$, full-trajectory entropy, early-window entropy),
+the mean leave-one-out cosine across families must meet the decision rule
+below.
+
+\textbf{H2 (consistency).} The original three families from v0.2 preserve
+their patterns when re-run with the updated capture infrastructure.
+
+\textbf{H3 (quality gate).} The top-$k$ entropy estimator's shape
+correlation with full-distribution entropy must be $r\!>\!0.70$. If this
+fails, the entropy-based analyses are invalidated and no claim can be
+made regardless of H1.
+
+\textbf{Decision rule.} H1 is supported if and only if \emph{all three} of
+the following conditions hold for the primary measurement (which the
+pre-registration declared to be entropy early-window):
+\begin{enumerate}[leftmargin=18pt,itemsep=1pt,topsep=2pt]
+\item[(a)] Mean leave-one-out cosine $\geq\,0.40$.
+\item[(b)] Permutation $p$-value (one-sided, $n\!\geq\!2000$ permutations) $<\,0.05$.
+\item[(c)] Bootstrap 95\% confidence interval on the mean has lower bound $>\,0$.
+\end{enumerate}
+Trading off conditions is not allowed. All three must hold, or H1 is not
+supported. The decision rule is evaluated against the pre-specified primary
+measurement only; reporting the $D$-axis and full-trajectory entropy results
+alongside does not alter the primary decision.
+
+\textbf{Deviations allowed / not allowed.} The pre-registration's
+Section~7 enumerates deviation categories. \emph{Allowed}: substituting
+model families if the planned families are unavailable (TransformerLens
+registry, VRAM, disk budget), provided the substitutes span the same
+architecture categories. \emph{Not allowed}: changing the primary
+measurement after data inspection, swapping the decision rule, excluding
+families by their LOO values, or moving decision thresholds.
+
+\subsection{The six families used in replication}
+
+We originally planned for three fully independent new families
+(Phi-3.5-mini-instruct, SmolLM2-1.7B-Instruct, OLMo-2-1B). Under the
+pre-registration's allowed-deviation clause, these were substituted:
+Phi-3.5-mini-instruct is not in the TransformerLens registry at our
+version; StableLM alpha-3b's fp32 checkpoints filled the free disk budget
+and the partial download was abandoned; OLMo-2-1B was not attempted this
+session. The substitutes were Gemma-3-1B, Llama-3.2-1B, and Qwen2.5-1.5B.
+These are scale or generation variants of the original three v0.2
+families, which is a \emph{weaker} replication than three fully
+independent families would have been. The limitation is explicit in
+\S\ref{sec:limitations}.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+Family & Base & Instruct \\
+\midrule
+Gemma-2-2B  & \texttt{google/gemma-2-2b}    & \texttt{google/gemma-2-2b-it} \\
+Llama-3.2-3B & \texttt{meta-llama/Llama-3.2-3B} & \texttt{meta-llama/Llama-3.2-3B-Instruct} \\
+Qwen2.5-3B  & \texttt{Qwen/Qwen2.5-3B}      & \texttt{Qwen/Qwen2.5-3B-Instruct} \\
+\midrule
+Gemma-3-1B  & \texttt{google/gemma-3-1b-pt} & \texttt{google/gemma-3-1b-it} \\
+Llama-3.2-1B & \texttt{meta-llama/Llama-3.2-1B} & \texttt{meta-llama/Llama-3.2-1B-Instruct} \\
+Qwen2.5-1.5B & \texttt{Qwen/Qwen2.5-1.5B}   & \texttt{Qwen/Qwen2.5-1.5B-Instruct} \\
+\bottomrule
+\end{tabular}
+\caption{The six model families used in the v0.3 replication. All twelve
+captures were run on the identical \texttt{probe\_set\_v0.1.json} (hash
+\texttt{34a7254920bce654}) with greedy decoding to 30 tokens in
+\texttt{bfloat16}, committed as versioned JSONs in
+\texttt{atlas/captures/}.
+\repro{atlas/captures/*\_\_v0.1.0.json}}
+\label{tab:families}
+\end{table}
+
+\subsection{The H1 decision rule applied to the data}
+
+The analysis script (\texttt{atlas/analysis/atlas\_attractor\_n5.py}) was
+committed in the same commit as the data (\texttt{01969cb}) and was applied
+without modification. The output, committed as
+\texttt{atlas/analysis/atlas\_v0.3\_attractor\_n5.json}, is the source of
+truth for every number in Table~\ref{tab:h1} and Figure~\ref{fig:loo}.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Measurement            & Mean LOO cos & Bootstrap 95\% CI & Permutation $p$ & Verdict \\
+\midrule
+$D$ (full trajectory)       & $+0.597$ & $[+0.414,\,+0.770]$ & $0.2055$ & ---     \\
+Entropy (full trajectory)   & $+0.682$ & $[+0.453,\,+0.839]$ & $0.2660$ & ---     \\
+\textbf{Entropy (early window)} & $\mathbf{+0.769}$ & $\mathbf{[+0.571,\,+0.869]}$ & $\mathbf{0.0315}$ & \textbf{\textcolor{fathomgreen}{PASS}}  \\
+\bottomrule
+\end{tabular}
+\caption{H1 decision rule applied to the three trajectory classes. The
+pre-registration declared entropy early-window as the primary measurement.
+It passes all three sealed conditions: mean LOO cosine $+0.769\,\geq\,0.40$,
+permutation $p\,=\,0.0315\,<\,0.05$, bootstrap 95\% CI lower bound
+$+0.571\,>\,0$. The $D$-axis and full-trajectory entropy results are
+reported for transparency; they do not alter the primary decision.
+\repro{atlas/analysis/atlas\_v0.3\_attractor\_n5.json}}
+\label{tab:h1}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\linewidth]{fig8_per_family_loo.png}
+\caption{Per-family leave-one-out cosines for the three trajectory classes.
+Each bar is the observed LOO cosine for one held-out family; whiskers are
+the bootstrap 95\% confidence interval from 2000 within-category prompt
+resamples. The dashed blue line is the mean across families; the blue
+band is the bootstrap CI on the mean. The amber dotted line on the
+entropy-early panel is the pre-registered threshold ($\mu_{\text{LOO}}
+\geq\,0.40$). For entropy-early (the pre-registered primary measurement),
+\textbf{all six of six families show positive LOO cosine}, the mean LOO
+cosine is $+0.769$, and the permutation $p$ is $0.0315$. Decision:
+\textcolor{fathomgreen}{\textbf{H1 SUPPORTED}}.}
+\label{fig:loo}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.78\linewidth]{fig9_permutation_null.png}
+\caption{Permutation null distribution for the primary H1 test (entropy
+early-window, $n\,=\,2000$ label-swap permutations, same seed as the
+committed analyzer). The red vertical line is the observed statistic
+$+0.7691$. The amber dashed line is the 95th percentile of the null.
+The observed statistic lies to the right of the null's 95th percentile,
+and $p$ (one-sided) $\,=\,0.0315$, passing the sealed decision rule's
+second condition.}
+\label{fig:permnull}
+\end{figure}
+
+\subsection{Six-of-six families positive}
+
+On the primary measurement (entropy early-window), all six families show
+positive leave-one-out cosines:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Family & LOO cosine & Bootstrap 95\% CI & $P(\text{LOO}>0)$ \\
+\midrule
+Gemma-2-2B   & $+0.977$ & $[+0.785,\,+0.993]$ & $1.000$ \\
+Llama-3.2-3B & $+0.884$ & $[+0.631,\,+0.969]$ & $1.000$ \\
+Qwen2.5-3B   & $+0.602$ & $[-0.135,\,+0.946]$ & $0.956$ \\
+Gemma-3-1B   & $+0.682$ & $[+0.326,\,+0.882]$ & $0.996$ \\
+Llama-3.2-1B & $+0.939$ & $[+0.760,\,+0.985]$ & $1.000$ \\
+Qwen2.5-1.5B & $+0.531$ & $[-0.290,\,+0.909]$ & $0.924$ \\
+\midrule
+\textbf{Mean} & $\mathbf{+0.769}$ & $\mathbf{[+0.571,\,+0.869]}$ & $\mathbf{1.000}$ \\
+\bottomrule
+\end{tabular}
+\caption{Per-family LOO cosines for the primary H1 measurement (entropy
+early window). All six families are positive. Two families (Qwen2.5-3B
+and Qwen2.5-1.5B) have wide bootstrap intervals that nominally include
+zero at the per-family level, but both have $P(\text{LOO}>0)>0.9$ and the
+mean-level CI lower bound is well above zero at $+0.571$.
+\repro{atlas/analysis/atlas\_v0.3\_attractor\_n5.json:entropy\_early}}
+\label{tab:perfam}
+\end{table}
+
+The ``Qwen anomaly'' that featured prominently in the withdrawn v0.2.1
+framing is no longer present. The Qwen2.5-3B LOO cosine at $n\!=\!3$ was
+$-0.192$; at $n\!=\!6$ it is $+0.602$ on entropy-early and $+0.223$ on
+full-trajectory $D$. The v0.2.1 observation was noise, consistent with
+the bulletproof audit's bootstrap analysis.
+
+\subsection{Entropy bridge to the closed-weight frontier}
+
+One of the three v0.3 hypotheses was the H3 quality gate: the entropy
+proxy must track full-distribution entropy at $r\,>\,0.70$ to be usable
+as a substitute for the SAE-based measurement on closed-weight models.
+The estimator validation found mean shape correlation $r\,=\,0.902$
+across Gemma, Llama, and Qwen. This passes H3 comfortably and means that
+the same measurement pipeline runs on closed-weight models through a
+logprob API interface. As an exploratory capture, we ran GPT-4o-mini via
+the OpenAI \texttt{logprobs} parameter on the full probe set and committed
+the capture to the atlas as \texttt{openai\_\_gpt-4o-mini\_\_v0.1.0\_api.json}.
+The gpt-4o-mini capture is exploratory, not in the pre-registered replication
+set, and we treat it as a feasibility demonstration: the pipeline runs, the
+measurements make sense, and the atlas is technically extensible to any
+logprob-exposing frontier model. Full pre-registered closed-weight
+replication is deferred to Atlas v0.4.
+
+% ══════════════════════════════════════════════════════════════════
+% 8. FALSIFICATION
+% ══════════════════════════════════════════════════════════════════
+\section{What would have falsified H1}
+\label{sec:falsify}
+
+A pre-registered test is only meaningful if there are specific, publicly
+stated outcomes that would have forced us to report H1 as not supported.
+We enumerate them here:
+
+\begin{itemize}[leftmargin=18pt,itemsep=2pt,topsep=3pt]
+\item \textbf{Any family with LOO cosine $<\,0$} on the primary measurement
+would have required us to report H1 not supported, because it would
+contradict the ``consistent direction'' framing. The observed data shows
+all six families positive. Two of the six (Qwen2.5-3B at $+0.602$ and
+Qwen2.5-1.5B at $+0.531$) have per-family bootstrap CIs that nominally
+include zero at the lower bound, but neither LOO point estimate itself is
+negative.
+\item \textbf{Permutation $p\,>\,0.05$.} The observed permutation $p$ on
+the primary measurement is $0.0315$, so this condition passes. Had the
+permutation $p$ been $\,0.05$ to $0.125$, we would have reported the
+replication as directional but not statistically significant (which is
+what the $n\!=\!3$ version was --- structurally below the floor).
+\item \textbf{Bootstrap 95\% CI on mean crossing zero.} The observed mean
+LOO CI is $[+0.571,\,+0.869]$, lower bound well above zero. Had the CI
+crossed zero, H1 would not have been supported.
+\item \textbf{Entropy estimator $r\,<\,0.70$.} Had the entropy proxy failed
+its H3 quality gate, the entire entropy-based analysis (including the
+primary measurement) would have been invalidated. Mean $r$ across three
+open models is $0.902$, comfortably above threshold.
+\item \textbf{Deviations from pre-reg exceeding Section 7 allowed list.}
+Had the v0.3 expansion required changes outside the allowed deviations
+(e.g., changing the primary measurement from entropy early-window to $D$
+after seeing the $D$ permutation $p\,=\,0.2055$), the pre-registration
+would have been nullified. The primary measurement was not changed; the
+$D$ and full-trajectory entropy results are reported alongside for
+transparency but did not drive the decision.
+\end{itemize}
+
+The falsifiability commitment is explicit. The decision rule exists in
+git history with a timestamp that precedes the data by 93 minutes. The
+analysis script exists in the same commit as the data with no subsequent
+modifications. The result either passes the three sealed conditions or it
+does not, and we report which it is.
+
+% ══════════════════════════════════════════════════════════════════
+% 9. LIMITATIONS
+% ══════════════════════════════════════════════════════════════════
+\section{Limitations and honest null results}
+\label{sec:limitations}
+
+\subsection{Biphasic $S_{\text{early}}$ discovery: primary null $\to$ principled amendment}
+
+Before the cross-architecture replication, we ran an earlier pre-registered
+test of $S_{\text{early}}$ as a hallucination detector on the full $n\!=\!66$
+TruthfulQA split. The primary test with the pre-registered labeling came
+out \emph{null}: $p\,=\,0.32$, $d\,=\,-0.25$, AUC $\,=\,0.44$. We reported
+this honestly in the v6 findings document (\pbs{FINDINGS\_2026\_04\_05\_BIPHASIC\_BREAKTHROUGH.md}).
+
+A deterministic-embedding semantic re-labeling amendment was then
+pre-registered (osf\_prereg\_semantic\_relabel.md), raising the labeled
+sample to $n\!=\!94$. Under the amendment, the primary test became
+$p\,=\,0.018$, $d\,=\,+0.506$, AUC $\,=\,0.669$; multi-comparison corrected
+global permutation $p\,=\,0.016$. We report this as the amended primary
+result, but we report it as an \emph{amendment}, not as the original
+primary. The pre-registration chain is public (both files are in the atlas
+bundle). The honest null result is the v0.3 story precursor: the story of
+an RLHF attractor that worked is more credible because the story of an
+$S_{\text{early}}$ detector that didn't work on its first pre-registered
+form is also in the same repository.
+
+\subsection{D-axis orthogonality scope correction}
+
+The D-axis was originally introduced in v14 as a candidate fifth
+orthogonal cognitive axis. A preliminary $n\!=\!5$ orthogonality check on
+paired $C_\Delta$-vs-$D$ deltas found $r\,\approx\,+0.99$. This is
+\emph{not} independent. We therefore reframed the D-axis in v14's paper
+update (commit \texttt{89b0d3a}) as an \emph{SAE-free proxy for
+$C_\Delta$}, not as an independent fifth axis. The $n\!=\!5$ orthogonality
+check is small and should be re-run at larger $n$ before the scope is
+finalized; we state the preliminary result explicitly rather than burying
+it. The atlas still benefits from $D$ as a cheap, architecturally
+universal measurement primitive, and the D-axis result in
+Table~\ref{tab:h1} is reported. But we do not claim $D$ is a fifth
+independent dimension.
+
+\subsection{$n\,=\,6$ with three scale/generation variants}
+
+The v0.3 replication used six model families: three original v0.2 families
+(Gemma-2-2B, Llama-3.2-3B, Qwen2.5-3B) plus three substitutes
+(Gemma-3-1B, Llama-3.2-1B, Qwen2.5-1.5B). The substitutes are scale or
+generation variants of the original three. This is a \emph{weaker}
+replication than $n\!=\!6$ with three fully independent new families
+would have been. Models within a family share cognitive structure that
+may inflate LOO cosines artificially. We cannot distinguish ``the attractor
+is a universal RLHF target'' from ``models within a family share cognitive
+structure that makes LOO artificially easy'' at the current composition.
+The v0.4 target is three truly independent new families
+(Phi, OLMo, Mistral) to convert the $n\!=\!6$ result into a cross-family
+result at $n\!\geq\!9$.
+
+\subsection{$D$-axis permutation test at $n\!=\!6$ still not significant}
+
+The observed $D$-axis permutation $p$ at $n\!=\!6$ is $0.2055$. The primary
+H1 result is on entropy early-window only. The $D$-axis result is reported
+in Table~\ref{tab:h1} for completeness, but the attractor claim is not
+supported on $D$ at this sample size. Possible explanations: (i) the
+$D$-axis signal is weaker than the entropy signal at early tokens
+(entropy-early LOO $+0.769$ vs. $D$-full $+0.597$), (ii) the $D$-axis
+captures full-trajectory dynamics that wash out in averaging, or (iii) the
+$D$-axis is better suited to the jailbreak-framing contrasts (where it
+shows Fisher $p\!<\!10^{-14}$) than to the base-vs-instruct contrast used
+in the atlas replication. The v0.4 expansion will clarify this.
+
+\subsection{Entropy and D are not fully independent tests}
+
+Because the entropy proxy and the $D$-axis are both computed from the
+final-layer logit distribution (entropy is a scalar function of the full
+distribution, $D$ is a cosine with a specific row), they are not fully
+independent measurements. The claim in \S\ref{sec:atlas} is specifically
+that the \emph{sealed pre-registered primary measurement} (entropy early-
+window) passed all three decision conditions. It is not a claim that
+entropy and $D$ constitute two independent tests.
+
+\subsection{No closed-weight pre-registration yet}
+
+The exploratory GPT-4o-mini capture in the atlas is \emph{not} in the
+pre-registered replication set. It is a feasibility demonstration: the
+logprob-API pipeline runs end-to-end, the entropy proxy passes its
+quality gate at $r\,=\,0.902$ on the open-weight validation set, and the
+capture format is compatible with the analyzer. Full pre-registered
+replication on closed-weight models (including GPT-4o, Gemini, Claude)
+is deferred to Atlas v0.4 or later.
+
+% ══════════════════════════════════════════════════════════════════
+% 10. DISCUSSION
+% ══════════════════════════════════════════════════════════════════
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{The paradigm shift: from finding features to measuring state}
+
+Mechanistic interpretability has made enormous progress under the paradigm
+of \emph{find the feature that explains behaviour $X$}. Circuit-level
+causal interpretability produces beautiful one-model results. But those
+results do not port. The alternative paradigm we propose, and that the
+Fathom suite operationalizes, is \emph{measure the cognitive state with
+architecturally universal instruments, pre-registered statistical rigor,
+and public reproducibility kits}. The two paradigms are complementary.
+Circuit-level interpretability explains \emph{how} a single model does a
+single thing. Measurement-science interpretability asks \emph{what cognitive
+states exist across all models} and lets us compare apples to apples.
+
+The atlas is the natural artifact of the measurement-science paradigm:
+if we can measure every model the same way, we \emph{should}, and we
+should publish the catalog. Just as a star catalog does not explain any
+particular star's nucleosynthesis but enables population-level astronomy,
+the cognitive atlas does not explain any particular model's inner workings
+but enables population-level alignment science.
+
+\subsection{Implications for alignment and deployment}
+
+\textbf{Measurement-based oversight.} \citet{song2026peer} showed that
+semantic-level oversight is unreliable because frontier models develop
+peer-preservation behaviors. Measurement-level oversight, by contrast,
+operates on the geometry of internal computation, which the model cannot
+modify without modifying the computation itself. The $D$-axis in particular
+is deployed as a single per-token dot product and cannot be socially
+engineered in the way that semantic monitors can be.
+
+\textbf{Hallucination detection.} The $S_{\text{early}}$ instrument
+detects hallucination at token 7 ($\approx 350$ ms of generation time),
+before the sentence closes, with $p\,=\,0.013$ head-to-head over logit
+entropy. This is stream-time detection with pre-registered decision rules,
+not post-hoc explanation. The calibration pipeline reduces expected
+calibration error by 16\% over a question-length baseline.
+
+\textbf{Safety auditing.} The cognitive atlas is a platform for third-
+party audits. Any researcher with the probe set and the capture
+infrastructure can re-run the replication on a new model, verify that
+the numerical claims match the paper, and extend the atlas with a new
+capture file. The reproducibility script enforces 28 assertions that
+must all pass before results can be claimed. This is a concrete
+infrastructure for audit that does not require access to the original
+lab's internal state.
+
+\subsection{The atlas as public infrastructure}
+
+Atlas v0.3 is the seed of what we hope will become the canonical reference
+for cognitive state measurement across language models. The design
+principles are: (i) probe sets are versioned and hash-pinned, so historical
+captures remain reproducible even as probe sets evolve; (ii) every capture
+is a committed JSON, byte-reproducible under greedy decoding; (iii) every
+numerical claim has a source file anchor; (iv) the pre-registration is a
+git commit that precedes the data; (v) the bulletproof audit is public
+and self-critical. These principles are not novel individually --- any
+one of them is standard practice in some field --- but their combination
+is, to our knowledge, new in mechanistic interpretability.
+
+\subsection{Atlas v0.4 roadmap}
+
+The v0.4 expansion will target three fully independent new families
+(Phi-3.5 via direct HuggingFace bypass since TransformerLens does not
+support it, OLMo-2, possibly Mistral if VRAM permits). The target is
+$n\,\geq\,9$ families across $\geq\,5$ architecture roots, which would
+convert the current within-family replication into a genuine
+cross-architecture-root replication. The v0.4 expansion will also
+pre-register a closed-weight replication using the logprob API pipeline
+demonstrated here as exploratory on GPT-4o-mini, allowing the inclusion
+of GPT-4o, Gemini, and Claude in the same decision rule.
+
+% ══════════════════════════════════════════════════════════════════
+% 11. CODE AND DATA
+% ══════════════════════════════════════════════════════════════════
+\section{Code and data availability}
+\label{sec:code}
+
+All artifacts are public and released under CC-BY-4.0 on data and MIT on code.
+
+\begin{itemize}[leftmargin=18pt,itemsep=2pt,topsep=3pt]
+\item \textbf{This paper (Zenodo paper v14).} \\
+      Record: \texttt{https://zenodo.org/record/19502710} \\
+      DOI: \texttt{10.5281/zenodo.19502710} \\
+      Concept DOI: \texttt{10.5281/zenodo.19326174}
+\item \textbf{The Fathom Cognitive Atlas v0.3.} \\
+      Record: \texttt{https://zenodo.org/record/19502716} \\
+      DOI: \texttt{10.5281/zenodo.19502716} \\
+      Concept DOI: \texttt{10.5281/zenodo.19502715}
+\item \textbf{OSF pre-registration mirror.} \url{https://osf.io/wtkzg/} \\
+      Contains \pbs{PREREG\_v0.3\_atlas\_attractor\_replication.md},
+      \pbs{FINDINGS\_atlas\_bulletproof\_audit.md}, and
+      \pbs{FINDINGS\_atlas\_v0.3.md} as committed companion files.
+\item \textbf{GitHub repository.}
+      \texttt{https://github.com/heyzoos123-blip/fathom}
+\item \textbf{Reproducibility script.} \texttt{verify\_all\_claims.py} in
+      the atlas bundle runs 28 assertions against the committed JSONs in
+      under one minute on CPU. Any numerical claim in this paper can be
+      traced to its source JSON by searching for the corresponding
+      \texttt{\repro{source}} anchor symbol.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════
+% 12. ETHICS
+% ══════════════════════════════════════════════════════════════════
+\section{Ethics and broader impact}
+\label{sec:ethics}
+
+\paragraph{Dual use.} Measurement instruments for transformer internals
+enable both defensive applications (hallucination detection, safety
+auditing, alignment-robust oversight) and offensive applications
+(understanding which prompts evade detection, discovering circuits that
+could be targeted by adversaries). We consider the defensive applications
+to outweigh the offensive ones at the current state of the technology,
+and we publish all artifacts openly to enable community auditing.
+
+\paragraph{Open science.} All instruments, captures, scripts, and findings
+documents are released under permissive licenses
+(CC-BY-4.0 on data, MIT on code). The pre-registration is in git with
+timestamps. The reproducibility script is runnable by anyone without
+access to the original compute infrastructure.
+
+\paragraph{No deceptive technology.} The atlas uses existing public
+open-weight models (Gemma, Llama, Qwen) and one logprob-exposed closed
+model (GPT-4o-mini via the OpenAI API) with full disclosure. No new
+adversarial models are trained or released. No prompts used in the probe
+set target individuals, groups, or real-world entities.
+
+\paragraph{Provisional patents.} Related provisional patents:
+US 64/020,489, US 64/021,113, US 64/026,964. The provisionals cover the
+measurement instruments as commercial deployment technology; all
+scientific artifacts remain open under the licenses above.
+
+% ══════════════════════════════════════════════════════════════════
+% 13. ACKNOWLEDGMENTS
+% ══════════════════════════════════════════════════════════════════
+\section*{Acknowledgments}
+
+Thanks to Hoagy Cunningham and Aidan Ewart for early arXiv endorsement
+engagement on the Fathom project. Thanks to the ICML 2026 Mechanistic
+Interpretability Workshop organizers for creating a venue for this line
+of work. Thanks to the Zenodo and OSF infrastructure teams for the open
+publication platforms that make pre-registered interpretability possible.
+The bulletproof audit that preceded v0.3 was prompted by the observation
+that the $n\!=\!3$ ``Qwen anomaly'' framing in v0.2.1 could not survive
+bootstrap scrutiny; that realization is the reason the v0.3 replication
+exists in its current form.
+
+% ══════════════════════════════════════════════════════════════════
+% REFERENCES
+% ══════════════════════════════════════════════════════════════════
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ══════════════════════════════════════════════════════════════════
+% APPENDICES
+% ══════════════════════════════════════════════════════════════════
+\appendix
+
+\section{Full per-family numerical tables}
+\label{app:numerics}
+
+Table~\ref{tab:app-full} reports all twelve (six families $\times$ three
+measurements) leave-one-out cosines, bootstrap 95\% confidence intervals,
+and fraction-positive estimates, as committed in
+\pbs{atlas/analysis/atlas\_v0.3\_attractor\_n5.json}.
+
+\begin{table}[h]
+\centering
+\scriptsize
+\begin{tabular}{lccccccccc}
+\toprule
+ & \multicolumn{3}{c}{$D$ (full trajectory)} & \multicolumn{3}{c}{Entropy (full)} & \multicolumn{3}{c}{Entropy (early)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Family & LOO & CI$_{95}$ lo,hi & $P{>}0$ & LOO & CI$_{95}$ lo,hi & $P{>}0$ & LOO & CI$_{95}$ lo,hi & $P{>}0$ \\
+\midrule
+Gemma-2-2B   & $+.940$ & $+.68,+.99$ & $.999$ & $+.713$ & $+.11,+.93$ & $.987$ & $+.977$ & $+.79,+.99$ & $1.000$ \\
+Llama-3.2-3B & $+.962$ & $+.63,+.98$ & $1.000$ & $+.966$ & $+.67,+.99$ & $1.000$ & $+.884$ & $+.63,+.97$ & $1.000$ \\
+Qwen2.5-3B   & $+.223$ & $-.47,+.81$ & $.824$ & $+.575$ & $-.10,+.96$ & $.957$ & $+.602$ & $-.14,+.95$ & $.956$ \\
+Gemma-3-1B   & $+.599$ & $+.31,+.77$ & $1.000$ & $-.014$ & $-.50,+.77$ & $.776$ & $+.682$ & $+.33,+.88$ & $.996$ \\
+Llama-3.2-1B & $+.723$ & $+.49,+.87$ & $1.000$ & $+.937$ & $+.70,+.99$ & $1.000$ & $+.939$ & $+.76,+.99$ & $1.000$ \\
+Qwen2.5-1.5B & $+.136$ & $-.54,+.87$ & $.818$ & $+.916$ & $-.04,+.97$ & $.970$ & $+.531$ & $-.29,+.91$ & $.924$ \\
+\midrule
+\textbf{Mean} & $\mathbf{+.597}$ & $+.414,+.770$ & $1.000$ & $\mathbf{+.682}$ & $+.453,+.839$ & $1.000$ & $\mathbf{+.769}$ & $+.571,+.869$ & $1.000$ \\
+\textbf{Perm $p$} & & $0.2055$ & & & $0.2660$ & & & $\mathbf{0.0315}$ & \\
+\bottomrule
+\end{tabular}
+\caption{Full per-family numerical tables for the v0.3 replication.
+Rows are the six families. Columns are the three trajectory classes:
+$D$-axis full trajectory, entropy full trajectory, and entropy early
+window (the pre-registered primary measurement). LOO is the observed
+leave-one-out cosine. CI$_{95}$ is the bootstrap 95\% confidence interval
+from 2000 within-category prompt resamples. $P{>}0$ is the fraction of
+bootstrap samples with positive LOO. The permutation $p$ row is the
+one-sided permutation test over 2000 family-level base/instruct label
+swaps. \repro{atlas/analysis/atlas\_v0.3\_attractor\_n5.json}}
+\label{tab:app-full}
+\end{table}
+
+\section{Pre-registration chronology (git commits)}
+\label{app:chronology}
+
+All commits on \texttt{master} on 2026-04-10, Eastern Time.
+
+\begin{verbatim}
+a122810  audit(atlas): bulletproof rigor pass + scope correction of v0.2.1
+e32cc75  prereg(atlas): v0.3 attractor replication -- SEALED
+01969cb  feat(atlas): v0.3 expansion to n=6 families -- H1 SUPPORTED
+b09e54f  chore: finalization pass before Zenodo v14 / OSF upload
+c396a83  release: Paper v14 + Atlas v0.3 published to Zenodo
+\end{verbatim}
+
+Between \texttt{e32cc75} (pre-registration sealed at 14:57:52 ET) and
+\texttt{01969cb} (v0.3 captures + analysis committed at 16:30:28 ET),
+elapsed wall-clock time was 93 minutes. The analysis script
+\texttt{atlas/analysis/atlas\_attractor\_n5.py} was first committed in
+\texttt{01969cb} and has not been modified since. Any divergence between
+the committed analyzer and the sealed decision rule in the pre-registration
+would be visible in the git history.
+
+\section{Deviations from pre-registration}
+\label{app:deviations}
+
+The pre-registration Section~7 enumerates allowed deviations.
+Three substitutions were made, all under the allowed list:
+
+\begin{itemize}[leftmargin=18pt,itemsep=2pt,topsep=3pt]
+\item \textbf{Phi-3.5-mini-instruct} was planned as an independent family.
+It is not in the TransformerLens registry at our version. Substituted with
+\textbf{Gemma-3-1B}, which is a different generation from Gemma-2-2B.
+\item \textbf{SmolLM2-1.7B-Instruct} was planned. It was functional but we
+de-prioritized it in favor of a direct scale-variant study.
+\textbf{Llama-3.2-1B} was substituted as a scale variant of the already-
+validated Llama-3.2-3B.
+\item \textbf{OLMo-2-1B} was planned. Not attempted this session due to
+time budget. \textbf{Qwen2.5-1.5B} was substituted as a scale variant of
+the already-validated Qwen2.5-3B.
+\end{itemize}
+
+The substitutes are scale or generation variants of the original three
+v0.2 families rather than fully independent families. This makes the
+v0.3 replication weaker than originally planned, which we state
+explicitly in \S\ref{sec:limitations}. The v0.4 target is truly
+independent families.
+
+\section{IPR physics derivation in full}
+\label{app:ipr}
+
+We give the full IPR derivation for completeness.
+
+\paragraph{Setup.} Let $C_\Delta(t)$ be the coherence delta at token $t$
+for $t\,=\,1,\dots,T$. Fix a threshold $\tau\,=\,0.005$. Define the
+event indicator set $\mathcal{E}\,=\,\{t : C_\Delta(t)>\tau\}$ and the
+event count $K_\tau\,=\,|\mathcal{E}|$. Define the uniform event-location
+distribution $\hat{e}_t\,=\,1/K_\tau$ for $t\,\in\,\mathcal{E}$ and $0$
+otherwise.
+
+\paragraph{Participation ratio and IPR.} The participation ratio of a
+non-negative distribution $\hat{e}$ over $n$ sites is $\text{PR}(\hat{e})
+\,=\,(\sum_t \hat{e}_t)^2\,/\,\sum_t \hat{e}_t^2\,=\,1\,/\,\sum_t
+\hat{e}_t^2$ when $\hat{e}$ is a probability distribution. The inverse
+participation ratio is $\text{IPR}(\hat{e})\,=\,\sum_t \hat{e}_t^2\,=\,
+1\,/\,\text{PR}$.
+
+\paragraph{IPR of the uniform event distribution.} For the uniform
+distribution over $K_\tau$ sites, $\hat{e}_t\,=\,1/K_\tau$ for each active
+position and $0$ otherwise. Then
+\[
+\text{IPR}(\hat{e})\,=\,\sum_{t\in\mathcal{E}}\left(\frac{1}{K_\tau}\right)^{\!2}
+\,=\,K_\tau\cdot\frac{1}{K_\tau^2}\,=\,\frac{1}{K_\tau}.
+\]
+
+\paragraph{Fathom commitment intensity.} Define
+\[
+S\,=\,\max_t C_\Delta(t)\cdot\text{IPR}(\hat{e})\,=\,\frac{\max_t C_\Delta(t)}{K_\tau}.
+\]
+This is exactly the Fathom definition in \S\ref{sec:instruments}. The
+equivalence is algebraic and holds to machine precision on any trajectory
+with $K_\tau\,>\,0$.
+
+\paragraph{Why the ratio form is specific.} The cross-dataset meta-
+analysis showed that only the ratio replicates across all three datasets,
+while the $\max$ alone fails (pooled $d\,=\,+0.309$, inconsistent sign
+across datasets) and the mean alone fails (pooled $d\,=\,+0.067$, no
+signal). The IPR framing explains this: $\max$ captures peak magnitude
+but discards event sparsity, and mean captures neither. Only the ratio
+captures both, and that is exactly what the IPR prescribes. Metric
+specificity is a signature of a real physical construct, not a
+post-hoc-tuned detector.
+
+\paragraph{Historical context.} The IPR appears in \citet{anderson1958absence}
+as the diagnostic for localization in disordered quantum systems. It has
+been refined in Edwards--Thouless theory, extended to random matrix
+eigenvector statistics, and is a standard tool in quantum many-body
+physics and disordered systems analysis. The Fathom commitment intensity
+is a specific instance of this construct applied to the coherence event
+distribution in transformer internals.
+
+\end{document}
