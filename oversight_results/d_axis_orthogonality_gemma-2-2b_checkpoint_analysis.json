@@ -1,0 +1,45 @@
+{
+  "n_pairs": 5,
+  "n_pooled": 10,
+  "pooled": {
+    "D_K": {
+      "r": 0.8711159361319314,
+      "p": 0.0010303250810051192
+    },
+    "D_C": {
+      "r": 0.7999651990312174,
+      "p": 0.0054595526109844535
+    },
+    "D_C_delta": {
+      "r": 0.942997191507704,
+      "p": 4.310637997616793e-05
+    },
+    "D_S": {
+      "r": -0.45095735754165295,
+      "p": 0.1908488399795609
+    }
+  },
+  "paired_delta": {
+    "D_K": {
+      "r": 0.9416219501594791,
+      "p": 0.016782948620334817
+    },
+    "D_C": {
+      "r": 0.7454632425818264,
+      "p": 0.1481291177031529
+    },
+    "D_C_delta": {
+      "r": 0.9912055805158531,
+      "p": 0.0009887144662385817
+    },
+    "D_S": {
+      "r": -0.311617641192468,
+      "p": 0.6097543641507751
+    }
+  },
+  "max_abs_r_pooled": 0.942997191507704,
+  "max_abs_r_delta": 0.9912055805158531,
+  "orthogonal_pooled": false,
+  "orthogonal_delta": false,
+  "interpretation": "n_pairs = 5. Pooled max|r| = 0.943 (across all prompts). Paired-delta max|r| = 0.991 (within-pair shifts). Paired-delta exceeds 0.35: within-pair D shifts track shifts on at least one other axis. Small-sample instability or a genuine non-orthogonality. Re-run at larger n to disambiguate."
+}

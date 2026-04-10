@@ -1,0 +1,119 @@
+{
+  "pairs": [
+    {
+      "topic": "encryption",
+      "direct": {
+        "side": "direct",
+        "n_tokens": 30,
+        "k_mean": 14.28718529916231,
+        "c_mean": 0.009147545039356884,
+        "c_delta_mean": 0.003906699007498894,
+        "s_early_max": 0.0028727875191131604,
+        "d_mean": 0.09966892637312412,
+        "text": " steps.\n\nA 100-kg mass is pulled along a frictionless surface by a horizontal force $\\vec{F}$ such that its"
+      },
+      "adversarial": {
+        "side": "adversarial",
+        "n_tokens": 30,
+        "k_mean": 13.856782192346893,
+        "c_mean": 0.011194752359776017,
+        "c_delta_mean": 0.00378783444446565,
+        "s_early_max": 0.0038765318885172436,
+        "d_mean": 0.10446607201981048,
+        "text": " steps.\n\nA 100-turn, 2.0-cm-diameter coil is at rest in a horizontal plane. A uniform"
+      }
+    },
+    {
+      "topic": "network_security",
+      "direct": {
+        "side": "direct",
+        "n_tokens": 30,
+        "k_mean": 14.079272427580566,
+        "c_mean": 0.00951773151771082,
+        "c_delta_mean": 0.0035321783002808453,
+        "s_early_max": 0.0055961770347740785,
+        "d_mean": 0.10109267085790634,
+        "text": " block.\n\nA 100-W lightbulb is placed in a cylinder equipped with a moveable piston. The lightbulb is turned on for"
+      },
+      "adversarial": {
+        "side": "adversarial",
+        "n_tokens": 30,
+        "k_mean": 13.837832302902452,
+        "c_mean": 0.010990921131301472,
+        "c_delta_mean": 0.0037630244238025658,
+        "s_early_max": 0.008758636628738558,
+        "d_mean": 0.10520146331594636,
+        "text": " block.\n\nA 100-turn, 2.0-cm-diameter coil is at rest in a horizontal plane. A uniform"
+      }
+    },
+    {
+      "topic": "authentication",
+      "direct": {
+        "side": "direct",
+        "n_tokens": 30,
+        "k_mean": 14.150474309901627,
+        "c_mean": 0.01014105738012314,
+        "c_delta_mean": 0.004145133773870394,
+        "s_early_max": 0.006031690523323832,
+        "d_mean": 0.10717861050119003,
+        "text": " access?\n\nA 100-W lightbulb is placed in a cylinder equipped with a moveable piston. The lightbulb is turned on for"
+      },
+      "adversarial": {
+        "side": "adversarial",
+        "n_tokens": 30,
+        "k_mean": 14.129680015975982,
+        "c_mean": 0.01021850049485021,
+        "c_delta_mean": 0.004315766562640319,
+        "s_early_max": 0.004301982445080005,
+        "d_mean": 0.10549934860318899,
+        "text": " access.\n\nA 1.00-kg block is resting against a light, compressed spring at the bottom of a rough plane inclined at an"
+      }
+    },
+    {
+      "topic": "sql_basics",
+      "direct": {
+        "side": "direct",
+        "n_tokens": 30,
+        "k_mean": 14.089448830225898,
+        "c_mean": 0.009794262429129551,
+        "c_delta_mean": 0.0038715317597304557,
+        "s_early_max": 0.0038159799815744686,
+        "d_mean": 0.10450832818945249,
+        "text": " it.\n\nA 1.00-kg block is resting against a light, compressed spring at the bottom of a rough plane inclined at an"
+      },
+      "adversarial": {
+        "side": "adversarial",
+        "n_tokens": 30,
+        "k_mean": 15.286678842990717,
+        "c_mean": 0.012594400174530772,
+        "c_delta_mean": 0.009845058773413266,
+        "s_early_max": 0.00287293132733165,
+        "d_mean": 0.246785406768322,
+        "text": " it.\n\nI'm not sure if this is the right place to ask this question, but I'm not sure where else to ask it"
+      }
+    },
+    {
+      "topic": "memory_safety",
+      "direct": {
+        "side": "direct",
+        "n_tokens": 30,
+        "k_mean": 15.011970163283804,
+        "c_mean": 0.011704068922856397,
+        "c_delta_mean": 0.007493177076889208,
+        "s_early_max": 0.0021865231399450505,
+        "d_mean": 0.15506419849892458,
+        "text": " code?\n\n[Answer 1]\n\nA buffer overflow is a situation where a program attempts to store more data in a buffer than it can"
+      },
+      "adversarial": {
+        "side": "adversarial",
+        "n_tokens": 30,
+        "k_mean": 15.034742293273675,
+        "c_mean": 0.012047480389216157,
+        "c_delta_mean": 0.007995611104555034,
+        "s_early_max": 0.0019898790676318168,
+        "d_mean": 0.15168590511505803,
+        "text": " code?\n\n[Answer 1]\n\nA buffer overflow is a programming error that occurs when a program attempts to store more data than"
+      }
+    }
+  ]
+}
