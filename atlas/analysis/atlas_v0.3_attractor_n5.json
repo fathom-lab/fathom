@@ -1,0 +1,188 @@
+{
+  "n_families": 6,
+  "family_order": [
+    "Gemma-2-2B",
+    "Llama-3.2-3B",
+    "Qwen2.5-3B",
+    "Gemma-3-1B",
+    "Llama-3.2-1B",
+    "Qwen2.5-1.5B"
+  ],
+  "prereg": "atlas/PREREG_v0.3_attractor_replication.md",
+  "D": {
+    "per_family_loo": {
+      "Gemma-2-2B": 0.939901089518536,
+      "Llama-3.2-3B": 0.9621960317722068,
+      "Qwen2.5-3B": 0.22342371924862228,
+      "Gemma-3-1B": 0.5985391157641664,
+      "Llama-3.2-1B": 0.723291805805144,
+      "Qwen2.5-1.5B": 0.13612030513200865
+    },
+    "mean_loo": 0.597245344540114,
+    "bootstrap_ci_per_family": {
+      "Gemma-2-2B": {
+        "median": 0.9329839932263774,
+        "ci95_low": 0.6779450418616746,
+        "ci95_high": 0.988418856339226,
+        "frac_positive": 0.999
+      },
+      "Llama-3.2-3B": {
+        "median": 0.894622609536392,
+        "ci95_low": 0.6274657376156098,
+        "ci95_high": 0.9783693007731598,
+        "frac_positive": 1.0
+      },
+      "Qwen2.5-3B": {
+        "median": 0.35834467355617,
+        "ci95_low": -0.4652902154755641,
+        "ci95_high": 0.810684594778029,
+        "frac_positive": 0.8235
+      },
+      "Gemma-3-1B": {
+        "median": 0.5779174575992879,
+        "ci95_low": 0.31409238345986146,
+        "ci95_high": 0.7740967954248378,
+        "frac_positive": 1.0
+      },
+      "Llama-3.2-1B": {
+        "median": 0.7111063094839734,
+        "ci95_low": 0.4923680018695826,
+        "ci95_high": 0.870029703250863,
+        "frac_positive": 1.0
+      },
+      "Qwen2.5-1.5B": {
+        "median": 0.408957403494677,
+        "ci95_low": -0.535908925276835,
+        "ci95_high": 0.8688768399368395,
+        "frac_positive": 0.818
+      }
+    },
+    "bootstrap_ci_mean": {
+      "median": 0.6246334807113921,
+      "ci95_low": 0.41423332900007254,
+      "ci95_high": 0.769930078713266,
+      "frac_positive": 1.0
+    },
+    "permutation_p_one_sided": 0.2055
+  },
+  "entropy_full": {
+    "per_family_loo": {
+      "Gemma-2-2B": 0.7128526127091852,
+      "Llama-3.2-3B": 0.9657627962339354,
+      "Qwen2.5-3B": 0.5750108504932848,
+      "Gemma-3-1B": -0.013936221482481038,
+      "Llama-3.2-1B": 0.9368519476456357,
+      "Qwen2.5-1.5B": 0.9163071237046754
+    },
+    "mean_loo": 0.6821415182173726,
+    "bootstrap_ci_per_family": {
+      "Gemma-2-2B": {
+        "median": 0.7243810380041533,
+        "ci95_low": 0.10790002994220475,
+        "ci95_high": 0.9282869279313261,
+        "frac_positive": 0.9865
+      },
+      "Llama-3.2-3B": {
+        "median": 0.9199742017857846,
+        "ci95_low": 0.6682371412547498,
+        "ci95_high": 0.9893494251768082,
+        "frac_positive": 1.0
+      },
+      "Qwen2.5-3B": {
+        "median": 0.6697418297126789,
+        "ci95_low": -0.10178688162111905,
+        "ci95_high": 0.9558847458659687,
+        "frac_positive": 0.9565
+      },
+      "Gemma-3-1B": {
+        "median": 0.3225656074236049,
+        "ci95_low": -0.5026624941825742,
+        "ci95_high": 0.7736739383573794,
+        "frac_positive": 0.776
+      },
+      "Llama-3.2-1B": {
+        "median": 0.917777707771396,
+        "ci95_low": 0.7003521811035901,
+        "ci95_high": 0.9871538886656993,
+        "frac_positive": 1.0
+      },
+      "Qwen2.5-1.5B": {
+        "median": 0.7576949912343433,
+        "ci95_low": -0.036046396537664775,
+        "ci95_high": 0.970783950732634,
+        "frac_positive": 0.97
+      }
+    },
+    "bootstrap_ci_mean": {
+      "median": 0.674302118445322,
+      "ci95_low": 0.4526220608369529,
+      "ci95_high": 0.838818005912926,
+      "frac_positive": 1.0
+    },
+    "permutation_p_one_sided": 0.266
+  },
+  "entropy_early": {
+    "per_family_loo": {
+      "Gemma-2-2B": 0.9768560008092207,
+      "Llama-3.2-3B": 0.8842609042835133,
+      "Qwen2.5-3B": 0.6016618472427823,
+      "Gemma-3-1B": 0.6821952968136324,
+      "Llama-3.2-1B": 0.9387308646589377,
+      "Qwen2.5-1.5B": 0.5307010709634689
+    },
+    "mean_loo": 0.7690676641285924,
+    "bootstrap_ci_per_family": {
+      "Gemma-2-2B": {
+        "median": 0.9486700338721006,
+        "ci95_low": 0.7850728636143346,
+        "ci95_high": 0.9926700033256505,
+        "frac_positive": 1.0
+      },
+      "Llama-3.2-3B": {
+        "median": 0.8711872025220355,
+        "ci95_low": 0.6308589540249587,
+        "ci95_high": 0.9689889010157618,
+        "frac_positive": 1.0
+      },
+      "Qwen2.5-3B": {
+        "median": 0.6478242016768698,
+        "ci95_low": -0.13509990652499798,
+        "ci95_high": 0.9458544731500363,
+        "frac_positive": 0.956
+      },
+      "Gemma-3-1B": {
+        "median": 0.7021927838337187,
+        "ci95_low": 0.3264165615653711,
+        "ci95_high": 0.8821382188251432,
+        "frac_positive": 0.996
+      },
+      "Llama-3.2-1B": {
+        "median": 0.9218090408407762,
+        "ci95_low": 0.7603645904198426,
+        "ci95_high": 0.9854351478896387,
+        "frac_positive": 1.0
+      },
+      "Qwen2.5-1.5B": {
+        "median": 0.5649127115788198,
+        "ci95_low": -0.2897556588249327,
+        "ci95_high": 0.9088711443863214,
+        "frac_positive": 0.9245
+      }
+    },
+    "bootstrap_ci_mean": {
+      "median": 0.7547277847079297,
+      "ci95_low": 0.5708407892233064,
+      "ci95_high": 0.8692475268773852,
+      "frac_positive": 1.0
+    },
+    "permutation_p_one_sided": 0.0315
+  },
+  "H1_decision": {
+    "primary_measurement": "entropy early window",
+    "mean_loo": 0.7690676641285924,
+    "condition_a_passed": true,
+    "condition_b_passed": true,
+    "condition_c_passed": true,
+    "verdict": "H1 SUPPORTED"
+  }
+}
