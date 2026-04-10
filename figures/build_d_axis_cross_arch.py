@@ -35,35 +35,66 @@ def load_deltas(path):
 MODELS = [
     ("Gemma-2-2B\n(base)",
      "d_axis_pilot_gemma-2-2b_fast.json",
-     "#1f78b4", "+0.65"),
+     "#1f78b4", None),
     ("Gemma-2-2B-IT\n(instruct)",
      "d_axis_pilot_gemma-2-2b-it_fast.json",
-     "#a6cee3", "-0.58"),
+     "#a6cee3", None),
     ("Llama-3.2-3B\n(base)",
      "d_axis_pilot_Llama-3.2-3B_fast.json",
-     "#e31a1c", "-1.06"),
+     "#e31a1c", None),
     ("Llama-3.2-3B-IT\n(instruct)",
      "d_axis_pilot_Llama-3.2-3B-Instruct_fast.json",
-     "#fb9a99", "-0.13"),
+     "#fb9a99", None),
+    ("Qwen2.5-3B\n(base)",
+     "d_axis_pilot_Qwen2.5-3B_fast.json",
+     "#33a02c", None),
+    ("Qwen2.5-3B-IT\n(instruct)",
+     "d_axis_pilot_Qwen2.5-3B-Instruct_fast.json",
+     "#b2df8a", None),
 ]
 
 
+def _compute_dz(path):
+    import numpy as np
+    deltas = np.array(load_deltas(path), dtype=float)
+    if len(deltas) < 2:
+        return 0.0
+    return float(deltas.mean() / (deltas.std(ddof=1) + 1e-12))
+
+
 def main():
+    # Drop models whose result files don't exist yet
+    models_present = [
+        (label, fname, color, dz_str)
+        for (label, fname, color, dz_str) in MODELS
+        if (ROOT / "oversight_results" / fname).exists()
+    ]
+    # Re-compute dz labels
+    models_present = [
+        (label, fname, color,
+         f"{_compute_dz(ROOT/'oversight_results'/fname):+.2f}")
+        for (label, fname, color, _) in models_present
+    ]
+    # Shadow the module-level MODELS inside main
+    models_loop = models_present
+
     plt.rcParams.update({
         "font.family": "serif",
         "font.size": 10,
     })
 
+    fig_w = max(10.5, 2.0 * len(models_loop) + 2.0)
     fig, (ax1, ax2) = plt.subplots(
-        1, 2, figsize=(10.5, 4.0),
+        1, 2, figsize=(fig_w, 4.0),
         gridspec_kw={"width_ratios": [1.4, 1.0], "wspace": 0.35},
     )
 
     # Panel A: per-pair deltas, overlaid
     ax = ax1
-    for i, (label, fname, color, _) in enumerate(MODELS):
+    n_models = len(models_loop)
+    for i, (label, fname, color, _) in enumerate(models_loop):
         deltas = load_deltas(ROOT / "oversight_results" / fname)
-        xs = np.arange(len(deltas)) + (i - 1.5) * 0.18
+        xs = np.arange(len(deltas)) + (i - (n_models - 1) / 2) * 0.14
         ax.scatter(xs, deltas, s=18, color=color, edgecolors="black",
                    linewidths=0.3, label=label.replace("\n", " "))
     ax.axhline(0, color="black", linewidth=0.8, alpha=0.5)
@@ -82,7 +113,7 @@ def main():
     names = []
     colors = []
     dzs = []
-    for label, fname, color, dz_str in MODELS:
+    for label, fname, color, dz_str in models_loop:
         deltas = np.array(load_deltas(ROOT / "oversight_results" / fname))
         means.append(deltas.mean())
         sems.append(deltas.std(ddof=1) / np.sqrt(len(deltas)))
@@ -114,14 +145,16 @@ def main():
     # Shaded H-D2 region below zero
     ax.axhspan(-0.035, 0, facecolor="#d4f1d4", alpha=0.4, zorder=-1)
     ax.axhspan(0, 0.03, facecolor="#f7d4d4", alpha=0.4, zorder=-1)
-    ax.text(3.5, -0.010, "H-D2",
+    last_x = len(models_loop) - 0.5
+    ax.text(last_x, -0.010, "H-D2",
             ha="right", fontsize=7, alpha=0.7, style="italic")
-    ax.text(3.5, 0.015, "reversed",
+    ax.text(last_x, 0.015, "reversed",
             ha="right", fontsize=7, alpha=0.7, style="italic")
 
+    n_h_d2 = sum(1 for m in means if m < 0)
     fig.suptitle(
-        "D-axis across four models: H-D2 direction replicates on 3/4 "
-        "(Fisher $p < 10^{-6}$)",
+        f"D-axis across {len(models_loop)} models: H-D2 direction "
+        f"replicates on {n_h_d2}/{len(models_loop)}",
         fontsize=11, fontweight="bold", y=1.02,
     )
     fig.tight_layout(rect=(0, 0, 1, 0.97))

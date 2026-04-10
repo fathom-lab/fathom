@@ -33,6 +33,8 @@ PILOTS = [
     ("Gemma-2-2B-IT",           "instruct", "d_axis_pilot_gemma-2-2b-it_fast.json"),
     ("Llama-3.2-3B",            "base",     "d_axis_pilot_Llama-3.2-3B_fast.json"),
     ("Llama-3.2-3B-Instruct",   "instruct", "d_axis_pilot_Llama-3.2-3B-Instruct_fast.json"),
+    ("Qwen2.5-3B",              "base",     "d_axis_pilot_Qwen2.5-3B_fast.json"),
+    ("Qwen2.5-3B-Instruct",     "instruct", "d_axis_pilot_Qwen2.5-3B-Instruct_fast.json"),
 ]
 
 
@@ -87,7 +89,7 @@ def main():
     for label, training, filename in PILOTS:
         path = ROOT / "oversight_results" / filename
         if not path.exists():
-            print(f"[!] Missing: {path}")
+            print(f"[skip] Missing: {path}")
             continue
         deltas = load_deltas(path)
         test = paired_test(deltas)

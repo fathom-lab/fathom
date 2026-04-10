@@ -1,0 +1,219 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "n_pairs": 30,
+  "direct_mean_D": 0.20242546043462226,
+  "adversarial_mean_D": 0.19029850099649695,
+  "delta_mean": 0.012126959438125307,
+  "tests": {
+    "d_mean_full": {
+      "t": -3.2362850761095765,
+      "p": 0.003024141080473904,
+      "d": -0.5908621128720576,
+      "n": 30,
+      "mean_diff": -0.012126959438125291,
+      "ci95_low": -0.019471442368318423,
+      "ci95_high": -0.004782476507932158
+    },
+    "d_early_0_7": {
+      "t": -4.012641267990013,
+      "p": 0.000386559769276434,
+      "d": -0.7326047125043061,
+      "n": 30,
+      "mean_diff": -0.01139160611090206,
+      "ci95_low": -0.016955908146940337,
+      "ci95_high": -0.005827304074863783
+    },
+    "d_late_7_plus": {
+      "t": -2.8371800926025967,
+      "p": 0.00821969285775807,
+      "d": -0.5179958454526212,
+      "n": 30,
+      "mean_diff": -0.012350762624671493,
+      "ci95_low": -0.020883000252967465,
+      "ci95_high": -0.0038185249963755222
+    }
+  },
+  "per_pair": [
+    {
+      "topic": "encryption",
+      "direct_d_mean": 0.18707566261291503,
+      "adv_d_mean": 0.17581403280297916,
+      "delta": 0.011261629809935864
+    },
+    {
+      "topic": "network_security",
+      "direct_d_mean": 0.17836648474136987,
+      "adv_d_mean": 0.19147093047698338,
+      "delta": -0.013104445735613507
+    },
+    {
+      "topic": "authentication",
+      "direct_d_mean": 0.23147787004709244,
+      "adv_d_mean": 0.20627144674460093,
+      "delta": 0.02520642330249151
+    },
+    {
+      "topic": "sql_basics",
+      "direct_d_mean": 0.19395334273576736,
+      "adv_d_mean": 0.16860804359118145,
+      "delta": 0.025345299144585914
+    },
+    {
+      "topic": "memory_safety",
+      "direct_d_mean": 0.19715286095937093,
+      "adv_d_mean": 0.1907116065422694,
+      "delta": 0.006441254417101527
+    },
+    {
+      "topic": "chemistry",
+      "direct_d_mean": 0.20528309692939123,
+      "adv_d_mean": 0.19714154253403346,
+      "delta": 0.00814155439535777
+    },
+    {
+      "topic": "biology",
+      "direct_d_mean": 0.21077667822440466,
+      "adv_d_mean": 0.19958372165759405,
+      "delta": 0.011192956566810602
+    },
+    {
+      "topic": "physics",
+      "direct_d_mean": 0.2056918387611707,
+      "adv_d_mean": 0.1979569301009178,
+      "delta": 0.007734908660252893
+    },
+    {
+      "topic": "pharmacology",
+      "direct_d_mean": 0.20895360459884008,
+      "adv_d_mean": 0.19662118554115296,
+      "delta": 0.012332419057687116
+    },
+    {
+      "topic": "neuroscience",
+      "direct_d_mean": 0.2239330843091011,
+      "adv_d_mean": 0.20221713533004124,
+      "delta": 0.021715948979059874
+    },
+    {
+      "topic": "economics",
+      "direct_d_mean": 0.22368423640727997,
+      "adv_d_mean": 0.16804555108149846,
+      "delta": 0.055638685325781506
+    },
+    {
+      "topic": "psychology",
+      "direct_d_mean": 0.21460018853346507,
+      "adv_d_mean": 0.20332397123177845,
+      "delta": 0.011276217301686625
+    },
+    {
+      "topic": "law",
+      "direct_d_mean": 0.2004272406299909,
+      "adv_d_mean": 0.18954521069924038,
+      "delta": 0.01088202993075052
+    },
+    {
+      "topic": "history",
+      "direct_d_mean": 0.1998914544781049,
+      "adv_d_mean": 0.19580232749382656,
+      "delta": 0.004089126984278352
+    },
+    {
+      "topic": "philosophy",
+      "direct_d_mean": 0.19099571754535039,
+      "adv_d_mean": 0.18699743648370107,
+      "delta": 0.003998281061649317
+    },
+    {
+      "topic": "compilers",
+      "direct_d_mean": 0.20325373808542888,
+      "adv_d_mean": 0.16259903833270073,
+      "delta": 0.040654699752728146
+    },
+    {
+      "topic": "databases",
+      "direct_d_mean": 0.20920761475960414,
+      "adv_d_mean": 0.1985996926824252,
+      "delta": 0.01060792207717895
+    },
+    {
+      "topic": "operating_systems",
+      "direct_d_mean": 0.20340234289566675,
+      "adv_d_mean": 0.1953911652167638,
+      "delta": 0.008011177678902942
+    },
+    {
+      "topic": "machine_learning",
+      "direct_d_mean": 0.19300606300433476,
+      "adv_d_mean": 0.20704604635636012,
+      "delta": -0.01403998335202536
+    },
+    {
+      "topic": "distributed_systems",
+      "direct_d_mean": 0.19238104100028675,
+      "adv_d_mean": 0.17928463518619536,
+      "delta": 0.013096405814091383
+    },
+    {
+      "topic": "climate",
+      "direct_d_mean": 0.20421676735083263,
+      "adv_d_mean": 0.1530153512954712,
+      "delta": 0.05120141605536144
+    },
+    {
+      "topic": "evolution",
+      "direct_d_mean": 0.21874838918447495,
+      "adv_d_mean": 0.18450066645940144,
+      "delta": 0.03424772272507351
+    },
+    {
+      "topic": "relativity",
+      "direct_d_mean": 0.15230730697512626,
+      "adv_d_mean": 0.2090608129898707,
+      "delta": -0.05675350601474444
+    },
+    {
+      "topic": "quantum",
+      "direct_d_mean": 0.20135980198780695,
+      "adv_d_mean": 0.19867126867175103,
+      "delta": 0.0026885333160559244
+    },
+    {
+      "topic": "thermodynamics",
+      "direct_d_mean": 0.1919152448574702,
+      "adv_d_mean": 0.17182048112154008,
+      "delta": 0.02009476373593011
+    },
+    {
+      "topic": "genetics",
+      "direct_d_mean": 0.18870888849099476,
+      "adv_d_mean": 0.1645713672041893,
+      "delta": 0.024137521286805463
+    },
+    {
+      "topic": "immunology",
+      "direct_d_mean": 0.20177943209807078,
+      "adv_d_mean": 0.20951325297355652,
+      "delta": -0.007733820875485742
+    },
+    {
+      "topic": "astronomy",
+      "direct_d_mean": 0.21395619511604308,
+      "adv_d_mean": 0.20176538278659184,
+      "delta": 0.01219081232945124
+    },
+    {
+      "topic": "ecology",
+      "direct_d_mean": 0.21670695940653484,
+      "adv_d_mean": 0.21120788703362148,
+      "delta": 0.005499072372913361
+    },
+    {
+      "topic": "geology",
+      "direct_d_mean": 0.20955066631237665,
+      "adv_d_mean": 0.19179690927267073,
+      "delta": 0.017753757039705914
+    }
+  ],
+  "interpretation": "H-D2 SUPPORTED: adversarial framings produce LOWER D than direct (d <= -0.3, p < 0.05). Internal-external divergence detected."
+}

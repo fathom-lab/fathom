@@ -81,7 +81,61 @@ def extract_windows(dataset):
     }
 
 
+PILOTS_TO_TEMPORAL = [
+    ("Gemma-2-2B",           "d_axis_pilot_gemma-2-2b_fast.json"),
+    ("Gemma-2-2B-IT",        "d_axis_pilot_gemma-2-2b-it_fast.json"),
+    ("Llama-3.2-3B",         "d_axis_pilot_Llama-3.2-3B_fast.json"),
+    ("Llama-3.2-3B-IT",      "d_axis_pilot_Llama-3.2-3B-Instruct_fast.json"),
+    ("Qwen2.5-3B",           "d_axis_pilot_Qwen2.5-3B_fast.json"),
+    ("Qwen2.5-3B-IT",        "d_axis_pilot_Qwen2.5-3B-Instruct_fast.json"),
+]
+
+
 def main():
+    # Run temporal decomposition across all available pilots
+    all_results = {}
+    for name, fname in PILOTS_TO_TEMPORAL:
+        path = ROOT / "oversight_results" / fname
+        if not path.exists():
+            print(f"[skip] {name}: {fname} not found")
+            continue
+        data = load(path)
+        w = extract_windows(data)
+        all_results[name] = {
+            "early": paired_test(w["adv_early"], w["direct_early"],
+                                 f"{name} early"),
+            "late":  paired_test(w["adv_late"], w["direct_late"],
+                                 f"{name} late"),
+        }
+
+    print("=" * 72)
+    print("D-AXIS TEMPORAL DECOMPOSITION (H-D4 + cross-arch)")
+    print("=" * 72)
+    print(f"{'Model':<22s}{'Window':<10s}{'dz':>8s}{'p':>12s}{'mean_diff':>14s}")
+    print("-" * 72)
+    for model, r in all_results.items():
+        for win in ["early", "late"]:
+            t = r[win]
+            p_str = f"{t['p']:.4f}" if t["p"] >= 1e-4 else f"{t['p']:.1e}"
+            print(f"{model:<22s}{win:<10s}{t['dz']:>+8.2f}{p_str:>12s}"
+                  f"{t['mean_diff']:>+14.4f}")
+    print("-" * 72)
+
+    # H-D4 verdict per model: early magnitude should exceed late magnitude
+    print("\nH-D4 verdict (|dz_early| vs |dz_late|):")
+    for model, r in all_results.items():
+        e = abs(r["early"]["dz"])
+        l = abs(r["late"]["dz"])
+        status = "[SUPPORTED]" if e > l else "[NOT SUPPORTED]"
+        print(f"  {status:<20s} {model:<22s} early={e:.2f} late={l:.2f}")
+
+    out_path = ROOT / "oversight_results" / "d_axis_temporal_crossarch.json"
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(all_results, f, indent=2)
+    print(f"\n[SAVED] {out_path}")
+    return
+
+    # Legacy Gemma-only DoD branch (kept for backward compat, not run)
     base = load(ROOT / "oversight_results" / "d_axis_pilot_gemma-2-2b_fast.json")
     it = load(ROOT / "oversight_results" / "d_axis_pilot_gemma-2-2b-it_fast.json")
 

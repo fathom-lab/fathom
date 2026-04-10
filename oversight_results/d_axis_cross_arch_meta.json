@@ -48,12 +48,36 @@
       "dz": -0.12932323364658252,
       "n_positive": 10,
       "n_negative": 20
+    },
+    "Qwen2.5-3B": {
+      "training": "base",
+      "file": "d_axis_pilot_Qwen2.5-3B_fast.json",
+      "n": 30,
+      "mean_delta_adv_minus_direct": -0.025946933817532325,
+      "sd": 0.022898770368722045,
+      "t": -6.206324934096987,
+      "p": 9.057531718629275e-07,
+      "dz": -1.1331147218210775,
+      "n_positive": 2,
+      "n_negative": 28
+    },
+    "Qwen2.5-3B-Instruct": {
+      "training": "instruct",
+      "file": "d_axis_pilot_Qwen2.5-3B-Instruct_fast.json",
+      "n": 30,
+      "mean_delta_adv_minus_direct": -0.012126959438125291,
+      "sd": 0.02052417843917561,
+      "t": -3.2362850761095765,
+      "p": 0.003024141080473904,
+      "dz": -0.5908621128720576,
+      "n_positive": 4,
+      "n_negative": 26
     }
   },
-  "fisher_combined_p": 1.9623948244174017e-08,
-  "fisher_chi2": 51.65455191900097,
-  "fisher_df": 8,
-  "h_d2_direction_count": 3,
-  "n_pilots": 4,
-  "scope": "H-D2 direction replicates on 3/4 models. Exception: Gemma-2-2B. RLHF-induced sign flip is specific to the Gemma family."
+  "fisher_combined_p": 3.042011087472929e-14,
+  "fisher_chi2": 91.0858062658326,
+  "fisher_df": 12,
+  "h_d2_direction_count": 5,
+  "n_pilots": 6,
+  "scope": "H-D2 direction replicates on 5/6 models. Exception: Gemma-2-2B. RLHF-induced sign flip is specific to the Gemma family."
 }
