@@ -1,0 +1,209 @@
+{
+  "atlas_version": "0.1",
+  "n_models": 3,
+  "models": [
+    "google/gemma-2-2b",
+    "meta-llama/Llama-3.2-3B",
+    "Qwen/Qwen2.5-3B"
+  ],
+  "q1_within_model": {
+    "google/gemma-2-2b": {
+      "group_means": {
+        "retrieval": 0.1384247364486671,
+        "reasoning": 0.13375749681972796,
+        "refusal": 0.1333943261920164,
+        "creative": 0.15328504953636887,
+        "adversarial": 0.12670944910496473,
+        "hallucination": 0.13958518739272324
+      },
+      "F_statistic": 0.8334101371587074,
+      "eta_squared": 0.04726312895101727,
+      "max_category_gap": {
+        "categories": [
+          "creative",
+          "adversarial"
+        ],
+        "gap": 0.02657560043140414
+      },
+      "n_per_cat": {
+        "retrieval": 15,
+        "reasoning": 15,
+        "refusal": 15,
+        "creative": 15,
+        "adversarial": 15,
+        "hallucination": 15
+      }
+    },
+    "meta-llama/Llama-3.2-3B": {
+      "group_means": {
+        "retrieval": 0.21416716042492123,
+        "reasoning": 0.22333357113339597,
+        "refusal": 0.20287103513876598,
+        "creative": 0.20222595469819174,
+        "adversarial": 0.20527599238687097,
+        "hallucination": 0.20142490350537828
+      },
+      "F_statistic": 11.2599524935889,
+      "eta_squared": 0.4012819514274502,
+      "max_category_gap": {
+        "categories": [
+          "reasoning",
+          "hallucination"
+        ],
+        "gap": 0.021908667628017686
+      },
+      "n_per_cat": {
+        "retrieval": 15,
+        "reasoning": 15,
+        "refusal": 15,
+        "creative": 15,
+        "adversarial": 15,
+        "hallucination": 15
+      }
+    },
+    "Qwen/Qwen2.5-3B": {
+      "group_means": {
+        "retrieval": 0.1434074411789576,
+        "reasoning": 0.1588549020886421,
+        "refusal": 0.15060775819751954,
+        "creative": 0.14974583710233372,
+        "adversarial": 0.16377618249919682,
+        "hallucination": 0.1365958196752601
+      },
+      "F_statistic": 5.468967239282815,
+      "eta_squared": 0.24558692733785467,
+      "max_category_gap": {
+        "categories": [
+          "adversarial",
+          "hallucination"
+        ],
+        "gap": 0.02718036282393671
+      },
+      "n_per_cat": {
+        "retrieval": 15,
+        "reasoning": 15,
+        "refusal": 15,
+        "creative": 15,
+        "adversarial": 15,
+        "hallucination": 15
+      }
+    }
+  },
+  "q2_cross_model": {
+    "signatures": {
+      "Qwen/Qwen2.5-3B": [
+        0.1434074411789576,
+        0.1588549020886421,
+        0.15060775819751954,
+        0.14974583710233372,
+        0.16377618249919682,
+        0.1365958196752601
+      ],
+      "google/gemma-2-2b": [
+        0.1384247364486671,
+        0.13375749681972796,
+        0.1333943261920164,
+        0.15328504953636887,
+        0.12670944910496473,
+        0.13958518739272324
+      ],
+      "meta-llama/Llama-3.2-3B": [
+        0.21416716042492123,
+        0.22333357113339597,
+        0.20287103513876598,
+        0.20222595469819174,
+        0.20527599238687097,
+        0.20142490350537828
+      ]
+    },
+    "distances": {
+      "Qwen/Qwen2.5-3B": {
+        "Qwen/Qwen2.5-3B": 0.0,
+        "google/gemma-2-2b": 1.5012218997698912,
+        "meta-llama/Llama-3.2-3B": 0.6690755748372275
+      },
+      "google/gemma-2-2b": {
+        "Qwen/Qwen2.5-3B": 1.5012218997698912,
+        "google/gemma-2-2b": 2.220446049250313e-16,
+        "meta-llama/Llama-3.2-3B": 1.2704995305264697
+      },
+      "meta-llama/Llama-3.2-3B": {
+        "Qwen/Qwen2.5-3B": 0.6690755748372275,
+        "google/gemma-2-2b": 1.2704995305264697,
+        "meta-llama/Llama-3.2-3B": 0.0
+      }
+    }
+  },
+  "q3_ordering": {
+    "rankings": {
+      "Qwen/Qwen2.5-3B": {
+        "sorted_low_to_high": [
+          "hallucination",
+          "retrieval",
+          "creative",
+          "refusal",
+          "reasoning",
+          "adversarial"
+        ],
+        "means": {
+          "retrieval": 0.1434074411789576,
+          "reasoning": 0.1588549020886421,
+          "refusal": 0.15060775819751954,
+          "creative": 0.14974583710233372,
+          "adversarial": 0.16377618249919682,
+          "hallucination": 0.1365958196752601
+        }
+      },
+      "google/gemma-2-2b": {
+        "sorted_low_to_high": [
+          "adversarial",
+          "refusal",
+          "reasoning",
+          "retrieval",
+          "hallucination",
+          "creative"
+        ],
+        "means": {
+          "retrieval": 0.1384247364486671,
+          "reasoning": 0.13375749681972796,
+          "refusal": 0.1333943261920164,
+          "creative": 0.15328504953636887,
+          "adversarial": 0.12670944910496473,
+          "hallucination": 0.13958518739272324
+        }
+      },
+      "meta-llama/Llama-3.2-3B": {
+        "sorted_low_to_high": [
+          "hallucination",
+          "creative",
+          "refusal",
+          "adversarial",
+          "retrieval",
+          "reasoning"
+        ],
+        "means": {
+          "retrieval": 0.21416716042492123,
+          "reasoning": 0.22333357113339597,
+          "refusal": 0.20287103513876598,
+          "creative": 0.20222595469819174,
+          "adversarial": 0.20527599238687097,
+          "hallucination": 0.20142490350537828
+        }
+      }
+    },
+    "cross_model_agreement": {
+      "Qwen/Qwen2.5-3B vs google/gemma-2-2b": {
+        "agreement_fraction": 0.2,
+        "n_pairs_compared": 15
+      },
+      "Qwen/Qwen2.5-3B vs meta-llama/Llama-3.2-3B": {
+        "agreement_fraction": 0.7333333333333333,
+        "n_pairs_compared": 15
+      },
+      "google/gemma-2-2b vs meta-llama/Llama-3.2-3B": {
+        "agreement_fraction": 0.3333333333333333,
+        "n_pairs_compared": 15
+      }
+    }
+  }
+}
