@@ -131,105 +131,275 @@ def fig2_four_axis_correlation():
 # ══════════════════════════════════════════════════════════════
 def fig7_prereg_timeline():
     """
-    A horizontal timeline showing git commit chronology between
-    the pre-reg seal and Zenodo publication. Pulls from git log.
+    Vertical step-chart timeline: events stacked vertically, each on its
+    own row. Far more readable than a horizontal line. Left column shows
+    commit hash + ET time; right column shows title + subtitle.
     """
     print("[FIG 7] pre-registration timeline")
-    # Pull the commits we care about via git log
-    def git_commit_info(sha):
-        r = subprocess.run(
-            ["git", "-C", str(ROOT), "show", "-s",
-             "--format=%H|%ai|%s", sha],
-            capture_output=True, text=True, check=False,
-        )
-        if r.returncode != 0:
-            return None
-        parts = r.stdout.strip().split("|", 2)
-        return {"sha": parts[0][:7], "date": parts[1], "subject": parts[2]} if len(parts) == 3 else None
 
-    # Known commits in chronological order (from the v0.3 session)
-    commits = [
-        ("a122810", "Bulletproof audit:\nwithdrew v0.2.1 overreach"),
-        ("e32cc75", "PRE-REGISTRATION\nSEALED"),
-        ("01969cb", "Data captured +\nanalysis script committed\n\n→ H1 SUPPORTED"),
-        ("b09e54f", "Finalization pass\nbefore Zenodo upload"),
-        ("c396a83", "PUBLISHED to Zenodo\n(paper 19502710,\natlas 19502716)"),
+    events = [
+        dict(sha="a122810", hhmm="14:02", color=FATHOM_AMBER,
+             title="Bulletproof audit",
+             sub="Withdrew v0.2.1 overreach after bootstrap showed\n"
+                 "the n=3 'Qwen anomaly' was coin-flip noise."),
+        dict(sha="e32cc75", hhmm="14:57", color=FATHOM_RED,
+             title="PRE-REGISTRATION SEALED",
+             sub="Three-condition H1 decision rule committed to git\n"
+                 "BEFORE any v0.3 data was captured."),
+        dict(sha="01969cb", hhmm="16:30", color=FATHOM_GREEN,
+             title="Data captured + analysis run",
+             sub="12 captures + atlas_attractor_n5.py in ONE commit.\n"
+                 "Analyzer applied without modification. H1 SUPPORTED."),
+        dict(sha="b09e54f", hhmm="17:05", color=FATHOM_GREY,
+             title="Finalization pass",
+             sub="Documentation only; no analysis code touched."),
+        dict(sha="c396a83", hhmm="18:02", color=FATHOM_BLUE,
+             title="PUBLISHED to Zenodo",
+             sub="Paper DOI 10.5281/zenodo.19502710\n"
+                 "Atlas DOI 10.5281/zenodo.19502716"),
     ]
-    events = []
-    for sha, label in commits:
-        info = git_commit_info(sha)
-        if info:
-            events.append({**info, "label": label})
+    n = len(events)
 
-    if not events:
-        # Fallback: hardcoded in case git isn't available
-        events = [
-            {"sha": "a122810", "date": "2026-04-10 14:00:00", "label": "Bulletproof audit:\nwithdrew v0.2.1 overreach"},
-            {"sha": "e32cc75", "date": "2026-04-10 14:57:52", "label": "PRE-REGISTRATION\nSEALED"},
-            {"sha": "01969cb", "date": "2026-04-10 16:30:28", "label": "Data captured +\nanalysis script committed\n\n→ H1 SUPPORTED"},
-            {"sha": "b09e54f", "date": "2026-04-10 17:00:00", "label": "Finalization pass\nbefore Zenodo upload"},
-            {"sha": "c396a83", "date": "2026-04-10 18:02:00", "label": "PUBLISHED to Zenodo\n(paper 19502710,\natlas 19502716)"},
-        ]
+    fig = plt.figure(figsize=(9.5, 6.0))
+    ax = fig.add_subplot(111)
 
-    # Parse times to hours
-    from datetime import datetime
-    def parse_date(s):
-        try:
-            return datetime.strptime(s[:19], "%Y-%m-%d %H:%M:%S")
-        except Exception:
-            return datetime.strptime(s, "%Y-%m-%d %H:%M:%S %z")
+    # Vertical spine (timeline axis)
+    SPINE_X = 0.30
+    ax.axvline(SPINE_X, color="#aab1c0", linewidth=2.4, alpha=0.85, zorder=1)
 
-    dts = [parse_date(e["date"][:19]) for e in events]
-    t0 = dts[0]
-    hours = [(d - t0).total_seconds() / 3600.0 for d in dts]
+    # Y positions: event n goes to y = n-1-i (top is first event)
+    ys = [n - 1 - i for i in range(n)]
 
-    fig, ax = plt.subplots(figsize=(8.0, 3.2))
+    for y, e in zip(ys, events):
+        # Marker on spine
+        ax.scatter([SPINE_X], [y], s=540, color=e["color"],
+                   edgecolors="white", linewidths=2.2, zorder=5)
 
-    # Timeline spine
-    ax.axhline(0, color=FATHOM_BLUE, linewidth=2, alpha=0.9)
+        # Left side: commit hash + ET time
+        ax.text(SPINE_X - 0.035, y,
+                f"{e['sha']}\n{e['hhmm']} ET",
+                ha="right", va="center", fontsize=9.5,
+                color="#222", family="monospace",
+                bbox=dict(boxstyle="round,pad=0.32",
+                          facecolor="white",
+                          edgecolor=e["color"],
+                          linewidth=1.1))
 
-    # Colour code: audit + pre-reg + analysis + finalize + publish
-    colors = [FATHOM_AMBER, FATHOM_RED, FATHOM_GREEN, FATHOM_GREY, FATHOM_BLUE]
+        # Right side: title + subtitle
+        ax.text(SPINE_X + 0.05, y + 0.12, e["title"],
+                ha="left", va="center", fontsize=11.5,
+                color=e["color"], fontweight="bold")
+        ax.text(SPINE_X + 0.05, y - 0.15, e["sub"],
+                ha="left", va="center", fontsize=9.0,
+                color="#333", style="italic")
 
-    for i, (e, x, c) in enumerate(zip(events, hours, colors)):
-        marker_y = 0
-        # Big marker
-        ax.scatter([x], [marker_y], s=280, color=c, zorder=3,
-                   edgecolors="white", linewidths=1.5)
-        # Label above/below alternating
-        ya = 0.35 if i % 2 == 0 else -0.35
-        va = "bottom" if ya > 0 else "top"
-        ax.plot([x, x], [0, ya * 0.6], color=c, linewidth=1, alpha=0.6)
-        ax.text(x, ya * 0.65, e["label"], ha="center", va=va, fontsize=8.2,
-                color=c if i in (1, 2, 4) else "#333",
-                fontweight="bold" if i in (1, 2, 4) else "normal")
-        # Commit hash + time below (or above)
-        ax.text(x, -ya * 0.15,
-                f'{e["sha"]}\n{e["date"][11:16]} ET',
-                ha="center", va="center", fontsize=7.5, color="#333",
-                family="monospace")
-
-    # Highlight the 93-minute gap between seal and H1 result
+    # 93-minute gap highlight between events[1] (seal) and events[2] (data)
+    y_seal = ys[1]
+    y_data = ys[2]
+    # Draw a bracket on the spine between seal and data
     ax.annotate("",
-                xy=(hours[2], 0.12), xytext=(hours[1], 0.12),
-                arrowprops=dict(arrowstyle="<->", color=FATHOM_GREEN, lw=1.4))
-    gap_mins = int((dts[2] - dts[1]).total_seconds() / 60)
-    ax.text((hours[1] + hours[2]) / 2, 0.17, f"{gap_mins} min",
-            ha="center", va="bottom", fontsize=8,
+                xy=(SPINE_X - 0.12, y_data),
+                xytext=(SPINE_X - 0.12, y_seal),
+                arrowprops=dict(arrowstyle="<|-|>", color=FATHOM_GREEN,
+                                lw=2.4, mutation_scale=14),
+                zorder=3)
+    ax.text(SPINE_X - 0.14, (y_seal + y_data) / 2,
+            "93 min\nfrom seal\nto result",
+            ha="right", va="center", fontsize=9.8,
             color=FATHOM_GREEN, fontweight="bold")
 
-    # Setup axes
-    ax.set_xlim(-0.4, max(hours) + 0.6)
-    ax.set_ylim(-0.85, 0.85)
+    # Axes setup
+    ax.set_xlim(-0.05, 1.05)
+    ax.set_ylim(-0.7, n - 0.3)
+    ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_xlabel("Elapsed hours (2026-04-10, ET)")
-    ax.set_title("Pre-registration chronology: from sealed hypothesis to "
-                 "published replication in 3 hours 4 minutes",
-                 pad=12, color=FATHOM_BLUE, fontweight="bold")
-    ax.spines["left"].set_visible(False)
-    ax.spines["bottom"].set_alpha(0.4)
+    for s in ax.spines.values():
+        s.set_visible(False)
+
+    ax.set_title("Pre-registration chronology (2026-04-10, Eastern Time)",
+                 fontsize=13, color=FATHOM_BLUE, fontweight="bold",
+                 pad=12)
 
     save(fig, "fig7_prereg_timeline")
+    plt.close(fig)
+
+
+# ══════════════════════════════════════════════════════════════
+# Fig 0: ICONIC HEADLINE FIGURE
+# Base→instruct arrows in 2D cognitive signature space.
+# ══════════════════════════════════════════════════════════════
+def fig0_attractor_arrows():
+    """
+    The retweet figure. For each of 6 model families, plot an arrow
+    from the base model's cognitive signature to the instruct model's
+    cognitive signature. The arrows should visually converge to a
+    common attractor region, demonstrating the RLHF convergence claim
+    in a single image.
+
+    We use PCA on the 6 shape-normalized entropy-early category
+    signatures from the atlas analyzer.
+    """
+    print("[FIG 0] iconic attractor arrows")
+    sys.path.insert(0, str(ROOT / "atlas" / "analysis"))
+    try:
+        import atlas_attractor_n5 as aa
+    except Exception as e:
+        print(f"  [WARN] could not import analyzer: {e}")
+        return
+    finally:
+        sys.path.pop(0)
+
+    # Load all 12 captures
+    fams = list(aa.MODEL_GROUPS.keys())
+    caps = {}
+    for f, vs in aa.MODEL_GROUPS.items():
+        for training in ("base", "instruct"):
+            try:
+                caps[(f, training)] = aa.load_capture(vs[training])
+            except FileNotFoundError:
+                pass
+
+    # Compute entropy-early signatures and shape-normalize
+    sigs = {}
+    for key, cap in caps.items():
+        per = aa.per_prompt_entropy(cap, which="early_mean")
+        sigs[key] = aa.shape_normalize(aa.signature(per))
+
+    # Stack into matrix for PCA (rows = 12 captures, cols = 6 categories)
+    X = np.array([sigs[(f, t)] for f in fams for t in ("base", "instruct")])
+
+    # Center and PCA via SVD
+    Xc = X - X.mean(axis=0, keepdims=True)
+    U, S, Vt = np.linalg.svd(Xc, full_matrices=False)
+    # Project onto first two PCs
+    Y = Xc @ Vt[:2].T  # (12, 2)
+
+    # Reshape into (6 families, 2 trainings, 2 coords)
+    Y = Y.reshape(len(fams), 2, 2)
+    bases = Y[:, 0, :]      # (6, 2) base positions
+    instructs = Y[:, 1, :]  # (6, 2) instruct positions
+
+    # Centroid of instruct models = the "attractor"
+    attractor = instructs.mean(axis=0)
+
+    # Two-column layout: main scatter on left, legend on right
+    fig = plt.figure(figsize=(10.5, 6.4))
+    ax = fig.add_axes([0.08, 0.10, 0.64, 0.82])    # main plot
+    lax = fig.add_axes([0.74, 0.10, 0.24, 0.82])  # legend panel
+    lax.axis("off")
+
+    # Family colours (distinct, high-contrast)
+    fam_colors = ["#1e376e", "#0a8a4f", "#b01e2e",
+                  "#7b2cbf", "#c28300", "#0077b6"]
+    fam_markers = ["o", "s", "D", "^", "v", "P"]
+
+    # Plot arrows + base/instruct markers for each family
+    for i, f in enumerate(fams):
+        bx, by = bases[i]
+        ix, iy = instructs[i]
+        c = fam_colors[i]
+        # Arrow base -> instruct
+        ax.annotate("",
+                    xy=(ix, iy), xytext=(bx, by),
+                    arrowprops=dict(arrowstyle="-|>",
+                                    color=c, lw=2.4,
+                                    alpha=0.88,
+                                    mutation_scale=20),
+                    zorder=3)
+        # Base marker (open)
+        ax.scatter([bx], [by], s=150, marker=fam_markers[i],
+                   facecolor="white", edgecolor=c, linewidths=2.2,
+                   zorder=4)
+        # Instruct marker (filled)
+        ax.scatter([ix], [iy], s=170, marker=fam_markers[i],
+                   color=c, edgecolor="white", linewidths=1.4,
+                   zorder=5)
+
+    # Attractor centroid
+    ax.scatter([attractor[0]], [attractor[1]], s=620, marker="*",
+               color="#ffd60a", edgecolor="#111", linewidths=2.2,
+               zorder=6)
+
+    # Reference lines
+    ax.axhline(0, color="#ccc", lw=0.6, zorder=1)
+    ax.axvline(0, color="#ccc", lw=0.6, zorder=1)
+
+    # Axis labels with variance explained
+    var_explained = (S**2) / (S**2).sum()
+    ax.set_xlabel(f"PC1 (entropy-early shape, "
+                  f"{var_explained[0]*100:.1f}% of variance)",
+                  fontsize=11)
+    ax.set_ylabel(f"PC2 ({var_explained[1]*100:.1f}% of variance)",
+                  fontsize=11)
+
+    ax.set_title(
+        "The RLHF attractor in cognitive-signature space ($n=6$ families)",
+        fontsize=13, color=FATHOM_BLUE, fontweight="bold", pad=12)
+
+    # Caption-style annotation in bottom-right of main plot
+    ax.text(0.98, 0.02,
+            "Pre-registered H1: mean LOO cos = +0.769\n"
+            "Perm $p$ = 0.0315 $\\cdot$ bootstrap CI [+0.571, +0.869]",
+            transform=ax.transAxes, ha="right", va="bottom",
+            fontsize=9, color=FATHOM_GREEN, fontweight="bold",
+            bbox=dict(boxstyle="round,pad=0.45", facecolor="white",
+                      edgecolor=FATHOM_GREEN, linewidth=1.3))
+
+    # Right panel: custom legend with family color swatches
+    lax.text(0.5, 0.98, "Model families", ha="center", va="top",
+             fontsize=11, color=FATHOM_BLUE, fontweight="bold",
+             transform=lax.transAxes)
+
+    y_start = 0.90
+    y_step = 0.10
+    for i, f in enumerate(fams):
+        y = y_start - i * y_step
+        c = fam_colors[i]
+        m = fam_markers[i]
+        # Draw a mini arrow example inline
+        lax.annotate("",
+                     xy=(0.45, y), xytext=(0.12, y),
+                     xycoords=lax.transAxes,
+                     arrowprops=dict(arrowstyle="-|>",
+                                     color=c, lw=2.0,
+                                     mutation_scale=14))
+        # Base (open) and instruct (filled) markers
+        lax.scatter([0.12], [y], s=80, marker=m,
+                    facecolor="white", edgecolor=c, linewidths=1.6,
+                    transform=lax.transAxes, clip_on=False)
+        lax.scatter([0.45], [y], s=90, marker=m,
+                    color=c, edgecolor="white", linewidths=1.0,
+                    transform=lax.transAxes, clip_on=False)
+        # Family name
+        lax.text(0.56, y, f, ha="left", va="center",
+                 fontsize=9.5, color=c, fontweight="bold",
+                 transform=lax.transAxes)
+
+    # Legend symbols key (below family list)
+    key_y = 0.22
+    lax.text(0.5, key_y + 0.08, "Symbols", ha="center", va="top",
+             fontsize=10, color="#444", fontweight="bold",
+             transform=lax.transAxes)
+    # Base = open
+    lax.scatter([0.12], [key_y - 0.02], s=100, marker="o",
+                facecolor="white", edgecolor="#333", linewidths=1.8,
+                transform=lax.transAxes, clip_on=False)
+    lax.text(0.22, key_y - 0.02, "base model", ha="left", va="center",
+             fontsize=8.5, color="#333", transform=lax.transAxes)
+    # Instruct = filled
+    lax.scatter([0.12], [key_y - 0.10], s=100, marker="o",
+                color="#333", edgecolor="white", linewidths=1.0,
+                transform=lax.transAxes, clip_on=False)
+    lax.text(0.22, key_y - 0.10, "instruct (RLHF)", ha="left", va="center",
+             fontsize=8.5, color="#333", transform=lax.transAxes)
+    # Star = attractor
+    lax.scatter([0.12], [key_y - 0.18], s=180, marker="*",
+                color="#ffd60a", edgecolor="#111", linewidths=1.5,
+                transform=lax.transAxes, clip_on=False)
+    lax.text(0.22, key_y - 0.18, "attractor", ha="left", va="center",
+             fontsize=8.5, color="#333", transform=lax.transAxes)
+
+    save(fig, "fig0_attractor_arrows")
     plt.close(fig)
 
 
@@ -485,6 +655,7 @@ def figA_ipr_physics():
 # ══════════════════════════════════════════════════════════════
 def main():
     print(f"Output directory: {OUT}")
+    fig0_attractor_arrows()
     fig2_four_axis_correlation()
     fig7_prereg_timeline()
     fig8_per_family_loo()

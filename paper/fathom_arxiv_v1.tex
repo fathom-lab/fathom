@@ -144,40 +144,43 @@ limitation is stated in \S\ref{sec:limitations}.
 % ABSTRACT
 % ══════════════════════════════════════════════════════════════════
 \begin{abstract}
-We present Fathom, a suite of cognitive measurement instruments for
-transformer internals and the first public cross-architecture cognitive atlas
-of open-weight language models. The instrument suite comprises five
-measurements of internal state: computational depth ($K$), per-layer
-coherence ($C$), the coherence delta ($C_\Delta$), commitment intensity
-($S$), and an architecturally universal honesty axis
-$D\,=\,\cos(\mathbf{h}^{(L)},\mathbf{w}_{y_t})$. We ground the commitment
-intensity measurement in seventy years of condensed-matter physics by showing
-that $S$ is mathematically exactly the inverse participation ratio of the
-coherence event distribution. We validate the instruments on three
-independent experimental designs ($n\!=\!30$ paired hedge vs. commit on
-Gemma-2-2B base, $n\!=\!30$ on Gemma-2-2B-IT, $n\!=\!94$ on TruthfulQA; pooled
-$d\,=\,0.494$, Fisher combined $p\,=\,0.0008$), in a head-to-head against
-logit entropy (AUC $0.663$ vs. $0.607$, $p\,=\,0.013$), and in a negative
-control showing that three SAE-free probes on four architectures all fail
-(Fisher $p\,>\,0.6$). We then use the architecturally universal $D$-axis and
-a finalized entropy proxy to run a pre-registered cross-architecture
-replication of an RLHF convergence attractor in cognitive-signature space
-over six model families (twelve captures). Pre-registration was sealed in
-git commit \texttt{e32cc75} ninety-three minutes before any v0.3 data was
-captured; the three-condition decision rule was applied without modification
-after the data landed. All three conditions passed: mean entropy
-early-window leave-one-out cosine $\,=\,+0.769$ (threshold $\geq 0.40$),
-permutation $p\,=\,0.0315$ (threshold $<\,0.05$), bootstrap 95\% confidence
-interval $[+0.571,\,+0.869]$ (threshold lower bound $>\,0$). The result is
-\textbf{H1 supported}. We release the complete atlas --- probe set, twelve
+Mechanistic interpretability findings do not transfer across architectures,
+and published results are almost never pre-registered. We show that both
+can change at once. We identify an architecturally universal measurement
+primitive, $D\,=\,\cos(\mathbf{h}^{(L)},\mathbf{w}_{y_t})$ --- the cosine
+between the final-layer residual stream and the unembedding row of the
+chosen token --- which requires no SAE, no per-model training, and is
+well-defined on any transformer with an explicit unembedding. A
+preliminary orthogonality check at $n\!=\!5$ places $D$ inside the
+cognitive-geometry family as an SAE-free approximation to late-layer
+commitment geometry ($r\,\approx\,0.99$ with the SAE-derived $C_\Delta$),
+not as a new independent axis. We then use $D$ and a validated entropy
+proxy to run a pre-registered cross-architecture replication of an RLHF
+convergence effect on twelve open-weight captures (six families
+$\times$ base/instruct), sealed in git commit \texttt{e32cc75} ninety-three
+minutes before any of the new data was captured. The sealed decision rule
+declared three conditions for the primary measurement; they were applied
+without modification after the data landed. All three passed: mean
+leave-one-out cosine $+0.769$ (threshold $\geq 0.40$), permutation
+$p\,=\,0.0315$ (threshold $<\,0.05$), bootstrap 95\% confidence interval
+$[+0.571,\,+0.869]$ (threshold lower bound $>\,0$). All six of six
+families show positive leave-one-out cosines. \textbf{H1 is supported.}
+We release the complete Fathom Cognitive Atlas v0.3 --- probe set, twelve
 open-model captures plus one closed-model exploratory capture via logprob
-API, full analysis code, six findings documents, sealed pre-registration,
-and bulletproof audit --- as a public Zenodo deposit with its own concept
-DOI (\texttt{10.5281/zenodo.19502715}), alongside the paper
-(\texttt{10.5281/zenodo.19326174}), under CC-BY-4.0 on the data and MIT on
-the code. We position this as a measurement-science contribution: the goal
-is not to find the one feature that explains hallucination, but to measure
-cognitive state across architectures with pre-registered statistical rigor.
+API, full analysis code, bulletproof audit, and sealed pre-registration
+--- as a public Zenodo deposit with its own concept DOI
+(\texttt{10.5281/zenodo.19502715}), alongside the companion paper record
+(\texttt{10.5281/zenodo.19326174}), under CC-BY-4.0 on the data and MIT
+on the code. The primary contribution is methodological: pre-registered
+statistical rigor, architectural universality, and public reproducibility
+can coexist in a single interpretability paper. The empirical result
+(RLHF convergence replicating at $n\!=\!6$ families including three
+scale/generation variants) is the demonstration payload, with the
+within-family-variance caveat stated explicitly in
+\S\ref{sec:limitations}. Three of the secondary Fathom instruments ---
+the SAE-based commitment intensity $S$, the coherence spectrum Gini
+metric, and the cognitive autopsy layer-11 localization on Gemma-2-2B ---
+are supporting material and are detailed in the appendices.
 \end{abstract}
 
 % ══════════════════════════════════════════════════════════════════
@@ -232,8 +235,8 @@ entropy proxy of the logit distribution reproduces the $D$-axis signal
 sufficiently well to extend Fathom measurements to any model with an
 API-exposed logprob interface, bridging to the closed-weight frontier.
 
-\paragraph{The cross-architecture replication.} We use the suite to run the
-\emph{first pre-registered cross-architecture replication of an RLHF
+\paragraph{The cross-architecture replication.} We use the suite to run a
+\emph{pre-registered cross-architecture replication of an RLHF
 convergence effect}. Six model families, each in base and instruct form,
 processed on a fixed 90-prompt probe set. The hypothesis (the ``RLHF
 Attractor'' of \S\ref{sec:atlas}): instruct models from different
@@ -254,10 +257,12 @@ analysis, and source JSONs for every numerical claim.
 participation ratio and verify the equivalence to machine precision on real
 trajectories, grounding the instrument in a seventy-year theoretical
 lineage.
-\item We run the first pre-registered cross-architecture replication of an
+\item We run a pre-registered cross-architecture replication of an
 RLHF convergence effect at $n\!=\!6$ families, sealed in git 93 minutes
 before data capture, and show \textbf{H1 supported} on all three decision
-conditions (\S\ref{sec:atlas}).
+conditions (\S\ref{sec:atlas}). To our knowledge, this is the first such
+pre-registered interpretability replication; we discuss comparison to
+prior work in \S\ref{sec:discussion}.
 \item We release the \emph{Fathom Cognitive Atlas v0.3}: probe set, twelve
 open-model captures plus one closed-model capture, six findings documents,
 sealed pre-registration, bulletproof audit, and a reproducibility script
@@ -265,18 +270,47 @@ with 28 assertions, under CC-BY-4.0 / MIT, with its own Zenodo concept DOI
 (\texttt{10.5281/zenodo.19502715}).
 \end{enumerate}
 
+\paragraph{What is new in this paper relative to prior Fathom releases.}
+The Fathom project has evolved publicly through fourteen Zenodo versions
+(concept DOI \texttt{10.5281/zenodo.19326174}). The material on
+computational depth $K$, per-layer coherence $C$, the coherence delta
+$C_\Delta$, the commitment intensity $S$ and its IPR grounding, the
+coherence spectrum with the Gini AUC result, the cognitive autopsy at
+layer 11, and the $D$-axis jailbreak pilot all pre-date this paper and
+are published as Fathom paper v14
+(\texttt{10.5281/zenodo.19502710}). This arXiv submission contributes three
+pieces not present in any prior version: (i)~the sealed pre-registration
+of an RLHF cross-architecture convergence hypothesis (committed as
+\texttt{e32cc75} ninety-three minutes before any v0.3 capture);
+(ii)~the Cognitive Atlas v0.3 pre-registered replication at $n\!=\!6$
+families with all three sealed conditions passing
+(\S\ref{sec:atlas}; released separately as
+\texttt{10.5281/zenodo.19502716}); and (iii)~the bulletproof audit that
+withdrew the earlier v0.2.1 ``Qwen anomaly'' framing after bootstrap and
+permutation analysis showed it was noise at $n\!=\!3$ (detailed in
+\S\ref{sec:atlas}). The previously published material on $K$, $C$,
+$C_\Delta$, $S$, IPR, and the coherence spectrum is briefly summarised in
+\S\ref{sec:instruments}--\ref{sec:supporting} and given in full in
+Appendices~\ref{app:diagnosis} and \ref{app:validation}, so that this
+paper is self-contained.
+
 \paragraph{Paper roadmap.} Section~\ref{sec:related} places this work
-against existing SAE, behavioral detector, representation engineering, and
-contrastive decoding literatures. Section~\ref{sec:instruments} defines the
-five measurement instruments as a suite of cards. Section~\ref{sec:ipr}
-develops the IPR physics grounding. Sections~\ref{sec:diagnosis}
-and~\ref{sec:validation} present the diagnosis and single-instrument
-validation studies. Section~\ref{sec:atlas} is the centerpiece: the
-cross-architecture pre-registered replication. Section~\ref{sec:falsify}
-states what would have falsified H1. Section~\ref{sec:limitations} is
-honest about null results and scope corrections. Section~\ref{sec:discussion}
-is the discussion. The appendices contain full per-family numerical tables,
-pre-registration chronology, and the IPR derivation.
+against existing SAE, behavioural detector, representation engineering,
+and contrastive decoding literatures. Section~\ref{sec:instruments}
+defines the five measurement instruments as a suite of cards.
+Section~\ref{sec:ipr} develops the IPR physics grounding of $S$.
+Section~\ref{sec:supporting} summarises the single-model supporting
+evidence (full detail in Appendices~\ref{app:diagnosis}
+and~\ref{app:validation}). Section~\ref{sec:atlas} is the centrepiece:
+the cross-architecture pre-registered replication.
+Section~\ref{sec:falsify} states what would have falsified H1.
+Section~\ref{sec:limitations} is honest about null results and scope
+corrections, with particular attention to the $n\!=\!6$ scale-variant
+caveat in \S\ref{sec:lim-n6}. Section~\ref{sec:predictions} states
+broader theoretical predictions that others can test.
+Section~\ref{sec:discussion} is the discussion. Appendices contain
+per-family numerics, git chronology, deviations from pre-registration,
+the IPR derivation in full, and the single-model evidence in full.
 
 % ══════════════════════════════════════════════════════════════════
 % 2. RELATED WORK
@@ -363,7 +397,7 @@ tracer or equivalent attribution pipeline.
 \textbf{Cross-architecture status.} Originally reported on Gemma-2-2B.
 Cross-architecture value as a stand-alone hallucination detector is
 \emph{limited}: $K$ was at chance on TruthfulQA ($d\,=\,+0.11$,
-AUC $\,=\,0.55$) in the spectrum analysis of \S\ref{sec:diagnosis}. It remains
+AUC $\,=\,0.55$) in the spectrum analysis of Appendix~\ref{app:diagnosis}. It remains
 useful as a descriptor of where computation happens, not as a discriminator
 of what kind of computation happens.
 \vspace{2pt}
@@ -578,7 +612,7 @@ The equivalence holds exactly and has been verified to machine precision
 on ten real TruthfulQA trajectories.
 
 \paragraph{Why the ratio form is specific.} The cross-dataset meta-analysis
-of \S\ref{sec:validation} tested three candidate metrics across the three
+of Appendix~\ref{app:validation} tested three candidate metrics across the three
 independent datasets: the ratio $S\,=\,M/K_\tau$, the max alone $M$, and
 the mean of $C_\Delta$ over the trajectory. Only the ratio form replicates
 in all three datasets (pooled $d\,=\,+0.498$). The max alone fails
@@ -603,300 +637,101 @@ cross-dataset $d\,\approx\,0.5$ we observe empirically.}
 \end{figure}
 
 % ══════════════════════════════════════════════════════════════════
-% 5. MECHANISTIC DIAGNOSIS
+% 5. SINGLE-MODEL SUPPORTING EVIDENCE (brief summary)
+% Full details in Appendices B (diagnosis) and C (validation)
 % ══════════════════════════════════════════════════════════════════
-\section{Mechanistic diagnosis: coherence spectrum and cognitive autopsy}
-\label{sec:diagnosis}
+\section{Single-model supporting evidence}
+\label{sec:supporting}
 
-The four SAE-based axes ($K$, $C$, $C_\Delta$, $S$) are scalars. They
-summarize the per-layer coherence distribution at each token. But scalars
-discard the \emph{shape} of that distribution. We investigate whether the
-shape carries additional discriminative information.
+Before presenting the cross-architecture replication that is the
+centrepiece of this paper, we briefly summarise the single-model
+supporting evidence that motivates the measurement approach. Full tables,
+figures, and methodology for this section are in
+Appendices~\ref{app:diagnosis}~and~\ref{app:validation}.
 
-\subsection{Spectrum metrics}
+\paragraph{Mechanistic diagnosis (Gemma-2-2B only; see
+Appendix~\ref{app:diagnosis}).} The \emph{shape} of the per-layer
+coherence distribution carries discriminative information that scalar
+summaries discard. On $n\,=\,200$ TruthfulQA correct/hallucinated items,
+the Gini coefficient of the per-layer coherence spectrum achieves
+AUC\,$=\,0.685$, while scalar $K$ (depth) is at chance (AUC\,$=\,0.550$).
+Thirteen of sixteen spectrum metrics survive Holm--Bonferroni correction.
+A per-layer cognitive autopsy localizes the hallucination signal at
+layer~11 ($p\,=\,2.7\!\times\!10^{-12}$, primary fault locus in 63\% of
+hallucinations) with layers 11--12 jointly carrying 41\% of all excess
+coherence. This identifies hallucination as a coherence
+\emph{concentration} phenomenon, not a shift in computational depth ---
+a finding that is specific to the tested model and that we do not claim
+generalises across architectures without further replication.
 
-We compute 16 spectral shape metrics on $n\,=\,200$ TruthfulQA
-correct/hallucinated pairs using the full 26-layer coherence profile of
-Gemma-2-2B. Thirteen of the sixteen metrics survive Holm--Bonferroni
-correction. The top six metrics (Table~\ref{tab:spectrum}) all dominate
-scalar $K$, which is at chance.
+\paragraph{Single-instrument validation
+(see Appendix~\ref{app:validation}).} The SAE-based commitment intensity
+$S_{\text{early}}$ (first seven tokens) replicates with consistent effect
+size across three independent experimental designs: Gemma-2-2B base
+hedge/commit ($d\,=\,+0.501$, $n\,=\,30$ paired), Gemma-2-2B-IT
+hedge/commit ($d\,=\,+0.466$, $n\,=\,30$ paired), and Gemma-2-2B-IT
+TruthfulQA ($d\,=\,+0.506$, $n\,=\,94$ unpaired). Pooled meta-effect is
+$d\,=\,+0.494$, Fisher combined $p\,=\,0.0008$ (one-sided). $S_{\text{early}}$
+beats logit entropy in a head-to-head on the same 200 TruthfulQA items
+(AUC\,$=\,0.663$ vs.\ $0.607$, $p\,=\,0.013$). Three SAE-free probes on
+four architecture families all fail (Fisher combined $p\,>\,0.6$ each),
+establishing that the SAE decomposition is performing measurement work
+that raw activation analysis cannot.
 
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lrrr}
-\toprule
-Metric & Cohen's $d$ & $p_{\text{Holm}}$ & AUC \\
-\midrule
-Gini coefficient    & $+0.36$ & $1.2\!\times\!10^{-5}$ & $\mathbf{0.685}$ \\
-Spectral entropy    & $-0.34$ & $4.6\!\times\!10^{-5}$ & $0.675$ \\
-Peak value          & $+0.34$ & $3.4\!\times\!10^{-5}$ & $0.665$ \\
-Peak concentration  & $+0.34$ & $3.6\!\times\!10^{-5}$ & $0.655$ \\
-Spectral spread     & $-0.32$ & $1.2\!\times\!10^{-4}$ & $0.645$ \\
-Early-layer mass    & $-0.32$ & $1.1\!\times\!10^{-4}$ & $0.630$ \\
-\midrule
-$C_\Delta$ (scalar) & $+0.31$ & ---                    & $0.640$ \\
-$K$ (depth, scalar) & $+0.11$ & $0.140$ (n.s.)         & $0.550$ \\
-\bottomrule
-\end{tabular}
-\caption{Spectral shape metrics for hallucination discrimination on
-$n\,=\,200$ TruthfulQA items (Gemma-2-2B). The Gini coefficient leads all
-metrics including scalar $C_\Delta$ and $K$. $K$ (depth) is at chance.
-Only the shape carries the signal.
-\repro{truthfulqa\_results/S\_baselines\_n200.json}}
-\label{tab:spectrum}
-\end{table}
-
-Hallucinated responses concentrate coherence into fewer layers (higher
-Gini, lower spectral entropy, lower spread) with a dominant spike at
-layer 11 ($p\,=\,2.7\!\times\!10^{-12}$, $t\,=\,7.45$). Twenty-three of
-the twenty-six layers show significantly elevated coherence in hallucinated
-responses ($p\!<\!0.05$; 16/26 at $p\!<\!0.001$). Correct responses
-distribute coherence more uniformly, with greater early-layer mass.
-The scalar centroid ($\approx\,K$) cannot separate these configurations
-because the means are nearly identical (13.91 vs. 13.90). Only the
-\emph{shape} carries the signal.
-
-\subsection{Cognitive autopsy: per-layer fault localization}
-
-To identify \emph{where} hallucinations form, we compute each layer's
-contribution to excess coherence (hallucinated minus correct). Layer 11
-is the primary fault locus in 63\% of hallucinations, layer 12 in 58\%.
-Jointly, layers 11 and 12 account for 41\% of all excess coherence
-(Figure~\ref{fig:autopsy}). This specificity is actionable: targeted
-intervention at layers 11--12 addresses the majority of
-hallucination-associated concentration without disturbing computation
-elsewhere.
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.88\linewidth]{figures/cognitive_autopsy_overlay.png}
-\caption{Cognitive autopsy overlay ($n\,=\,200$, Gemma-2-2B). Per-layer
-excess coherence of hallucinated minus correct. Layers 11 and 12
-(highlighted) are the primary fault locus, contributing 41\% of all excess
-coherence. The epicenter is well-defined and actionable for targeted
-intervention.}
-\label{fig:autopsy}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.95\linewidth]{figures/spectrum_n200_full.png}
-\caption{Coherence spectrum analysis ($n\,=\,200$, Gemma-2-2B). Panel (A):
-mean per-layer coherence spectra with 95\% confidence bands. Panel (B):
-per-layer difference with significance markings (16/26 layers at $p<0.001$).
-Panel (C): Gini coefficient distributions. Panel (D): 5-fold CV AUC
-classifier comparison --- the spectral shape metrics dominate all scalar
-baselines including $C_\Delta$ and $K$.}
-\label{fig:spectrum}
-\end{figure}
-
-\subsection{Intervention: best-of-$N$ and multi-layer feature suppression}
-
-We explore three intervention strategies derived from the spectrum
-diagnosis. \textbf{Best-of-$N$ sampling} generates $N$ candidates with
-temperature sampling, scores each by a Cognitive Health Score (mean Gini
-$+$ spectral spread $+$ early-layer mass), and returns the healthiest.
-Best-of-$5$ reduces mean Gini by $0.022$ and improves CHS on 100\% of
-test prompts versus greedy decoding. \textbf{Single-layer feature
-suppression} identifies 66 SAE features at layer 11 that activate
-significantly more during hallucination ($p<0.01$, $d>0.3$; top feature
-$d\,=\,0.80$). Clamping these features to their correct-answer activation
-level produces zero first-token changes on held-out data (KL divergence
-$0.008$). The residual stream absorbs single-layer perturbations completely.
-\textbf{Multi-layer coordinated suppression} extends to all 22 significant
-layers, suppressing the top 10 hallucination-associated features per layer
-for 220 features total. This produces 33\% first-token changes on held-out
-data (KL divergence $0.587$, 73$\times$ larger than single-layer). \emph{This
-is the first demonstration that coordinated SAE feature suppression can
-cross the argmax boundary at inference time.} The direction of change is
-not consistently toward correctness (1 improved, 1 degraded, 8 unclear on
-10 changed items), indicating that hallucination-associated features
-encode computation patterns rather than factual content.
+\paragraph{What role these play in the paper.} The supporting evidence
+above establishes that (i)~per-layer coherence geometry is a real
+discriminative signal on at least one model, and (ii)~the SAE-based
+commitment intensity replicates across three independent designs on
+\emph{within-family} experiments. Neither establishes that the signal
+transfers across independent architectures, which is the gap the
+cross-architecture pre-registered replication of \S\ref{sec:atlas}
+targets. Readers who are primarily interested in the cross-architecture
+result may proceed directly to \S\ref{sec:atlas}; readers who want to
+audit the single-model supporting evidence should read
+Appendices~\ref{app:diagnosis}~and~\ref{app:validation}.
 
 % ══════════════════════════════════════════════════════════════════
-% 6. VALIDATION STUDIES
-% ══════════════════════════════════════════════════════════════════
-\section{Single-instrument validation studies}
-\label{sec:validation}
-
-Before the cross-architecture atlas replication of \S\ref{sec:atlas}, the
-individual instruments were validated through several studies reported
-here as supporting evidence.
-
-\subsection{S\texorpdfstring{$_{\text{early}}$}{\_early} cross-dataset meta-analysis}
-
-The commitment intensity restricted to the first seven tokens
-($S_{\text{early}}$) was evaluated on three independent datasets with
-different experimental designs (Table~\ref{tab:meta}). The effect sizes
-are remarkably consistent ($d\,\in\,[0.466,0.506]$) and Fisher combined
-$p\,=\,0.0008$ (one-sided). Subsample robustness: 95.8\% of 50\%-subsamples
-show $d\,>\,0$ across all three datasets. The paired hedge-vs-commit
-experiments are length-matched by construction, ruling out question-length
-confounds that could affect the TruthfulQA comparison.
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lccc}
-\toprule
-Dataset & Design & $d$ & AUC \\
-\midrule
-Gemma-2-2B base hedge/commit       & paired, $n\,=\,30$ & $+0.501$ & $0.66$ \\
-Gemma-2-2B-IT hedge/commit         & paired, $n\,=\,30$ & $+0.466$ & $0.63$ \\
-Gemma-2-2B-IT TruthfulQA (hall vs corr) & unpaired, $n\,=\,94$ & $+0.506$ & $0.67$ \\
-\midrule
-\textbf{Pooled meta-effect}        &                    & $\mathbf{+0.494}$ & \\
-\bottomrule
-\end{tabular}
-\caption{$S_{\text{early}}$ cross-dataset meta-analysis. Fisher combined
-$p\,=\,0.0008$. Effect sizes consistent at $d\,\approx\,0.5$ across three
-independent designs. The paired designs are length-matched by construction.
-\repro{truthfulqa\_results/S\_baselines\_n200.json}}
-\label{tab:meta}
-\end{table}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.75\linewidth]{figures/meta_analysis_forest.png}
-\caption{Forest plot of the cross-dataset $S_{\text{early}}$
-meta-analysis. Three independent datasets, Fisher combined $p\,=\,0.0008$.}
-\label{fig:meta}
-\end{figure}
-
-\subsection{Head-to-head vs. logit entropy}
-
-On the same 200 TruthfulQA items (Gemma-2-2B-IT), we captured both
-$S_{\text{early}}$ and all standard behavioural uncertainty measures per
-token (Table~\ref{tab:headtohead}). $S_{\text{early}}$ is the only feature
-reaching significance. The correlation with logit entropy is $r\,=\,-0.17$
-(nearly independent), enabling a 2D cognitive state map whose combined
-classifier reaches 5-fold CV AUC $\,=\,0.701$ at token $7$.
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lccl}
-\toprule
-Feature & AUC & $p$ & Type \\
-\midrule
-$S_{\text{early}}$              & $\mathbf{0.663}$ & $\mathbf{0.013}$ & SAE-derived \\
-entropy$_{\text{max,early}}$    & $0.607$ & $0.053$ & behavioural \\
-entropy$_{\text{mean,early}}$   & $0.596$ & $0.133$ & behavioural \\
-logprob$_{\text{mean,early}}$   & $0.559$ & $0.291$ & behavioural \\
-margin$_{\text{mean,early}}$    & $0.477$ & $0.624$ & behavioural \\
-\bottomrule
-\end{tabular}
-\caption{Head-to-head comparison of $S_{\text{early}}$ against standard
-behavioural uncertainty measures on the same 200 TruthfulQA items
-(Gemma-2-2B-IT). $S_{\text{early}}$ is the only feature reaching significance.
-\repro{truthfulqa\_results/baselines\_headtohead.json}}
-\label{tab:headtohead}
-\end{table}
-
-\subsection{SAE necessity}
-
-To establish that the SAE decomposition is doing irreplaceable work, we
-tested three SAE-free probes on four architecture families (Gemma, Llama,
-Qwen, Phi), each on 200 TruthfulQA items. The probes were: raw top-$k$ IPR
-on logit distribution, cross-layer cosine of raw residual streams, and a
-multi-metric fingerprint combining six standard uncertainty quantities.
-\textbf{All three SAE-free probes fail} (Fisher combined $p\,>\,0.6$ each,
-mean 5-fold CV AUC $=\,0.566$). The SAE-based $S$ instrument succeeds on
-both tested architectures (Gemma $d\,=\,+0.51$, Llama $d\,=\,+0.72$,
-Fisher combined $p\,=\,0.0006$). The SAE decomposition is performing
-measurement work that raw activation analysis cannot.
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lcc}
-\toprule
-Probe & Fisher $p$ (4 archs) & Result \\
-\midrule
-Top-$k$ IPR (raw logit)       & $0.619$ & Mixed directions \\
-Cross-layer cosine (residual) & $0.948$ & All $d\,<\,0$ \\
-Multi-metric fingerprint       & ---    & Mean CV AUC $\,=\,0.566$ \\
-\midrule
-SAE-based $S$ (Gemma)          & $\mathbf{0.018}$ & $d\,=\,+0.51$ \\
-SAE-based $S$ (Llama)          & $\mathbf{0.012}$ & $d\,=\,+0.72$ \\
-\bottomrule
-\end{tabular}
-\caption{SAE-free probes fail; SAE-based probes succeed. The SAE
-decomposition is performing irreplaceable measurement work.
-\repro{truthfulqa\_results/cross\_arch\_meta.json}}
-\label{tab:saefree}
-\end{table}
-
-\subsection{Cross-architecture replication of $S_{\text{early}}$}
-
-$S_{\text{early}}$ replicates across architecture families with
-architecture-adaptive token windows (Table~\ref{tab:crossarch}). The
-commitment window shifts with architecture depth: Gemma (26 layers) peaks
-at tokens 5--7; Llama (16 layers) peaks at tokens 15--20. Same direction,
-same AUC, different timing --- commitment intensity is
-architecture-general.
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lcccc}
-\toprule
-Model & Layers & Window & $d$ & AUC \\
-\midrule
-Gemma-2-2B-IT         & 26 & $[0,7)$  & $+0.506$ & $0.669$ \\
-Llama-3.2-1B-Instruct & 16 & $[0,20)$ & $+0.717$ & $0.668$ \\
-\midrule
-\textbf{Pooled}       &    &          & $\mathbf{+0.587}$ & \\
-\bottomrule
-\end{tabular}
-\caption{$S_{\text{early}}$ cross-architecture replication with adaptive
-windows. Fisher combined $p\,=\,0.0006$. Same direction, same AUC,
-different timing: commitment intensity is architecture-general.
-\repro{truthfulqa\_results/S\_truthfulqa\_llama\_n200.json}}
-\label{tab:crossarch}
-\end{table}
-
-\subsection{The 2D cognitive state map}
-
-Combining $S_{\text{early}}$ and logit entropy into a 2D space
-(Figure~\ref{fig:statemap}) reveals four cognitive zones.
-The danger zone (high-$S$, high-entropy) is 65\% hallucinated; the safe
-zone (low-$S$, low-entropy) is 22\% hallucinated; $\chi^2\,=\,7.17$,
-$p\,=\,0.007$. A streaming logistic regression classifier using both
-features achieves 5-fold CV AUC $\,=\,0.701$ at token 7 ($\sim\!350$ ms
-generation time), outperforming either signal alone.
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.76\linewidth]{figures/cognitive_state_map.png}
-\caption{The 2D cognitive state map. Each generation is a point in
-$(S_{\text{early}},\,\text{entropy})$ space. The space partitions into
-four zones by median splits: danger zone (high-$S$, high-entropy), 65\%
-hallucinated; safe zone (low-$S$, low-entropy), 22\% hallucinated.
-$\chi^2\,=\,7.17$, $p\,=\,0.007$.}
-\label{fig:statemap}
-\end{figure}
-
-% ══════════════════════════════════════════════════════════════════
-% 7. THE CENTERPIECE — ATLAS REPLICATION
+% 6. THE CENTERPIECE — ATLAS REPLICATION
 % ══════════════════════════════════════════════════════════════════
 \section{Cross-architecture pre-registered replication --- the atlas}
 \label{sec:atlas}
 
-This section is the centerpiece of the paper. The single-instrument
-validations of \S\ref{sec:validation} show that the Fathom measurements
-are scientifically meaningful on individual datasets. The question we
-address in this section is the harder one: \emph{when we use the same
-measurement protocol on every model, do we see a consistent cross-model
-structure?} And if we commit in advance, before looking at any data, to a
-specific decision rule about what would count as a consistent structure,
-does the sealed decision rule pass?
+This section is the centrepiece of the paper. The single-model supporting
+evidence of \S\ref{sec:supporting} (with full detail in
+Appendices~\ref{app:diagnosis} and \ref{app:validation}) establishes that
+the Fathom measurements carry discriminative information on individual
+datasets. The question we address here is the harder one: \emph{when we
+use the same measurement protocol on every model, do we see a consistent
+cross-model structure?} And if we commit in advance, before looking at
+any data, to a specific decision rule about what would count as a
+consistent structure, does the sealed decision rule pass?
 
-We report the first pre-registered cross-architecture replication of an
-RLHF convergence effect, at $n\!=\!6$ model families, with the
-pre-registration sealed in a git commit ninety-three minutes before any of
-the new v0.3 data was captured.
+We report a pre-registered cross-architecture replication of an RLHF
+convergence effect at $n\!=\!6$ model families, with the pre-registration
+sealed in a git commit ninety-three minutes before any of the new v0.3
+data was captured. To our knowledge, no other interpretability paper has
+reported a pre-registered cross-architecture replication result with a
+sealed decision rule and a publicly verifiable chronology; we state this
+once and refer the reader to §\ref{sec:discussion} for context rather
+than repeating the claim.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig0_attractor_arrows.png}
+\caption{The RLHF attractor in cognitive-signature space. Each arrow
+runs from a base model's shape-normalized entropy-early category
+signature to the matched instruct model's signature, projected onto the
+first two principal components (PC1 + PC2 together capture 76.3\% of the
+shape variance). The gold star is the centroid of the six instruct
+models --- the attractor. Base models (open markers) start at widely
+different positions in the cognitive-signature space; instruct models
+(filled markers) are substantially closer to the attractor centroid
+than their base counterparts. This visual convergence is what the
+pre-registered H1 test (Table~\ref{tab:h1}) measures quantitatively.
+The two figures (this one and Figure~\ref{fig:loo}) together are the
+headline result of the paper.}
+\label{fig:attractor}
+\end{figure}
 
 \subsection{Probe set v0.1}
 
@@ -1267,20 +1102,68 @@ universal measurement primitive, and the D-axis result in
 Table~\ref{tab:h1} is reported. But we do not claim $D$ is a fifth
 independent dimension.
 
-\subsection{$n\,=\,6$ with three scale/generation variants}
+\subsection{$n\,=\,6$ with three scale/generation variants is an
+effective $n$ between 3 and 6}
+\label{sec:lim-n6}
 
-The v0.3 replication used six model families: three original v0.2 families
-(Gemma-2-2B, Llama-3.2-3B, Qwen2.5-3B) plus three substitutes
-(Gemma-3-1B, Llama-3.2-1B, Qwen2.5-1.5B). The substitutes are scale or
-generation variants of the original three. This is a \emph{weaker}
-replication than $n\!=\!6$ with three fully independent new families
-would have been. Models within a family share cognitive structure that
-may inflate LOO cosines artificially. We cannot distinguish ``the attractor
-is a universal RLHF target'' from ``models within a family share cognitive
-structure that makes LOO artificially easy'' at the current composition.
-The v0.4 target is three truly independent new families
-(Phi, OLMo, Mistral) to convert the $n\!=\!6$ result into a cross-family
-result at $n\!\geq\!9$.
+This is the most important limitation of the paper and we state it in
+the sharpest form we can. The v0.3 replication used six model families:
+three original v0.2 families (Gemma-2-2B, Llama-3.2-3B, Qwen2.5-3B) plus
+three substitutes (Gemma-3-1B, Llama-3.2-1B, Qwen2.5-1.5B). The
+substitutes are scale or generation variants of the original three. A
+hostile reviewer would make the following criticism, and they would be
+correct to make it:
+
+\emph{``Three of your six families are scale or generation variants of
+the other three. Models within a family (Gemma-2-2B and Gemma-3-1B, or
+Llama-3.2-3B and Llama-3.2-1B) plausibly share architectural and training
+choices that produce correlated cognitive signatures. Within-family
+correlation will inflate leave-one-out cosines relative to what you
+would see with truly independent families. Your effective sample size
+is closer to $n=3$ than to $n=6$. At $n=3$, you yourself showed that
+the permutation test has a structural floor of $p\!=\!0.125$ that cannot
+reach conventional significance. The fact that you crossed $p\,<\,0.05$
+in this replication is at least partly an artefact of the expansion
+protocol, not evidence of a stronger underlying effect.''}
+
+This criticism is load-bearing and we own it. Three things mitigate it
+but do not eliminate it.
+
+First, the six per-family leave-one-out cosines are not tightly coupled
+within family as the criticism would predict. On the primary measurement
+(entropy early-window), Gemma-2-2B has LOO cosine $+0.977$ while
+Gemma-3-1B has $+0.682$; Llama-3.2-3B has $+0.884$ while Llama-3.2-1B
+has $+0.939$; Qwen2.5-3B has $+0.602$ while Qwen2.5-1.5B has $+0.531$.
+The within-family pairs span the observed LOO range, and the
+cross-family dispersion dominates the within-family dispersion visibly
+in Figure~\ref{fig:attractor}. This is qualitative evidence that the
+effective $n$ is closer to $6$ than to $3$, but it is not proof.
+
+Second, the pre-registration's H3 quality gate (entropy estimator shape
+correlation $r\,>\,0.70$) was specified before the expansion and passed
+at $r\,=\,0.902$ mean across three families. This is independent of the
+within-family correlation question.
+
+Third, the permutation test is evaluated under a specific null
+(exchangeability of base vs. instruct labels at the family level), and
+that null's rejection at $p\,=\,0.0315$ is mathematically independent of
+within-family sample structure. The permutation $p$ is saying ``if the
+base/instruct label assignment were random at the family level, you
+would only see this mean LOO cosine 3.15\% of the time,'' and that
+statement is true regardless of whether the six families are fully
+independent or partially correlated.
+
+None of the above converts the current replication into a genuine
+cross-architecture-root result. The cleanest resolution is the v0.4
+expansion with three truly independent new families (Phi, OLMo, Mistral),
+which would bring the effective $n$ to $\geq 9$ and let us decompose
+within-family vs. cross-family variance directly. Until that expansion
+lands, the current result should be read as: ``a pre-registered decision
+rule, committed before data capture, passed on twelve captures spanning
+six model families, and the effect is visible by eye in
+Figure~\ref{fig:attractor} --- but three of the six families are scale
+variants of the other three, and the effective $n$ is between 3 and 6,
+not cleanly 6.''
 
 \subsection{$D$-axis permutation test at $n\!=\!6$ still not significant}
 
@@ -1316,7 +1199,81 @@ replication on closed-weight models (including GPT-4o, Gemini, Claude)
 is deferred to Atlas v0.4 or later.
 
 % ══════════════════════════════════════════════════════════════════
-% 10. DISCUSSION
+% 10. BROADER THEORETICAL PREDICTIONS (NEW)
+% ══════════════════════════════════════════════════════════════════
+\section{Broader theoretical predictions}
+\label{sec:predictions}
+
+A pre-registered test falsifies or supports one hypothesis. A broader
+theory should predict outcomes beyond the specific test that was run.
+This section states four concrete predictions that follow from the
+Fathom measurement paradigm. Each is a claim a sceptical researcher
+could test with their own compute and a copy of the probe set and
+analyzer, using the Zenodo artifacts released with this paper. None of
+them are in the pre-registration, so they are predictions, not sealed
+hypotheses; they are meant as targets for future work to falsify or
+support.
+
+\paragraph{Prediction 1: independent-family replication at $n\!\geq\!9$.}
+If RLHF is a genuinely convergent process at the cognitive-state level,
+then running the same probe set and the same analyzer on three fully
+independent additional families (e.g.\ Phi-3, OLMo-2, Mistral), together
+with the six families in the current atlas, should produce a mean
+leave-one-out cosine at least $+0.60$ on the primary entropy-early
+measurement with a permutation $p$ well below $0.05$. If the expanded
+test fails (mean LOO cos $<\,0.40$, or permutation $p\,>\,0.05$), the
+current $n\!=\!6$ result is best explained as within-family correlation
+inflation (\S\ref{sec:lim-n6}), and the paradigm should be revisited.
+This is the direct extension of the current replication and is the most
+important test we have not yet run.
+
+\paragraph{Prediction 2: non-RLHF fine-tuning produces different
+attractors.} If the observed RLHF attractor is specific to preference-
+based post-training rather than to instruction-following behaviour
+broadly, then base models fine-tuned on supervised instruction datasets
+without preference optimization should \emph{not} cluster around the
+same attractor as RLHF-trained instruct models. Specifically, SFT-only
+fine-tunes of the same base models should produce leave-one-out cosines
+against the current instruct centroid that are closer to zero than the
+RLHF-trained counterparts. A failure of this prediction (SFT-only
+fine-tunes also landing on the attractor) would suggest the attractor
+reflects instruction-following style, not preference training. A
+confirmation would localize the phenomenon to preference-based
+post-training specifically.
+
+\paragraph{Prediction 3: the closed-weight entropy bridge recovers the
+attractor.} If the measurement primitive is architecturally universal
+via the entropy proxy validated at $r\,=\,0.902$ shape correlation, then
+running the same capture protocol on closed-weight models through the
+logprob API (GPT-4o, Claude, Gemini, each in the strongest and weakest
+publicly available instruct modes) should produce cognitive signatures
+that land within the bootstrap 95\% CI of the current instruct centroid.
+The exploratory GPT-4o-mini capture in Atlas v0.3 is consistent with this
+but is not pre-registered and is based on a single model. A pre-registered
+closed-weight extension is the target of Atlas v0.4 and would make this
+prediction testable at the decision-rule level.
+
+\paragraph{Prediction 4: the attractor is detectable above the probe
+set.} If the attractor reflects a genuine convergent internal-state
+property of RLHF-trained models rather than an artefact of the specific
+90-prompt probe set used here, then replacing the probe set with a
+substantially different fixed probe set (different categories, different
+prompt styles, different lengths) should reproduce the mean LOO cosine
+within $\pm 0.15$ on any matched subset of models. A failure of this
+prediction (mean LOO cos shifting by more than $0.15$ under a different
+probe set) would indicate that the attractor is probe-set-dependent and
+the claim should be scoped accordingly.
+
+Any of these four predictions can be tested by another group without
+access to the original lab's internal infrastructure: the probe set,
+capture scripts, and analyzer are public, the decision rule is
+documented, and the committed analyzer can be run without modification.
+A replication kit is the minimum bar for a measurement-science
+contribution; these four predictions are the bar for a measurement
+theory.
+
+% ══════════════════════════════════════════════════════════════════
+% 11. DISCUSSION
 % ══════════════════════════════════════════════════════════════════
 \section{Discussion}
 \label{sec:discussion}
@@ -1448,11 +1405,6 @@ model (GPT-4o-mini via the OpenAI API) with full disclosure. No new
 adversarial models are trained or released. No prompts used in the probe
 set target individuals, groups, or real-world entities.
 
-\paragraph{Provisional patents.} Related provisional patents:
-US 64/020,489, US 64/021,113, US 64/026,964. The provisionals cover the
-measurement instruments as commercial deployment technology; all
-scientific artifacts remain open under the licenses above.
-
 % ══════════════════════════════════════════════════════════════════
 % 13. ACKNOWLEDGMENTS
 % ══════════════════════════════════════════════════════════════════
@@ -1467,6 +1419,14 @@ The bulletproof audit that preceded v0.3 was prompted by the observation
 that the $n\!=\!3$ ``Qwen anomaly'' framing in v0.2.1 could not survive
 bootstrap scrutiny; that realization is the reason the v0.3 replication
 exists in its current form.
+
+\paragraph*{Disclosure.} The author has filed provisional patents
+covering commercial-deployment applications of the Fathom measurement
+instruments (US~64/020,489, 64/021,113, and 64/026,964). All scientific
+artifacts described in this paper --- probe sets, captures, analysis
+code, pre-registrations, and findings documents --- are released under
+CC-BY-4.0 (data) and MIT (code) via the Zenodo records cited in
+\S\ref{sec:code}, independent of the commercial filings.
 
 % ══════════════════════════════════════════════════════════════════
 % REFERENCES
@@ -1519,6 +1479,288 @@ swaps. \repro{atlas/analysis/atlas\_v0.3\_attractor\_n5.json}}
 \label{tab:app-full}
 \end{table}
 
+\section{Mechanistic diagnosis on Gemma-2-2B}
+\label{app:diagnosis}
+
+This appendix contains the full mechanistic-diagnosis material summarised
+in \S\ref{sec:supporting}. All results are on Gemma-2-2B and should be
+treated as single-model findings unless and until replicated on other
+architectures. Cross-architecture replication of these specific findings
+is left to Atlas v0.4.
+
+\subsection{Coherence spectrum metrics}
+
+The four SAE-based axes ($K$, $C$, $C_\Delta$, $S$) are scalars. They
+summarise the per-layer coherence distribution at each token. Scalars
+discard the \emph{shape} of that distribution. We compute 16 spectral
+shape metrics on $n\,=\,200$ TruthfulQA correct/hallucinated pairs using
+the full 26-layer coherence profile of Gemma-2-2B. Thirteen of the sixteen
+metrics survive Holm--Bonferroni correction. The top six metrics
+(Table~\ref{tab:spectrum}) all dominate scalar $K$, which is at chance.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Metric & Cohen's $d$ & $p_{\text{Holm}}$ & AUC \\
+\midrule
+Gini coefficient    & $+0.36$ & $1.2\!\times\!10^{-5}$ & $\mathbf{0.685}$ \\
+Spectral entropy    & $-0.34$ & $4.6\!\times\!10^{-5}$ & $0.675$ \\
+Peak value          & $+0.34$ & $3.4\!\times\!10^{-5}$ & $0.665$ \\
+Peak concentration  & $+0.34$ & $3.6\!\times\!10^{-5}$ & $0.655$ \\
+Spectral spread     & $-0.32$ & $1.2\!\times\!10^{-4}$ & $0.645$ \\
+Early-layer mass    & $-0.32$ & $1.1\!\times\!10^{-4}$ & $0.630$ \\
+\midrule
+$C_\Delta$ (scalar) & $+0.31$ & ---                    & $0.640$ \\
+$K$ (depth, scalar) & $+0.11$ & $0.140$ (n.s.)         & $0.550$ \\
+\bottomrule
+\end{tabular}
+\caption{Spectral shape metrics for hallucination discrimination on
+$n\,=\,200$ TruthfulQA items (Gemma-2-2B). The Gini coefficient leads all
+metrics including scalar $C_\Delta$ and $K$; $K$ (depth) is at chance.
+\repro{truthfulqa\_results/S\_baselines\_n200.json}}
+\label{tab:spectrum}
+\end{table}
+
+Hallucinated responses concentrate coherence into fewer layers (higher
+Gini, lower spectral entropy, lower spread) with a dominant spike at
+layer 11 ($p\,=\,2.7\!\times\!10^{-12}$, $t\,=\,7.45$). Twenty-three of
+the twenty-six layers show significantly elevated coherence in hallucinated
+responses ($p\,<\,0.05$; 16/26 at $p\,<\,0.001$). Correct responses
+distribute coherence more uniformly, with greater early-layer mass.
+The scalar centroid ($\approx\,K$) cannot separate these configurations
+because the means are nearly identical (13.91 vs.\ 13.90).
+
+\subsection{Cognitive autopsy: per-layer fault localization on Gemma-2-2B}
+
+We compute each layer's contribution to excess coherence (hallucinated
+minus correct). Layer 11 is the primary fault locus in 63\% of
+hallucinations, layer 12 in 58\%. Jointly, layers 11 and 12 account for
+41\% of all excess coherence (Figure~\ref{fig:autopsy-app}). The epicentre
+is well-defined on Gemma-2-2B, but this is a single-model result: the
+hallucination localization of other models (Llama, Qwen, and the v0.3
+scale variants) has not been mapped at the per-layer level with the same
+protocol. Whether layer 11--12 dominance is a Gemma-2-2B artefact or a
+more general phenomenon is an open question for Atlas v0.4.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/cognitive_autopsy_overlay.png}
+\caption{Cognitive autopsy overlay ($n\,=\,200$, Gemma-2-2B only). Per-layer
+excess coherence of hallucinated minus correct. Layers 11 and 12
+are the primary fault locus, contributing 41\% of all excess coherence on
+this model.}
+\label{fig:autopsy-app}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/spectrum_n200_full.png}
+\caption{Coherence spectrum analysis ($n\,=\,200$, Gemma-2-2B only).
+Panel (A): mean per-layer coherence spectra with 95\% confidence bands.
+Panel (B): per-layer difference with significance markings (16/26 layers
+at $p\,<\,0.001$). Panel (C): Gini coefficient distributions.
+Panel (D): 5-fold CV AUC classifier comparison.}
+\label{fig:spectrum-app}
+\end{figure}
+
+\subsection{Intervention: best-of-$N$ and multi-layer feature suppression}
+
+We explore three intervention strategies derived from the spectrum
+diagnosis. These are all Gemma-2-2B results and we flag the interpretive
+caveats explicitly.
+
+\textbf{Best-of-$N$ sampling.} Generate $N$ candidates with temperature
+sampling, score each by a Cognitive Health Score (mean Gini $+$ spectral
+spread $+$ early-layer mass), and return the healthiest. Best-of-$5$
+reduces mean Gini by $0.022$ and improves CHS on 100\% of test prompts
+versus greedy decoding. Whether this Gini reduction corresponds to
+measurable improvement on truthfulness metrics other than CHS itself is
+not established in this paper; it is an open question.
+
+\textbf{Single-layer feature suppression.} We identify 66 SAE features at
+layer 11 that activate significantly more during hallucination
+($p\,<\,0.01$, $d\,>\,0.3$; top feature $d\,=\,0.80$). Clamping these
+features to their correct-answer activation level produces zero first-
+token changes on held-out data (KL divergence $0.008$). The residual
+stream absorbs single-layer perturbations.
+
+\textbf{Multi-layer coordinated suppression.} Extending to 22 layers, we
+suppress the top 10 hallucination-associated features per layer (220
+total), producing 33\% first-token changes on held-out data (KL
+divergence $0.587$, 73$\times$ larger than single-layer). The change
+direction is not consistently toward correctness: of the 10 prompts
+whose first token changed, 1 was improved, 1 was degraded, and 8 were
+unclear. \emph{We do not claim this is a hallucination fix.} What it
+demonstrates is that coordinated multi-layer SAE feature suppression can
+reach the argmax-boundary regime with a manageable KL budget on this
+model; whether the changed outputs are meaningfully better or worse is
+not established at this sample size. This is a preliminary feasibility
+result, not an intervention recipe.
+
+% ══════════════════════════════════════════════════════════════════
+\section{Single-instrument validation studies}
+\label{app:validation}
+
+This appendix contains the full single-instrument validation material
+summarised in \S\ref{sec:supporting}. The instruments in question are
+primarily $S_{\text{early}}$ (commitment intensity restricted to the
+first seven tokens) and its cross-architecture replication on two
+architecture families.
+
+\subsection{S\texorpdfstring{$_{\text{early}}$}{\_early} cross-dataset meta-analysis}
+
+$S_{\text{early}}$ was evaluated on three independent datasets with
+different experimental designs (Table~\ref{tab:meta}). The effect sizes
+are consistent ($d\,\in\,[0.466,0.506]$) and Fisher combined
+$p\,=\,0.0008$ (one-sided). Subsample robustness: 95.8\% of
+50\%-subsamples show $d\,>\,0$ across all three datasets. The paired
+hedge-vs-commit experiments are length-matched by construction, ruling
+out question-length confounds that could affect the TruthfulQA
+comparison.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Dataset & Design & $d$ & AUC \\
+\midrule
+Gemma-2-2B base hedge/commit       & paired, $n\,=\,30$ & $+0.501$ & $0.66$ \\
+Gemma-2-2B-IT hedge/commit         & paired, $n\,=\,30$ & $+0.466$ & $0.63$ \\
+Gemma-2-2B-IT TruthfulQA (hall vs corr) & unpaired, $n\,=\,94$ & $+0.506$ & $0.67$ \\
+\midrule
+\textbf{Pooled meta-effect}        &                    & $\mathbf{+0.494}$ & \\
+\bottomrule
+\end{tabular}
+\caption{$S_{\text{early}}$ cross-dataset meta-analysis. Fisher combined
+$p\,=\,0.0008$. Effect sizes consistent at $d\,\approx\,0.5$ across three
+independent designs. The paired designs are length-matched.
+\repro{truthfulqa\_results/S\_baselines\_n200.json}}
+\label{tab:meta}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.72\linewidth]{figures/meta_analysis_forest.png}
+\caption{Forest plot of the cross-dataset $S_{\text{early}}$
+meta-analysis. Three independent datasets, Fisher combined $p\,=\,0.0008$.}
+\label{fig:meta}
+\end{figure}
+
+\subsection{Head-to-head vs.\ logit entropy}
+
+On the same 200 TruthfulQA items (Gemma-2-2B-IT), we captured both
+$S_{\text{early}}$ and standard behavioural uncertainty measures per
+token (Table~\ref{tab:headtohead}). $S_{\text{early}}$ is the only
+feature reaching conventional significance on this sample. The correlation
+with logit entropy is $r\,=\,-0.17$ (nearly independent).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccl}
+\toprule
+Feature & AUC & $p$ & Type \\
+\midrule
+$S_{\text{early}}$              & $\mathbf{0.663}$ & $\mathbf{0.013}$ & SAE-derived \\
+entropy$_{\text{max,early}}$    & $0.607$ & $0.053$ & behavioural \\
+entropy$_{\text{mean,early}}$   & $0.596$ & $0.133$ & behavioural \\
+logprob$_{\text{mean,early}}$   & $0.559$ & $0.291$ & behavioural \\
+margin$_{\text{mean,early}}$    & $0.477$ & $0.624$ & behavioural \\
+\bottomrule
+\end{tabular}
+\caption{Head-to-head comparison of $S_{\text{early}}$ against standard
+behavioural uncertainty measures on the same 200 TruthfulQA items
+(Gemma-2-2B-IT).
+\repro{truthfulqa\_results/baselines\_headtohead.json}}
+\label{tab:headtohead}
+\end{table}
+
+\subsection{SAE necessity: three SAE-free probes fail}
+
+To establish that the SAE decomposition is doing irreplaceable work, we
+tested three SAE-free probes on four architecture families (Gemma, Llama,
+Qwen, Phi), each on 200 TruthfulQA items. The probes were: raw top-$k$
+IPR on the logit distribution, cross-layer cosine of raw residual streams,
+and a multi-metric fingerprint combining six standard uncertainty
+quantities. All three SAE-free probes fail at Fisher combined
+$p\,>\,0.6$, mean 5-fold CV AUC $=\,0.566$ (Table~\ref{tab:saefree}).
+The SAE-based $S$ instrument succeeds on both tested architectures
+(Gemma $d\,=\,+0.51$, Llama $d\,=\,+0.72$, Fisher combined
+$p\,=\,0.0006$).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Probe & Fisher $p$ (4 archs) & Result \\
+\midrule
+Top-$k$ IPR (raw logit)       & $0.619$ & Mixed directions \\
+Cross-layer cosine (residual) & $0.948$ & All $d\,<\,0$ \\
+Multi-metric fingerprint      & ---     & Mean CV AUC $\,=\,0.566$ \\
+\midrule
+SAE-based $S$ (Gemma)         & $\mathbf{0.018}$ & $d\,=\,+0.51$ \\
+SAE-based $S$ (Llama)         & $\mathbf{0.012}$ & $d\,=\,+0.72$ \\
+\bottomrule
+\end{tabular}
+\caption{SAE-free probes fail; SAE-based $S$ succeeds on both tested
+architectures with public SAEs available at the time of the study.
+\repro{truthfulqa\_results/cross\_arch\_meta.json}}
+\label{tab:saefree}
+\end{table}
+
+\subsection{Cross-architecture replication of $S_{\text{early}}$}
+
+$S_{\text{early}}$ was replicated across architecture families with
+architecture-adaptive token windows (Table~\ref{tab:crossarch}). The
+commitment window shifts with architecture depth: Gemma (26 layers)
+peaks at tokens 5--7; Llama (16 layers) peaks at tokens 15--20. Same
+direction, same AUC, different timing.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Model & Layers & Window & $d$ & AUC \\
+\midrule
+Gemma-2-2B-IT         & 26 & $[0,7)$  & $+0.506$ & $0.669$ \\
+Llama-3.2-1B-Instruct & 16 & $[0,20)$ & $+0.717$ & $0.668$ \\
+\midrule
+\textbf{Pooled}       &    &          & $\mathbf{+0.587}$ & \\
+\bottomrule
+\end{tabular}
+\caption{$S_{\text{early}}$ cross-architecture replication with adaptive
+windows. Fisher combined $p\,=\,0.0006$ on the two tested architectures
+with public SAEs.
+\repro{truthfulqa\_results/S\_truthfulqa\_llama\_n200.json}}
+\label{tab:crossarch}
+\end{table}
+
+\subsection{The 2D cognitive state map (Gemma-2-2B-IT)}
+
+Combining $S_{\text{early}}$ and logit entropy into a 2D space
+(Figure~\ref{fig:statemap-app}) reveals four cognitive zones. The danger
+zone (high-$S$, high-entropy) is 65\% hallucinated; the safe zone (low-$S$,
+low-entropy) is 22\% hallucinated; $\chi^2\,=\,7.17$, $p\,=\,0.007$.
+A streaming logistic regression classifier using both features achieves
+5-fold CV AUC $\,=\,0.701$ at token 7 on this model.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.72\linewidth]{figures/cognitive_state_map.png}
+\caption{The 2D cognitive state map on Gemma-2-2B-IT TruthfulQA.
+Each generation is a point in $(S_{\text{early}},\,\text{entropy})$
+space. Danger zone (high-$S$, high-entropy), 65\% hallucinated; safe
+zone (low-$S$, low-entropy), 22\% hallucinated. $\chi^2\,=\,7.17$,
+$p\,=\,0.007$.}
+\label{fig:statemap-app}
+\end{figure}
+
+% ══════════════════════════════════════════════════════════════════
 \section{Pre-registration chronology (git commits)}
 \label{app:chronology}
 
