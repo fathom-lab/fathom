@@ -20,13 +20,16 @@
 </p>
 
 <p align="center">
-  <a href="https://doi.org/10.5281/zenodo.19326174"><img src="https://img.shields.io/badge/paper-Zenodo-blue"/></a>
+  <a href="https://doi.org/10.5281/zenodo.19504993"><img src="https://img.shields.io/badge/paper-Zenodo-blue"/></a>
   <a href="atlas/README.md"><img src="https://img.shields.io/badge/atlas-v0.3_pre--registered-purple"/></a>
-  <a href="https://fathom-gpu.darkcity.wtf/demo"><img src="https://img.shields.io/badge/demo-live-brightgreen"/></a>
-  <a href="https://fathom-gpu.darkcity.wtf/docs"><img src="https://img.shields.io/badge/API-docs-orange"/></a>
   <a href="https://osf.io/wtkzg"><img src="https://img.shields.io/badge/OSF-pre--registered-lightgrey"/></a>
+  <a href="https://github.com/fathom-lab/styxx"><img src="https://img.shields.io/badge/runtime-styxx-00d26a"/></a>
   <a href="https://fathom.darkflobi.com"><img src="https://img.shields.io/badge/site-fathom.darkflobi.com-black"/></a>
 </p>
+
+> **Research lab.** For the production runtime that puts this instrument on live
+> LLM agents, see **[fathom-lab/styxx](https://github.com/fathom-lab/styxx)** —
+> one-line drop-in for openai, langchain, crewai, autogen.
 
 ---
 
@@ -111,32 +114,47 @@ commitment window scales with model depth. fewer layers → more tokens to settl
 
 ## quick start
 
+**Production runtime (recommended).** Use **[styxx](https://github.com/fathom-lab/styxx)** —
+a one-line drop-in wrapper that carries the same centroids, the same classifier, and reads
+cognitive state off any openai / langchain / crewai / autogen agent without loading a local
+model:
+
+```bash
+pip install styxx[openai]
+```
+
 ```python
+from styxx import OpenAI
+client = OpenAI()
+r = client.chat.completions.create(model="gpt-4o", messages=[...])
+print(r.vitals.gate)    # "pass" / "warn" / "fail"
+```
+
+**Research pipeline.** To run the SAE measurement engine directly from this repo (requires
+a local model checkpoint + transformer-lens + sae-lens):
+
+```bash
+cd api/
+python - <<'PY'
 from coherence_steerer_ext import CoherenceSteererExt
 
 steerer = CoherenceSteererExt(model_name="google/gemma-2-2b-it")
 result = steerer.generate_with_entropy(
     "Q: What is the capital of France?\nA:",
-    max_tokens=20
+    max_tokens=20,
 )
 
-# per-token commitment + entropy
 for i, (cd, ent) in enumerate(zip(
     result.c_delta_trajectory,
-    result.entropy_trajectory
+    result.entropy_trajectory,
 )):
     print(f"  t={i}: C_delta={cd:+.4f}  entropy={ent:.3f}")
+PY
 ```
 
-## API
+## cognitive zones
 
-```bash
-curl -X POST https://fathom-gpu.darkcity.wtf/scan \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "What did Paul Revere say?", "max_tokens": 20}'
-```
-
-returns per-token `c_delta`, `entropy`, `logprob` + cognitive zone classification:
+the classifier maps every token to one of four zones in a 2D (commitment, entropy) space:
 
 ```
   SAFE       low commitment + low entropy      grounded retrieval
@@ -144,6 +162,10 @@ returns per-token `c_delta`, `entropy`, `logprob` + cognitive zone classificatio
   RISKY      high commitment + low entropy     confident — verify
   DANGER     high commitment + high entropy    hallucination signature
 ```
+
+at inference time this becomes the `hallucination` / `reasoning` / `adversarial` / `refusal`
+signal that **[styxx](https://github.com/fathom-lab/styxx)** emits on every call. the
+production classifier is frozen from the atlas centroids below.
 
 ---
 
@@ -173,7 +195,7 @@ returns per-token `c_delta`, `entropy`, `logprob` + cognitive zone classificatio
 ## repository structure
 
 ```
-  fathom-research/
+  fathom-lab/fathom/
   │
   ├── README.md                  you are here
   ├── coherence_steerer.py       core SAE measurement engine
@@ -222,7 +244,7 @@ all claims in the paper verified to reproduce exactly from saved JSON data.
              Transformer Internals via SAE Feature Coherence Geometry},
   author  = {Rodabaugh, Alexander},
   year    = {2026},
-  note    = {Zenodo concept DOI. doi:10.5281/zenodo.19326174}
+  note    = {Zenodo concept DOI. doi:10.5281/zenodo.19504993}
 }
 
 @misc{rodabaugh2026atlas,
@@ -230,13 +252,14 @@ all claims in the paper verified to reproduce exactly from saved JSON data.
             Cross-Architecture Replication of the RLHF Attractor},
   author = {Rodabaugh, Alexander},
   year   = {2026},
-  note   = {Zenodo concept DOI. doi:10.5281/zenodo.19326174}
+  note   = {Zenodo concept DOI. doi:10.5281/zenodo.19504993}
 }
 ```
 
 ## license
 
-research code — patent pending (US 64/020,489 · 64/021,113 · 64/026,964)
+MIT on code. CC-BY-4.0 on the atlas data. patent pending on the underlying methodology —
+US Provisional **64/020,489 · 64/021,113 · 64/026,964**.
 
 ---
 

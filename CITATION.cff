@@ -6,7 +6,7 @@ authors:
   - family-names: Rodabaugh
     given-names: Alexander
     orcid: ""
-repository-code: "https://github.com/heyzoos123-blip/fathom"
+repository-code: "https://github.com/fathom-lab/fathom"
 url: "https://fathom.darkflobi.com"
 license: MIT
 version: "3.0.0"
@@ -18,12 +18,12 @@ preferred-citation:
       given-names: Alexander
   title: "Fathom: Cognitive Measurement Instruments for Transformer Internals via SAE Feature Coherence Geometry"
   year: 2026
-  doi: "10.5281/zenodo.19326174"
-  url: "https://doi.org/10.5281/zenodo.19326174"
+  doi: "10.5281/zenodo.19504993"
+  url: "https://doi.org/10.5281/zenodo.19504993"
   notes: "Zenodo concept DOI — resolves to latest version"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.19326174"
+    value: "10.5281/zenodo.19504993"
     description: "Concept DOI (always resolves to latest version)"
 keywords:
   - sparse autoencoders
