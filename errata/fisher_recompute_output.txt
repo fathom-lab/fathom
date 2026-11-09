@@ -1,0 +1,8 @@
+inputs (as printed in README.md): gemma p = 0.013, llama p = 0.005 (2 models)
+pooled p printed in README.md: 0.00018 (labelled Fisher)
+fisher:              x = 19.282247 (df = 4), p = 0.000691673 (3 s.f.: 0.000692)
+stouffer one-sided:  z = 3.395556, p = 0.000342447 (3 s.f.: 0.000342)
+stouffer two-sided:  z = 3.741163, p = 0.000183171 (3 s.f.: 0.000183)
+fisher reproduces printed 0.00018 within 5%: no
+stouffer one-sided reproduces printed 0.00018 within 5%: no
+stouffer two-sided reproduces printed 0.00018 within 5%: yes
